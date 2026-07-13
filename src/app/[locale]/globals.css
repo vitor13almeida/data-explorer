@@ -1,0 +1,6 @@
+@import url("@ama-pt/agora-design-system/artifacts/dist/tailwind.css");
+@import url("@ama-pt/agora-design-system/artifacts/dist/style.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
