@@ -8,10 +8,10 @@ export type ResourcePageContentProps = {
   resourceId: string;
 };
 
-export default function ResourcePageContent({
+export default function ExplorerPageContent({
   resourceId: resourceIdProp,
 }: ResourcePageContentProps) {
-  const { t: tr } = useTranslation("resources");
+  const { t: tr } = useTranslation("explorer");
   const { setResourceId, isLoadingData, data, isLoadingStructure, structure } =
     useResourceContext();
 

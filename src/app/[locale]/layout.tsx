@@ -17,7 +17,7 @@ const notoSansMono = Noto_Sans_Mono({
   subsets: ["latin"],
 });
 
-const namespaces = ["common", "resources"];
+const namespaces = ["common", "explorer"];
 
 export async function generateMetadata({
   params,
