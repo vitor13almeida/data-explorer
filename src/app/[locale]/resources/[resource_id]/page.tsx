@@ -1,3 +1,4 @@
+import initTranslations from "@/app/i18n";
 import ResourcePageContent from "@/components/Resources/ResourcePageContent";
 import { ResourceProvider } from "@/providers/ResourceProvider";
 import { Metadata } from "next";
@@ -10,10 +11,14 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const { t } = await initTranslations({
+    locale,
+    namespaces: ["resources"],
+  });
 
   return {
-    title: "Resource Page",
-    description: "Explore all data, in different formats and views.",
+    title: t("title"),
+    description: t("description"),
   };
 }
 
