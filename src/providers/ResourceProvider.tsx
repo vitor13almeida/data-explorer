@@ -1,6 +1,6 @@
 "use client";
 
-import { getData } from "@/app/[locale]/resources/[resource_id]/actions";
+import { getData } from "@/app/[locale]/explore/[resource_id]/actions";
 import {
   PaginatedDataResponse,
   ResourceDataResponse,
@@ -60,12 +60,28 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
         if (response.status === 200 && response.data) {
           setData(response.data || { data: [], links: {}, meta: {} });
         } else {
-          setErrorData(
-            response.error || "Erro ao carregar os dados do recurso.",
-          );
+          setErrorData(response.error || "Erro ao carregar os dados.");
         }
       } catch (err) {
-        setErrorData("Falha de rede ao carregar.");
+        setErrorData("Falha de rede ao carregar os dados.");
+      }
+    });
+  }, [resourceId]);
+
+  useEffect(() => {
+    if (!resourceId.trim()) return;
+
+    startStructureTransition(async () => {
+      setErrorStructure(null);
+      try {
+        const response: ResourceDataResponse = await getData(resourceId);
+        if (response.status === 200 && response.data) {
+          setStructure(response.data || {});
+        } else {
+          setErrorStructure(response.error || "Erro ao carregar a estrutura.");
+        }
+      } catch (err) {
+        setErrorStructure("Falha de rede ao carregar a estrutura.");
       }
     });
   }, [resourceId]);

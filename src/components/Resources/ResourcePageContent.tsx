@@ -12,7 +12,7 @@ export default function ResourcePageContent({
   resourceId: resourceIdProp,
 }: ResourcePageContentProps) {
   const { t: tr } = useTranslation("resources");
-  const { resourceId, setResourceId, data } = useResourceContext();
+  const { setResourceId, data, structure } = useResourceContext();
 
   useEffect(() => {
     setResourceId(resourceIdProp);
@@ -20,21 +20,28 @@ export default function ResourcePageContent({
 
   return (
     <main className="flex w-full flex-col items-center p-32 gap-64">
-      <section className="flex flex-col gap-4 text-center">
+      <section className="flex flex-col gap-32 text-center">
         <h1 className="text-3xl-bold text-black">{tr("title")}</h1>
         <p className="text-l-regular text-neutral-800">{tr("description")}</p>
       </section>
-      <section className="flex flex-col gap-4 container">
-        <h2 className="text-2xl-bold text-black">Data received</h2>
-        <p>resourceId from context: {resourceId}</p>
-        <div className="h-256 overflow-auto">
-          <pre>{JSON.stringify(data, null, 2)}</pre>
+      <section className="flex flex-col gap-32 container">
+        <div className="grid grid-cols-2 gap-32">
+          <div className="flex flex-col gap-32">
+            <h2 className="text-2xl-bold text-black">Data received</h2>
+            <div className="h-256 overflow-auto">
+              <pre>{JSON.stringify(data, null, 2)}</pre>
+            </div>
+          </div>
+          <div className="flex flex-col gap-32">
+            <h2 className="text-2xl-bold text-black">Structure received</h2>
+            <div className="h-256 overflow-auto">
+              <pre>{JSON.stringify(structure, null, 2)}</pre>
+            </div>
+          </div>
         </div>
       </section>
-      <section className="flex flex-col gap-4 container">
-        <h2 className="text-2xl-bold text-black"></h2>
-        <p>resourceId from context: {resourceId}</p>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
+      <section className="flex flex-col gap-32 container">
+        <h2 className="text-2xl-bold text-black">Explorer</h2>
       </section>
     </main>
   );
