@@ -1,9 +1,14 @@
 "use client";
 
-import { getData } from "@/app/[locale]/explore/[resource_id]/actions";
 import {
+  getData,
+  getStructure,
+} from "@/app/[locale]/explore/[resource_id]/actions";
+import {
+  DatasetProfileResponse,
   PaginatedDataResponse,
   ResourceDataResponse,
+  ResourceStructureResponse,
 } from "@/services/types/Resources";
 import {
   createContext,
@@ -26,8 +31,8 @@ export type ResourceContextType = {
   errorData: string | null;
 
   isLoadingStructure: boolean;
-  structure: Array<unknown>;
-  setStructure: Dispatch<SetStateAction<unknown[]>>;
+  structure: DatasetProfileResponse | null;
+  setStructure: Dispatch<SetStateAction<DatasetProfileResponse | null>>;
   errorStructure: string | null;
 };
 
@@ -41,7 +46,9 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<PaginatedDataResponse | null>(null);
   const [errorData, setErrorData] = useState<string | null>(null);
 
-  const [structure, setStructure] = useState<Array<unknown>>([]);
+  const [structure, setStructure] = useState<DatasetProfileResponse | null>(
+    null,
+  );
   const [errorStructure, setErrorStructure] = useState<string | null>(null);
 
   const [isLoadingData, startDataTransition] = useTransition();
@@ -74,9 +81,17 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     startStructureTransition(async () => {
       setErrorStructure(null);
       try {
-        const response: ResourceDataResponse = await getData(resourceId);
+        const response: ResourceStructureResponse =
+          await getStructure(resourceId);
         if (response.status === 200 && response.data) {
-          setStructure(response.data || {});
+          setStructure(
+            response.data || {
+              profile: {},
+              dataset_id: "",
+              deleted_at: "",
+              indexes: null,
+            },
+          );
         } else {
           setErrorStructure(response.error || "Erro ao carregar a estrutura.");
         }
@@ -91,12 +106,12 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       resourceId,
       setResourceId,
 
-      isLoadingData,
+      isLoadingData: !isLoadingData,
       data,
       setData,
       errorData,
 
-      isLoadingStructure,
+      isLoadingStructure: !isLoadingStructure,
       structure,
       setStructure,
       errorStructure,

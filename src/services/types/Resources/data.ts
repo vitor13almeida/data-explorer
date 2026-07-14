@@ -11,14 +11,14 @@ export interface PaginatedDataResponse<T extends DataRow = DataRow> {
   meta: PaginationMeta;
 }
 
-export interface ApiDatabaseErrorDetail {
+interface ApiDatabaseErrorDetail {
   code: string;
   details: string | null;
   hint: string | null;
   message: string;
 }
 
-export interface ApiDatabaseErrorItem {
+interface ApiDatabaseErrorItem {
   code: string | null;
   title: string;
   detail: ApiDatabaseErrorDetail;
@@ -28,28 +28,28 @@ export interface ApiValidationErrorResponse {
   errors: ApiDatabaseErrorItem[];
 }
 
-export interface ResourceDataResponseOk {
+interface ResourceDataResponseOk {
   status: 200;
   data: PaginatedDataResponse;
   error?: never;
   rawErrors?: never;
 }
 
-export interface ResourceDataResponseValidationError {
+interface ResourceDataResponseValidationError {
   status: 400 | 500;
   data?: never;
   error: string;
   rawErrors: ApiDatabaseErrorItem[];
 }
 
-export interface ResourceDataResponseNotFound {
+interface ResourceDataResponseNotFound {
   status: 404;
   data?: never;
   error: string;
   rawErrors?: never;
 }
 
-export interface ResourceDataResponseGenericError {
+interface ResourceDataResponseGenericError {
   status: Exclude<number, 200 | 400 | 404 | 500> | (number & {});
   data?: never;
   error: string;

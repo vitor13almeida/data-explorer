@@ -12,7 +12,8 @@ export default function ResourcePageContent({
   resourceId: resourceIdProp,
 }: ResourcePageContentProps) {
   const { t: tr } = useTranslation("resources");
-  const { setResourceId, data, structure } = useResourceContext();
+  const { setResourceId, isLoadingData, data, isLoadingStructure, structure } =
+    useResourceContext();
 
   useEffect(() => {
     setResourceId(resourceIdProp);
@@ -25,17 +26,29 @@ export default function ResourcePageContent({
         <p className="text-l-regular text-neutral-800">{tr("description")}</p>
       </section>
       <section className="flex flex-col gap-32 container">
-        <div className="grid grid-cols-2 gap-32">
+        <div className="grid grid-cols-2 gap-64">
           <div className="flex flex-col gap-32">
             <h2 className="text-2xl-bold text-black">Data received</h2>
             <div className="h-256 overflow-auto">
-              <pre>{JSON.stringify(data, null, 2)}</pre>
+              {isLoadingData ? (
+                <>Loading...</>
+              ) : (
+                <pre className="text-s-regular">
+                  {JSON.stringify(data, null, 2)}
+                </pre>
+              )}
             </div>
           </div>
           <div className="flex flex-col gap-32">
             <h2 className="text-2xl-bold text-black">Structure received</h2>
             <div className="h-256 overflow-auto">
-              <pre>{JSON.stringify(structure, null, 2)}</pre>
+              {isLoadingStructure ? (
+                <>Loading...</>
+              ) : (
+                <pre className="text-s-regular">
+                  {JSON.stringify(structure, null, 2)}
+                </pre>
+              )}
             </div>
           </div>
         </div>

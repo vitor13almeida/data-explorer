@@ -1,7 +1,11 @@
 "use server";
 
-import { ResourceDataResponse } from "@/services/types/Resources";
-import { ApiValidationErrorResponse } from "@/services/types/Resources/data";
+import {
+  ApiValidationErrorResponse,
+  ResourceDataResponse,
+  ResourceStructureResponse,
+  ResourceStructureResponseValidationError,
+} from "@/services/types/Resources";
 import { TABULAR_API_URL } from "../../../../../next.config";
 
 export async function getData(
@@ -71,7 +75,7 @@ export async function getData(
 
 export async function getStructure(
   resourceId: string,
-): Promise<ResourceDataResponse> {
+): Promise<ResourceStructureResponse> {
   try {
     const apiUrl = `http://${TABULAR_API_URL}/api/resources/${resourceId}/profile/`;
 
@@ -88,12 +92,14 @@ export async function getStructure(
 
       // Try to parse error response as validation error
       try {
-        const errorJson = JSON.parse(errorText) as ApiValidationErrorResponse;
-        if (response.status === 400 && errorJson.errors) {
+        const errorJson = JSON.parse(
+          errorText,
+        ) as ResourceStructureResponseValidationError;
+        if (response.status === 400 && errorJson.rawErrors) {
           return {
             status: 400,
             error: "Erro de validação do pedido de recurso",
-            rawErrors: errorJson.errors,
+            rawErrors: errorJson.rawErrors,
           };
         }
       } catch {
