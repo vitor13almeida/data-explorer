@@ -28,7 +28,12 @@ export type ResourceContextType = {
 
   isLoadingData: boolean;
   data: PaginatedDataResponse | null;
-  loadData: (page?: number, pageSize?: number) => void;
+  loadData: (
+    page?: number,
+    pageSize?: number,
+    sortCol?: string | null,
+    sortOrder?: string | null,
+  ) => void;
   errorData: string | null;
 
   isLoadingStructure: boolean;
@@ -56,7 +61,12 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
 
   // TODO: implement sorting (server side)
   const loadData = useCallback(
-    async (page = 0, pageSize = 20) => {
+    async (
+      page: number = 0,
+      pageSize: number = 20,
+      sortCol: string | null = null,
+      sortOrder: string | null = null,
+    ) => {
       if (!resourceId.trim()) return;
 
       startDataTransition(async () => {
@@ -66,6 +76,8 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
             resourceId,
             page,
             pageSize,
+            sortCol,
+            sortOrder,
           );
           if (response.status === 200 && response.data) {
             setData(response.data || { data: [], links: {}, meta: {} });

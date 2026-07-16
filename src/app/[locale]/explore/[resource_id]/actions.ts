@@ -10,16 +10,26 @@ import { TABULAR_API_URL } from "../../../../../next.config";
 
 export async function getData(
   resourceId: string,
-  page: number = 1,
+  page: number = 0,
   page_size: number = 20,
+  sortCol: string | null = null,
+  sortOrder: string | null = null,
 ): Promise<ResourceDataResponse> {
   try {
-    const queryParams = new URLSearchParams({
+    let params = {
       page: page.toString(),
       page_size: page_size.toString(),
-    });
+    };
+
+    if (sortCol) {
+      params = { ...params, [`${sortCol}__sort`]: sortOrder };
+    }
+
+    const queryParams = new URLSearchParams(params);
 
     const apiUrl = `http://${TABULAR_API_URL}/api/resources/${resourceId}/data/?${queryParams.toString()}`;
+
+    console.log("apiUrl", apiUrl);
 
     const response = await fetch(apiUrl, {
       method: "GET",
