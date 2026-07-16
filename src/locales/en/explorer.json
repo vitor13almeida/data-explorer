@@ -1,4 +1,23 @@
 {
   "title": "Data",
-  "description": "Explore all data, in different formats and views"
+  "description": "Explore all data, in different formats and views",
+  "tabs": {
+    "table": {
+      "title": "Data",
+      "itemsPerPageLabel": "Items per page: ",
+      "buttonDropdownAriaLabel": "Choose the number of items per page",
+      "dropdownListAriaLabel": "Number of items per page",
+      "prevButtonAriaLabel": "Previous page",
+      "nextButtonAriaLabel": "Next page"
+    },
+    "structure": {
+      "title": "Structure"
+    },
+    "stats": {
+      "title": "Metrics"
+    },
+    "chart": {
+      "title": "Chart"
+    }
+  }
 }
