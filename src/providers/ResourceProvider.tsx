@@ -4,6 +4,7 @@ import {
   getData,
   getStructure,
 } from "@/app/[locale]/explore/[resource_id]/actions";
+import { PAGE_SIZES } from "@/services/consts/explorer";
 import {
   DatasetProfileResponse,
   PaginatedDataResponse,
@@ -14,7 +15,6 @@ import {
   createContext,
   Dispatch,
   ReactNode,
-  SetStateAction,
   useCallback,
   useEffect,
   useMemo,
@@ -27,18 +27,27 @@ export type ResourceContextType = {
   setResourceId: Dispatch<string>;
 
   isLoadingData: boolean;
-  data: PaginatedDataResponse | null;
-  loadData: (
-    page?: number,
-    pageSize?: number,
-    sortCol?: string | null,
-    sortOrder?: string | null,
-  ) => void;
+  loadData: () => void;
   errorData: string | null;
+  data: PaginatedDataResponse | null;
 
   isLoadingStructure: boolean;
-  structure: DatasetProfileResponse | null;
   errorStructure: string | null;
+  structure: DatasetProfileResponse | null;
+
+  headers: string[];
+  total: number;
+  totalFiltered: number;
+
+  page: number;
+  setPage: Dispatch<number>;
+  pageSize: number;
+  setPageSize: Dispatch<number>;
+
+  sortColumn: string | null;
+  setSortColumn: Dispatch<string | null>;
+  sortDirection: string | null;
+  setSortDirection: Dispatch<string | null>;
 };
 
 export const ResourceContext = createContext<ResourceContextType | undefined>(
@@ -56,41 +65,49 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
   );
   const [errorStructure, setErrorStructure] = useState<string | null>(null);
 
+  const [page, setPage] = useState<number>(0);
+  const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[0]);
+
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<string | null>(null);
+
   const [isLoadingData, startDataTransition] = useTransition();
   const [isLoadingStructure, startStructureTransition] = useTransition();
 
-  // TODO: implement sorting (server side)
-  const loadData = useCallback(
-    async (
-      page: number = 0,
-      pageSize: number = 20,
-      sortCol: string | null = null,
-      sortOrder: string | null = null,
-    ) => {
-      if (!resourceId.trim()) return;
+  const headers = structure?.profile.header ?? [];
+  const total = structure?.profile.total_lines ?? 0;
+  const totalFiltered = data?.meta.total ?? 0;
 
-      startDataTransition(async () => {
-        setErrorData(null);
-        try {
-          const response: ResourceDataResponse = await getData(
-            resourceId,
-            page,
-            pageSize,
-            sortCol,
-            sortOrder,
-          );
-          if (response.status === 200 && response.data) {
-            setData(response.data || { data: [], links: {}, meta: {} });
-          } else {
-            setErrorData(response.error || "Erro ao carregar os dados.");
-          }
-        } catch (err) {
-          setErrorData("Falha de rede ao carregar os dados.");
+  const loadData = useCallback(async () => {
+    if (!resourceId.trim()) return;
+
+    startDataTransition(async () => {
+      setErrorData(null);
+      try {
+        const response: ResourceDataResponse = await getData(
+          resourceId,
+          page,
+          pageSize,
+          sortColumn,
+          sortDirection,
+        );
+        if (response.status === 200 && response.data) {
+          setData(response.data || { data: [], links: {}, meta: {} });
+        } else {
+          setErrorData(response.error || "Erro ao carregar os dados.");
         }
-      });
-    },
-    [startDataTransition, resourceId],
-  );
+      } catch (err) {
+        setErrorData("Falha de rede ao carregar os dados.");
+      }
+    });
+  }, [
+    startDataTransition,
+    resourceId,
+    page,
+    pageSize,
+    sortColumn,
+    sortDirection,
+  ]);
 
   const loadStructure = useCallback(async () => {
     if (!resourceId.trim()) return;
@@ -119,6 +136,14 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
   }, [startStructureTransition, resourceId]);
 
   useEffect(() => {
+    if (!resourceId) return;
+
+    void loadData();
+  }, [resourceId, page, pageSize, sortColumn, sortDirection]);
+
+  useEffect(() => {
+    if (!resourceId) return;
+
     void loadStructure();
   }, [resourceId]);
 
@@ -128,23 +153,44 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       setResourceId,
 
       isLoadingData,
-      data,
       loadData,
       errorData,
+      data,
 
       isLoadingStructure,
-      structure,
       errorStructure,
+      structure,
+
+      headers,
+      total,
+      totalFiltered,
+
+      page,
+      setPage,
+      pageSize,
+      setPageSize,
+
+      sortColumn,
+      setSortColumn,
+      sortDirection,
+      setSortDirection,
     }),
     [
       resourceId,
-      structure,
-      data,
-      errorData,
-      errorStructure,
       isLoadingData,
-      isLoadingStructure,
       loadData,
+      errorData,
+      data,
+      isLoadingStructure,
+      errorStructure,
+      structure,
+      headers,
+      total,
+      totalFiltered,
+      page,
+      pageSize,
+      sortColumn,
+      sortDirection,
     ],
   );
 

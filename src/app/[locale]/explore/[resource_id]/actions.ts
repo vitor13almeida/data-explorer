@@ -29,7 +29,7 @@ export async function getData(
 
     const apiUrl = `http://${TABULAR_API_URL}/api/resources/${resourceId}/data/?${queryParams.toString()}`;
 
-    console.log("apiUrl", apiUrl);
+    console.log("---> apiUrl", apiUrl);
 
     const response = await fetch(apiUrl, {
       method: "GET",
