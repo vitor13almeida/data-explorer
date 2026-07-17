@@ -86,15 +86,15 @@ export default function TableView() {
       <Table.Root
         sortDescription={currentSortDescription}
         paginationProps={{
-          itemsPerPageLabel: te("tabs.table.itemsPerPageLabel"),
+          itemsPerPageLabel: te("views.table.itemsPerPageLabel"),
           itemsPerPage: pageSize,
           totalItems: totalItems,
           currentPage: page,
           availablePageSizes: PAGE_SIZES,
-          buttonDropdownAriaLabel: te("tabs.table.buttonDropdownAriaLabel"),
-          dropdownListAriaLabel: te("tabs.table.dropdownListAriaLabel"),
-          prevButtonAriaLabel: te("tabs.table.prevButtonAriaLabel"),
-          nextButtonAriaLabel: te("tabs.table.nextButtonAriaLabel"),
+          buttonDropdownAriaLabel: te("views.table.buttonDropdownAriaLabel"),
+          dropdownListAriaLabel: te("views.table.dropdownListAriaLabel"),
+          prevButtonAriaLabel: te("views.table.prevButtonAriaLabel"),
+          nextButtonAriaLabel: te("views.table.nextButtonAriaLabel"),
           onPageChange: handleChangePage,
           onPageSizeChange: handleChangePageSize,
         }}

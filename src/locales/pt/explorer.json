@@ -1,7 +1,7 @@
 {
   "title": "Dados",
   "description": "Explore todos os dados, em diferentes formatos e visualizações",
-  "tabs": {
+  "views": {
     "table": {
       "title": "Dados",
       "itemsPerPageLabel": "Itens por página: ",
@@ -19,5 +19,9 @@
     "chart": {
       "title": "Gráfico"
     }
+  },
+  "actions": {
+    "filter": "Filtrar",
+    "export": "Exportar"
   }
 }

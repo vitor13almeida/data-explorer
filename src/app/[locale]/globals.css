@@ -5,28 +5,4 @@
 @tailwind components;
 @tailwind utilities;
 
-.agora-tabs.desktop .tab-list.desktop,
-.agora-tabs.desktop .tab-panel-content {
-  max-width: 100% !important;
-}
 
-@media (min-width: 1280px) {
-  .agora-tabs.desktop .tab-list.desktop,
-  .agora-tabs.desktop .tab-panel-content {
-    max-width: 100% !important;
-  }
-}
-
-@media (min-width: 768px) {
-  .agora-tabs.desktop .tab-list.desktop,
-  .agora-tabs.desktop .tab-panel-content {
-    max-width: 100% !important;
-  }
-}
-
-@media (min-width: 360px) {
-  .agora-tabs.desktop .tab-list.desktop,
-  .agora-tabs.desktop .tab-panel-content {
-    max-width: 100% !important;
-  }
-}

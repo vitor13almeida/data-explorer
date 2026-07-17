@@ -33,6 +33,12 @@ export default function ExplorerPageContent({
         <h1 className="text-3xl-bold text-black">{tr("title")}</h1>
         <p className="text-l-regular text-neutral-800">{tr("description")}</p>
       </section>
+
+      <section className="flex flex-col gap-32 w-full">
+        <h2 className="text-2xl-bold text-black">Explorer</h2>
+        <Explorer />
+      </section>
+
       <section className="flex flex-col gap-32 w-full">
         <div className="grid grid-cols-2 gap-64">
           <div className="flex flex-col gap-32">
@@ -66,10 +72,6 @@ export default function ExplorerPageContent({
             )}
           </div>
         </div>
-      </section>
-      <section className="flex flex-col gap-32 w-full">
-        <h2 className="text-2xl-bold text-black">Explorer</h2>
-        <Explorer />
       </section>
     </main>
   );
