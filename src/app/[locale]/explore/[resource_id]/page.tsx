@@ -1,5 +1,5 @@
 import initTranslations from "@/app/i18n";
-import ResourcePageContent from "@/components/Resources/ResourcePageContent";
+import ExplorerPageContent from "@/components/Explorer/ExplorerPageContent";
 import { ResourceProvider } from "@/providers/ResourceProvider";
 import { Metadata } from "next";
 
@@ -13,7 +13,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const { t } = await initTranslations({
     locale,
-    namespaces: ["resources"],
+    namespaces: ["explorer"],
   });
 
   return {
@@ -22,7 +22,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function ResourcePage({
+export default async function ExplorerPage({
   params,
 }: {
   params: Promise<{ locale: string; resource_id: string }>;
@@ -30,7 +30,7 @@ export default async function ResourcePage({
   const { locale, resource_id } = await params;
   return (
     <ResourceProvider>
-      <ResourcePageContent resourceId={resource_id} />
+      <ExplorerPageContent resourceId={resource_id} />
     </ResourceProvider>
   );
 }

@@ -1,0 +1,27 @@
+{
+  "title": "Dados",
+  "description": "Explore todos os dados, em diferentes formatos e visualizações",
+  "views": {
+    "table": {
+      "title": "Dados",
+      "itemsPerPageLabel": "Itens por página: ",
+      "buttonDropdownAriaLabel": "Escolha o número de itens por página",
+      "dropdownListAriaLabel": "Número de itens por página",
+      "prevButtonAriaLabel": "Página anterior",
+      "nextButtonAriaLabel": "Página seguinte"
+    },
+    "structure": {
+      "title": "Estrutura"
+    },
+    "stats": {
+      "title": "Métricas"
+    },
+    "chart": {
+      "title": "Gráfico"
+    }
+  },
+  "actions": {
+    "filter": "Filtrar",
+    "export": "Exportar"
+  }
+}

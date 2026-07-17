@@ -15,6 +15,7 @@ import {
   Dispatch,
   ReactNode,
   SetStateAction,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -27,12 +28,16 @@ export type ResourceContextType = {
 
   isLoadingData: boolean;
   data: PaginatedDataResponse | null;
-  setData: Dispatch<SetStateAction<PaginatedDataResponse | null>>;
+  loadData: (
+    page?: number,
+    pageSize?: number,
+    sortCol?: string | null,
+    sortOrder?: string | null,
+  ) => void;
   errorData: string | null;
 
   isLoadingStructure: boolean;
   structure: DatasetProfileResponse | null;
-  setStructure: Dispatch<SetStateAction<DatasetProfileResponse | null>>;
   errorStructure: string | null;
 };
 
@@ -54,28 +59,40 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
   const [isLoadingData, startDataTransition] = useTransition();
   const [isLoadingStructure, startStructureTransition] = useTransition();
 
-  // get data when the resourceId changes and isn't an empty string
-  // TODO: implement pagination (server side)
   // TODO: implement sorting (server side)
-  useEffect(() => {
-    if (!resourceId.trim()) return;
+  const loadData = useCallback(
+    async (
+      page: number = 0,
+      pageSize: number = 20,
+      sortCol: string | null = null,
+      sortOrder: string | null = null,
+    ) => {
+      if (!resourceId.trim()) return;
 
-    startDataTransition(async () => {
-      setErrorData(null);
-      try {
-        const response: ResourceDataResponse = await getData(resourceId);
-        if (response.status === 200 && response.data) {
-          setData(response.data || { data: [], links: {}, meta: {} });
-        } else {
-          setErrorData(response.error || "Erro ao carregar os dados.");
+      startDataTransition(async () => {
+        setErrorData(null);
+        try {
+          const response: ResourceDataResponse = await getData(
+            resourceId,
+            page,
+            pageSize,
+            sortCol,
+            sortOrder,
+          );
+          if (response.status === 200 && response.data) {
+            setData(response.data || { data: [], links: {}, meta: {} });
+          } else {
+            setErrorData(response.error || "Erro ao carregar os dados.");
+          }
+        } catch (err) {
+          setErrorData("Falha de rede ao carregar os dados.");
         }
-      } catch (err) {
-        setErrorData("Falha de rede ao carregar os dados.");
-      }
-    });
-  }, [resourceId]);
+      });
+    },
+    [startDataTransition, resourceId],
+  );
 
-  useEffect(() => {
+  const loadStructure = useCallback(async () => {
     if (!resourceId.trim()) return;
 
     startStructureTransition(async () => {
@@ -99,6 +116,10 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
         setErrorStructure("Falha de rede ao carregar a estrutura.");
       }
     });
+  }, [startStructureTransition, resourceId]);
+
+  useEffect(() => {
+    void loadStructure();
   }, [resourceId]);
 
   const value = useMemo(
@@ -106,17 +127,25 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       resourceId,
       setResourceId,
 
-      isLoadingData: !isLoadingData,
+      isLoadingData,
       data,
-      setData,
+      loadData,
       errorData,
 
-      isLoadingStructure: !isLoadingStructure,
+      isLoadingStructure,
       structure,
-      setStructure,
       errorStructure,
     }),
-    [resourceId, structure, data],
+    [
+      resourceId,
+      structure,
+      data,
+      errorData,
+      errorStructure,
+      isLoadingData,
+      isLoadingStructure,
+      loadData,
+    ],
   );
 
   return (
