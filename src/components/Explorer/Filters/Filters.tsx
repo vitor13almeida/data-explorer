@@ -45,9 +45,16 @@ export default function Filters() {
               </div>
             );
           })}
-          <Button onClick={() => handleApplyFilters()}>
-            {te("actions.filter")}
-          </Button>
+          <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3">
+            <Button
+              onClick={() => handleApplyFilters()}
+              hasIcon
+              trailingIcon="agora-line-search"
+              trailingIconHover="agora-line-search"
+            >
+              {te("actions.filter")}
+            </Button>
+          </div>
         </div>
       </AccordionHeadless>
     </>
