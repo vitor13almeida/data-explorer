@@ -18,6 +18,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   useTransition,
 } from "react";
@@ -48,6 +49,12 @@ export type ResourceContextType = {
   setSortColumn: Dispatch<string | null>;
   sortDirection: string | null;
   setSortDirection: Dispatch<string | null>;
+
+  showFilters: boolean;
+  setShowFilters: Dispatch<boolean>;
+  filters: Record<string, any>;
+  setFilters: Dispatch<Record<string, any>>;
+  applyFilters: () => void;
 };
 
 export const ResourceContext = createContext<ResourceContextType | undefined>(
@@ -71,8 +78,13 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<string | null>(null);
 
+  const [showFilters, setShowFilters] = useState<boolean>(false);
+  const [filters, setFilters] = useState<Record<string, any>>({});
+
   const [isLoadingData, startDataTransition] = useTransition();
   const [isLoadingStructure, startStructureTransition] = useTransition();
+
+  const appliedFilters = useRef<Record<string, any>>({});
 
   const headers = structure?.profile.header ?? [];
   const total = structure?.profile.total_lines ?? 0;
@@ -90,6 +102,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
           pageSize,
           sortColumn,
           sortDirection,
+          appliedFilters.current,
         );
         if (response.status === 200 && response.data) {
           setData(response.data || { data: [], links: {}, meta: {} });
@@ -107,6 +120,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     pageSize,
     sortColumn,
     sortDirection,
+    appliedFilters,
   ]);
 
   const loadStructure = useCallback(async () => {
@@ -134,6 +148,11 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       }
     });
   }, [startStructureTransition, resourceId]);
+
+  const applyFilters = () => {
+    appliedFilters.current = { ...filters };
+    void loadData();
+  };
 
   useEffect(() => {
     if (!resourceId) return;
@@ -174,6 +193,12 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       setSortColumn,
       sortDirection,
       setSortDirection,
+
+      showFilters,
+      setShowFilters,
+      filters,
+      setFilters,
+      applyFilters,
     }),
     [
       resourceId,
@@ -191,6 +216,8 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       pageSize,
       sortColumn,
       sortDirection,
+      showFilters,
+      filters,
     ],
   );
 

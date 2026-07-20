@@ -14,6 +14,7 @@ export async function getData(
   page_size: number = 20,
   sortCol: string | null = null,
   sortOrder: string | null = null,
+  filters: Record<string, any> | null = null,
 ): Promise<ResourceDataResponse> {
   try {
     let params = {
@@ -23,6 +24,14 @@ export async function getData(
 
     if (sortCol) {
       params = { ...params, [`${sortCol}__sort`]: sortOrder };
+    }
+
+    if (filters && Object.keys(filters).length > 0) {
+      Object.keys(filters).forEach((filter) => {
+        if (filters[filter]) {
+          params = { ...params, [`${filter}__contains`]: filters[filter] };
+        }
+      });
     }
 
     const queryParams = new URLSearchParams(params);
