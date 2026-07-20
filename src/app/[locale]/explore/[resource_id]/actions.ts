@@ -28,7 +28,7 @@ export async function getData(
 
     if (filters && Object.keys(filters).length > 0) {
       Object.keys(filters).forEach((filter) => {
-        if (filters[filter]) {
+        if (filters[filter] && String(filters[filter]).length > 0) {
           params = { ...params, [`${filter}__contains`]: filters[filter] };
         }
       });
@@ -37,8 +37,6 @@ export async function getData(
     const queryParams = new URLSearchParams(params);
 
     const apiUrl = `http://${TABULAR_API_URL}/api/resources/${resourceId}/data/?${queryParams.toString()}`;
-
-    console.log("---> apiUrl", apiUrl);
 
     const response = await fetch(apiUrl, {
       method: "GET",
