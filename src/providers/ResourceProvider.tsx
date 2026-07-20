@@ -192,8 +192,6 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    console.log("searchParams", searchParams.entries().toArray());
-
     let filtersToSet: Record<string, string> = {};
     searchParams
       .entries()
@@ -220,9 +218,6 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
             }
             break;
         }
-
-        console.log("filtersToSet", filtersToSet);
-
         setFilters(filtersToSet);
         appliedFilters.current = filtersToSet;
       });
