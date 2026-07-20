@@ -14,6 +14,7 @@ export async function getData(
   page_size: number = 20,
   sortCol: string | null = null,
   sortOrder: string | null = null,
+  filters: Record<string, any> | null = null,
 ): Promise<ResourceDataResponse> {
   try {
     let params = {
@@ -25,11 +26,17 @@ export async function getData(
       params = { ...params, [`${sortCol}__sort`]: sortOrder };
     }
 
+    if (filters && Object.keys(filters).length > 0) {
+      Object.keys(filters).forEach((filter) => {
+        if (filters[filter] && String(filters[filter]).length > 0) {
+          params = { ...params, [`${filter}__contains`]: filters[filter] };
+        }
+      });
+    }
+
     const queryParams = new URLSearchParams(params);
 
     const apiUrl = `http://${TABULAR_API_URL}/api/resources/${resourceId}/data/?${queryParams.toString()}`;
-
-    console.log("apiUrl", apiUrl);
 
     const response = await fetch(apiUrl, {
       method: "GET",

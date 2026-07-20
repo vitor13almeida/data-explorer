@@ -5,11 +5,16 @@ import TableView from "./Views/TableView";
 import Button from "../Shared/Button/Button";
 import ButtonGroup from "../Shared/Button/ButtonGroup";
 import { useMemo, useState } from "react";
+import FiltersToogle from "./Filters/FiltersToogle";
+import Filters from "./Filters/Filters";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 type ViewType = "table" | "structure" | "stats" | "chart";
 
 export default function Explorer() {
   const { t: te } = useTranslation("explorer");
+
+  const isMobbile = useMediaQuery("(min-width: 768px)");
 
   const [selectedView, setSelectedView] = useState<ViewType>("table");
 
@@ -35,9 +40,9 @@ export default function Explorer() {
   return (
     <>
       <div className="w-full flex flex-col gap-32">
-        <div className="flex flex-row gap-64 w-full items-center">
+        <div className="flex flex-col md:flex-row gap-32 md:gap-64 w-full items-center">
           <div className="grow">
-            <ButtonGroup>
+            <ButtonGroup orientation={isMobbile ? "vertical" : "horizontal"}>
               <Button onClick={() => handleSelectView("table")}>
                 {te("views.table.title")}
               </Button>
@@ -53,21 +58,19 @@ export default function Explorer() {
             </ButtonGroup>
           </div>
           <div className="flex flex-row gap-8 flex-wrap skrink">
-            <Button
-              iconOnly={true}
-              hasIcon={true}
-              leadingIcon="agora-line-filter"
-              leadingIconHover="agora-line-filter"
-              title={te("actions.filter")}
-            />
+            <FiltersToogle />
             <Button
               iconOnly={true}
               hasIcon={true}
               leadingIcon="agora-line-file-share"
               leadingIconHover="agora-line-file-share"
               title={te("actions.export")}
+              appearance={"outline"}
             />
           </div>
+        </div>
+        <div className="w-full">
+          <Filters />
         </div>
         <div className="w-full">{view}</div>
       </div>

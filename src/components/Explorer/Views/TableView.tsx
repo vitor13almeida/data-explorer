@@ -17,23 +17,26 @@ export default function TableView() {
     resourceId,
     isLoadingData,
     isLoadingStructure,
-    data,
-    structure,
     loadData,
+    data,
+    headers,
+    totalFiltered,
+    page,
+    setPage,
+    pageSize,
+    setPageSize,
+    sortColumn,
+    setSortColumn,
+    sortDirection,
+    setSortDirection,
   } = useResourceContext();
 
-  const headers = structure?.profile.header ?? [];
   const sortNone: SortOrder[] = headers.map(() => "none");
-
-  const [page, setPage] = useState<number>(0);
-  const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[0]);
 
   const [currentSortDescription, setCurrentSortDescription] =
     useState<string>("");
   const [colSortOrders, setColSortOrders] = useState<SortOrder[]>(sortNone);
-  const [sort, setSort] = useState<SortCol>({ column: null, order: null });
 
-  const totalItems = data?.meta.total ?? 1;
   const rows = data?.data ?? [];
 
   const handleChangePageSize = (newSize: number) => {
@@ -58,20 +61,13 @@ export default function TableView() {
     setColSortOrders(newSortOrders);
 
     if (order === "none") {
-      setSort({ column: null, order: null });
+      setSortColumn(null);
+      setSortDirection(null);
     } else {
-      setSort({
-        column: headers[colIdx],
-        order: order.startsWith("asc") ? "asc" : "desc",
-      });
+      setSortColumn(headers[colIdx]);
+      setSortDirection(order.startsWith("asc") ? "asc" : "desc");
     }
   };
-
-  useEffect(() => {
-    if (!resourceId) return;
-
-    void loadData(page, pageSize, sort.column, sort.order);
-  }, [resourceId, page, pageSize, loadData, sort]);
 
   if (isLoadingData || isLoadingStructure) {
     return (
@@ -88,7 +84,7 @@ export default function TableView() {
         paginationProps={{
           itemsPerPageLabel: te("views.table.itemsPerPageLabel"),
           itemsPerPage: pageSize,
-          totalItems: totalItems,
+          totalItems: totalFiltered, // number of items after aplying the filters
           currentPage: page,
           availablePageSizes: PAGE_SIZES,
           buttonDropdownAriaLabel: te("views.table.buttonDropdownAriaLabel"),

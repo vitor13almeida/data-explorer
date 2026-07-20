@@ -5,4 +5,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
+.accordion-headless .agora-accordion .accordion-header {
+  display: none !important;
+}
