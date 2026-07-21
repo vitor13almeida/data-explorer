@@ -9,6 +9,20 @@ import {
 import { TABULAR_API_URL } from "../../../../../next.config";
 import { prepareUrlSearchParams } from "@/utils/urlParams";
 
+async function readResponseBody(response: Response) {
+  const text = await response.text();
+
+  if (!text) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return text;
+  }
+}
+
 export async function getData(
   resourceId: string,
   page: number = 0,
@@ -36,33 +50,41 @@ export async function getData(
       },
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
+    const responseBody = await readResponseBody(response);
 
-      // Try to parse error response as validation error
-      try {
-        const errorJson = JSON.parse(errorText) as ApiValidationErrorResponse;
-        if (response.status === 400 && errorJson.errors) {
-          return {
-            status: 400,
-            error: "Erro de validação do pedido de recurso",
-            rawErrors: errorJson.errors,
-          };
-        }
-      } catch {
-        // If not JSON or validation error, continue to generic error
+    if (!response.ok) {
+      const errorObject = responseBody as
+        | ApiValidationErrorResponse
+        | Record<string, unknown>
+        | string
+        | null;
+
+      if (
+        typeof errorObject === "object" &&
+        errorObject !== null &&
+        "errors" in errorObject &&
+        Array.isArray(errorObject.errors) &&
+        errorObject.errors.length > 0
+      ) {
+        const firstError = errorObject.errors[0];
+        const detailMessage =
+          firstError?.detail?.message || firstError?.detail?.hint || firstError?.title;
+
+        return {
+          status: response.status,
+          error: detailMessage || "Erro inesperado da API",
+          errors: errorObject.errors,
+        };
       }
 
       return {
         status: response.status,
         error: `API Error: ${response.statusText}`,
-        rawErrors: [],
+        errors: [],
       };
     }
 
-    const data = await response.json();
-
-    return { status: 200, data } as const;
+    return { status: 200, data: responseBody } as const;
   } catch (error: any) {
     console.error("Falha no fetch de dados do recurso:", error);
 
@@ -75,7 +97,7 @@ export async function getData(
       error: isNetworkError
         ? "Falha de conexão com a API"
         : error.message || "Erro interno no servidor.",
-      rawErrors: [],
+      errors: [],
     };
   }
 }
@@ -94,35 +116,41 @@ export async function getStructure(
       },
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
+    const responseBody = await readResponseBody(response);
 
-      // Try to parse error response as validation error
-      try {
-        const errorJson = JSON.parse(
-          errorText,
-        ) as ResourceStructureResponseValidationError;
-        if (response.status === 400 && errorJson.rawErrors) {
-          return {
-            status: 400,
-            error: "Erro de validação do pedido de recurso",
-            rawErrors: errorJson.rawErrors,
-          };
-        }
-      } catch {
-        // If not JSON or validation error, continue to generic error
+    if (!response.ok) {
+      const errorObject = responseBody as
+        | ResourceStructureResponseValidationError
+        | Record<string, unknown>
+        | string
+        | null;
+
+      if (
+        typeof errorObject === "object" &&
+        errorObject !== null &&
+        "errors" in errorObject &&
+        Array.isArray(errorObject.errors) &&
+        errorObject.errors.length > 0
+      ) {
+        const firstError = errorObject.errors[0];
+        const detailMessage =
+          firstError?.detail?.message || firstError?.detail?.hint || firstError?.title;
+
+        return {
+          status: response.status,
+          error: detailMessage || "Erro inesperado da API",
+          errors: errorObject.errors,
+        };
       }
 
       return {
         status: response.status,
         error: `API Error: ${response.statusText}`,
-        rawErrors: [],
+        errors: [],
       };
     }
 
-    const data = await response.json();
-
-    return { status: 200, data } as const;
+    return { status: 200, data: responseBody } as const;
   } catch (error: any) {
     console.error("Falha no fetch de dados do recurso:", error);
 
@@ -135,7 +163,7 @@ export async function getStructure(
       error: isNetworkError
         ? "Falha de conexão com a API"
         : error.message || "Erro interno no servidor.",
-      rawErrors: [],
+      errors: [],
     };
   }
 }

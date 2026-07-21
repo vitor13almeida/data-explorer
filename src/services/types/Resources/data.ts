@@ -32,28 +32,28 @@ interface ResourceDataResponseOk {
   status: 200;
   data: PaginatedDataResponse;
   error?: never;
-  rawErrors?: never;
+  errors?: never;
 }
 
 interface ResourceDataResponseValidationError {
   status: 400 | 500;
   data?: never;
   error: string;
-  rawErrors: ApiDatabaseErrorItem[];
+  errors: ApiDatabaseErrorItem[];
 }
 
 interface ResourceDataResponseNotFound {
   status: 404;
   data?: never;
   error: string;
-  rawErrors?: never;
+  errors?: never;
 }
 
 interface ResourceDataResponseGenericError {
   status: Exclude<number, 200 | 400 | 404 | 500> | (number & {});
   data?: never;
   error: string;
-  rawErrors?: ApiDatabaseErrorItem[];
+  errors?: ApiDatabaseErrorItem[];
 }
 
 export type ResourceDataResponse =

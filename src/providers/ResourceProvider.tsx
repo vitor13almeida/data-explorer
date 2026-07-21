@@ -12,6 +12,7 @@ import {
   ResourceStructureResponse,
 } from "@/services/types/Resources";
 import { prepareUrlSearchParams } from "@/utils/urlParams";
+import { useToastContext } from "@ama-pt/agora-design-system";
 import { useSearchParams } from "next/navigation";
 import {
   createContext,
@@ -24,6 +25,7 @@ import {
   useState,
   useTransition,
 } from "react";
+import { useTranslation } from "react-i18next";
 
 export type ResourceContextType = {
   resourceId: string;
@@ -67,6 +69,9 @@ export const ResourceContext = createContext<ResourceContextType | undefined>(
 
 export function ResourceProvider({ children }: { children: ReactNode }) {
   const searchParams = useSearchParams();
+  const toastContext = useToastContext();
+  const { t } = useTranslation("common");
+  const { t: te } = useTranslation("explorer");
 
   const [isReady, setIsReady] = useState<boolean>(false);
 
@@ -120,10 +125,31 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
         if (response.status === 200 && response.data) {
           setData(response.data || { data: [], links: {}, meta: {} });
         } else {
-          setErrorData(response.error || "Erro ao carregar os dados.");
+          setErrorData(
+            response.errors?.map((error) => error.detail.hint).join(" ") ||
+              te("errors.data.badRequest"),
+          );
+          () =>
+            toastContext.showToast({
+              id: new Date().toString(),
+              title: te("errors.data.title"),
+              description:
+                response.errors?.map((error) => error.detail.hint).join(" ") ||
+                te("errors.data.badRequest"),
+              type: "failure",
+              closeLabel: t("close"),
+            });
         }
       } catch (err) {
-        setErrorData("Falha de rede ao carregar os dados.");
+        setErrorData(te("errors.data.failed"));
+        () =>
+          toastContext.showToast({
+            id: new Date().toString(),
+            title: te("errors.data.title"),
+            description: te("errors.data.failed"),
+            type: "failure",
+            closeLabel: t("close"),
+          });
       }
     });
   }, [
@@ -154,10 +180,31 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
             },
           );
         } else {
-          setErrorStructure(response.error || "Erro ao carregar a estrutura.");
+          setErrorStructure(
+            response.errors?.map((error) => error.detail.hint).join(" ") ||
+              te("errors.structure.badRequest"),
+          );
+          () =>
+            toastContext.showToast({
+              id: new Date().toString(),
+              title: te("errors.structure.title"),
+              description:
+                response.errors?.map((error) => error.detail.hint).join(" ") ||
+                te("errors.structure.badRequest"),
+              type: "failure",
+              closeLabel: t("close"),
+            });
         }
       } catch (err) {
-        setErrorStructure("Falha de rede ao carregar a estrutura.");
+        setErrorStructure(te("errors.structure.failed"));
+        () =>
+          toastContext.showToast({
+            id: new Date().toString(),
+            title: te("errors.structure.title"),
+            description: te("errors.structure.failed"),
+            type: "failure",
+            closeLabel: t("close"),
+          });
       }
     });
   }, [startStructureTransition, resourceId]);

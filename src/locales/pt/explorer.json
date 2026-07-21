@@ -29,5 +29,17 @@
     "filter": "Filtrar",
     "clear": "Limpar",
     "export": "Exportar"
+  },
+  "errors": {
+    "data": {
+      "title": "Erro de dados",
+      "badRequest": "Erro ao carregar os dados.",
+      "failed": "Falha de rede ao carregar os dados."
+    },
+    "structure": {
+      "title": "Erro de estrutura",
+      "badRequest": "Erro ao carregar a estrutura.",
+      "failed": "Falha de rede ao carregar a etrutura."
+    }
   }
 }

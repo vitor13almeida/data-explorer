@@ -29,5 +29,17 @@
     "filter": "Filter",
     "clear": "Clear",
     "export": "Export"
+  },
+  "errors": {
+    "data": {
+      "title": "Data error",
+      "badRequest": "Error loading the data.",
+      "failed": "Network fail loading the data."
+    },
+    "structure": {
+      "title": "Structure error",
+      "badRequest": "Error loading the structure.",
+      "failed": "Network fail loading the structure."
+    }
   }
 }
