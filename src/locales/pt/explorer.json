@@ -2,6 +2,11 @@
   "title": "Dados",
   "description": "Explore todos os dados, em diferentes formatos e visualizações",
   "views": {
+    "dataNumbers": {
+      "total": "Total",
+      "totalFiltered": "Itens filtrados",
+      "appliedFilters": "Filtros aplicados"
+    },
     "table": {
       "title": "Dados",
       "itemsPerPageLabel": "Itens por página: ",
@@ -22,6 +27,7 @@
   },
   "actions": {
     "filter": "Filtrar",
+    "clear": "Limpar",
     "export": "Exportar"
   }
 }

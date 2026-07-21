@@ -11,6 +11,8 @@ import {
   ResourceDataResponse,
   ResourceStructureResponse,
 } from "@/services/types/Resources";
+import { prepareUrlSearchParams } from "@/utils/urlParams";
+import { useSearchParams } from "next/navigation";
 import {
   createContext,
   Dispatch,
@@ -39,6 +41,7 @@ export type ResourceContextType = {
   headers: string[];
   total: number;
   totalFiltered: number;
+  nFiltersApplied: number;
 
   page: number;
   setPage: Dispatch<number>;
@@ -47,14 +50,15 @@ export type ResourceContextType = {
 
   sortColumn: string | null;
   setSortColumn: Dispatch<string | null>;
-  sortDirection: string | null;
-  setSortDirection: Dispatch<string | null>;
+  sortDirection: "asc" | "desc" | null;
+  setSortDirection: Dispatch<"asc" | "desc" | null>;
 
   showFilters: boolean;
   setShowFilters: Dispatch<boolean>;
   filters: Record<string, any>;
   setFilters: Dispatch<Record<string, any>>;
   applyFilters: () => void;
+  clearFilters: () => void;
 };
 
 export const ResourceContext = createContext<ResourceContextType | undefined>(
@@ -62,6 +66,10 @@ export const ResourceContext = createContext<ResourceContextType | undefined>(
 );
 
 export function ResourceProvider({ children }: { children: ReactNode }) {
+  const searchParams = useSearchParams();
+
+  const [isReady, setIsReady] = useState<boolean>(false);
+
   const [resourceId, setResourceId] = useState<string>("");
 
   const [data, setData] = useState<PaginatedDataResponse | null>(null);
@@ -76,7 +84,9 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
   const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[0]);
 
   const [sortColumn, setSortColumn] = useState<string | null>(null);
-  const [sortDirection, setSortDirection] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(
+    null,
+  );
 
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [filters, setFilters] = useState<Record<string, any>>({});
@@ -86,9 +96,12 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
 
   const appliedFilters = useRef<Record<string, any>>({});
 
-  const headers = structure?.profile.header ?? [];
-  const total = structure?.profile.total_lines ?? 0;
-  const totalFiltered = data?.meta.total ?? 0;
+  const headers: string[] = structure?.profile.header ?? [];
+  const total: number = structure?.profile.total_lines ?? 0;
+  const totalFiltered: number = data?.meta.total ?? 0;
+  const nFiltersApplied: number = Object.keys(appliedFilters.current).filter(
+    (filter) => !!appliedFilters.current[filter],
+  ).length;
 
   const loadData = useCallback(async () => {
     if (!resourceId.trim()) return;
@@ -149,16 +162,99 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     });
   }, [startStructureTransition, resourceId]);
 
+  const setUrlParams = (
+    page: number = 0,
+    page_size: number = 20,
+    sortCol: string | null = null,
+    sortOrder: string | null = null,
+    filters: Record<string, any> | null = null,
+  ) => {
+    const params = prepareUrlSearchParams(
+      page,
+      page_size,
+      sortCol,
+      sortOrder,
+      filters,
+    );
+    window.history.replaceState(
+      null,
+      "",
+      `${window.location.pathname}?${params}`,
+    );
+  };
+
   const applyFilters = () => {
     appliedFilters.current = { ...filters };
+
+    void setUrlParams(
+      page,
+      pageSize,
+      sortColumn,
+      sortDirection,
+      appliedFilters.current,
+    );
+    void loadData();
+  };
+
+  const clearFilters = () => {
+    setFilters({});
+    appliedFilters.current = {};
+
+    void setUrlParams(
+      page,
+      pageSize,
+      sortColumn,
+      sortDirection,
+      appliedFilters.current,
+    );
     void loadData();
   };
 
   useEffect(() => {
-    if (!resourceId) return;
+    let filtersToSet: Record<string, string> = {};
+    searchParams
+      .entries()
+      .toArray()
+      .forEach((param) => {
+        const key = param[0];
+        const value = param[1];
+        switch (key) {
+          case "page":
+            setPage(value ? (Number(value) ?? 0) : 0);
+            break;
+          case "page_size":
+            setPageSize(value ? (Number(value) ?? 0) : 0);
+            break;
+          default:
+            if (key.endsWith("__sort")) {
+              setSortColumn(key.replace("__sort", ""));
+              setSortDirection(value === "desc" ? "desc" : "asc");
+            } else if (key.endsWith("__contains")) {
+              filtersToSet = {
+                ...filtersToSet,
+                [key.replace("__contains", "")]: value,
+              };
+            }
+            break;
+        }
+        setFilters(filtersToSet);
+        appliedFilters.current = filtersToSet;
+      });
+    setIsReady(true);
+  }, []);
 
+  useEffect(() => {
+    if (!resourceId && isReady) return;
+
+    void setUrlParams(
+      page,
+      pageSize,
+      sortColumn,
+      sortDirection,
+      appliedFilters.current,
+    );
     void loadData();
-  }, [resourceId, page, pageSize, sortColumn, sortDirection]);
+  }, [resourceId, page, pageSize, sortColumn, sortDirection, appliedFilters]);
 
   useEffect(() => {
     if (!resourceId) return;
@@ -183,6 +279,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       headers,
       total,
       totalFiltered,
+      nFiltersApplied,
 
       page,
       setPage,
@@ -199,6 +296,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       filters,
       setFilters,
       applyFilters,
+      clearFilters,
     }),
     [
       resourceId,
@@ -212,6 +310,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       headers,
       total,
       totalFiltered,
+      nFiltersApplied,
       page,
       pageSize,
       sortColumn,

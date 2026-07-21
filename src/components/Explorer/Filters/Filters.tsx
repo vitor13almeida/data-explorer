@@ -10,8 +10,14 @@ import { useTranslation } from "react-i18next";
 export default function Filters() {
   const { t: te } = useTranslation("explorer");
 
-  const { showFilters, headers, filters, setFilters, applyFilters } =
-    useResourceContext();
+  const {
+    showFilters,
+    headers,
+    filters,
+    setFilters,
+    applyFilters,
+    clearFilters,
+  } = useResourceContext();
 
   const handleChangeFilter = (
     event: ChangeEvent<HTMLInputElement, HTMLInputElement>,
@@ -24,6 +30,10 @@ export default function Filters() {
 
   const handleApplyFilters = () => {
     applyFilters();
+  };
+
+  const handleClearFilters = () => {
+    clearFilters();
   };
 
   return (
@@ -39,20 +49,31 @@ export default function Filters() {
                 <InputText
                   label={header}
                   name={header}
-                  value={filters[header]}
+                  value={filters[header] ?? ""}
                   onChange={handleChangeFilter}
                 />
               </div>
             );
           })}
-          <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3">
+          <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3 flex flex-row gap-8">
             <Button
               onClick={() => handleApplyFilters()}
               hasIcon
               trailingIcon="agora-line-search"
               trailingIconHover="agora-line-search"
+              fullWidth={true}
             >
               {te("actions.filter")}
+            </Button>
+            <Button
+              onClick={() => handleClearFilters()}
+              hasIcon
+              trailingIcon="agora-line-delete"
+              trailingIconHover="agora-line-delete"
+              fullWidth={true}
+              variant="danger"
+            >
+              {te("actions.clear")}
             </Button>
           </div>
         </div>

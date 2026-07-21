@@ -7,6 +7,7 @@ import {
   ResourceStructureResponseValidationError,
 } from "@/services/types/Resources";
 import { TABULAR_API_URL } from "../../../../../next.config";
+import { prepareUrlSearchParams } from "@/utils/urlParams";
 
 export async function getData(
   resourceId: string,
@@ -17,24 +18,13 @@ export async function getData(
   filters: Record<string, any> | null = null,
 ): Promise<ResourceDataResponse> {
   try {
-    let params = {
-      page: page.toString(),
-      page_size: page_size.toString(),
-    };
-
-    if (sortCol) {
-      params = { ...params, [`${sortCol}__sort`]: sortOrder };
-    }
-
-    if (filters && Object.keys(filters).length > 0) {
-      Object.keys(filters).forEach((filter) => {
-        if (filters[filter] && String(filters[filter]).length > 0) {
-          params = { ...params, [`${filter}__contains`]: filters[filter] };
-        }
-      });
-    }
-
-    const queryParams = new URLSearchParams(params);
+    const queryParams = prepareUrlSearchParams(
+      page,
+      page_size,
+      sortCol,
+      sortOrder,
+      filters,
+    );
 
     const apiUrl = `http://${TABULAR_API_URL}/api/resources/${resourceId}/data/?${queryParams.toString()}`;
 
