@@ -41,6 +41,7 @@ export type ResourceContextType = {
   headers: string[];
   total: number;
   totalFiltered: number;
+  nFiltersApplied: number;
 
   page: number;
   setPage: Dispatch<number>;
@@ -57,6 +58,7 @@ export type ResourceContextType = {
   filters: Record<string, any>;
   setFilters: Dispatch<Record<string, any>>;
   applyFilters: () => void;
+  clearFilters: () => void;
 };
 
 export const ResourceContext = createContext<ResourceContextType | undefined>(
@@ -94,9 +96,12 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
 
   const appliedFilters = useRef<Record<string, any>>({});
 
-  const headers = structure?.profile.header ?? [];
-  const total = structure?.profile.total_lines ?? 0;
-  const totalFiltered = data?.meta.total ?? 0;
+  const headers: string[] = structure?.profile.header ?? [];
+  const total: number = structure?.profile.total_lines ?? 0;
+  const totalFiltered: number = data?.meta.total ?? 0;
+  const nFiltersApplied: number = Object.keys(appliedFilters.current).filter(
+    (filter) => !!appliedFilters.current[filter],
+  ).length;
 
   const loadData = useCallback(async () => {
     if (!resourceId.trim()) return;
@@ -191,6 +196,20 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     void loadData();
   };
 
+  const clearFilters = () => {
+    setFilters({});
+    appliedFilters.current = {};
+
+    void setUrlParams(
+      page,
+      pageSize,
+      sortColumn,
+      sortDirection,
+      appliedFilters.current,
+    );
+    void loadData();
+  };
+
   useEffect(() => {
     let filtersToSet: Record<string, string> = {};
     searchParams
@@ -260,6 +279,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       headers,
       total,
       totalFiltered,
+      nFiltersApplied,
 
       page,
       setPage,
@@ -276,6 +296,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       filters,
       setFilters,
       applyFilters,
+      clearFilters,
     }),
     [
       resourceId,
@@ -289,6 +310,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       headers,
       total,
       totalFiltered,
+      nFiltersApplied,
       page,
       pageSize,
       sortColumn,

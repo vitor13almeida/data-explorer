@@ -8,6 +8,7 @@ import { useMemo, useState } from "react";
 import FiltersToogle from "./Filters/FiltersToogle";
 import Filters from "./Filters/Filters";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import DataNumbers from "./DataNumbers";
 
 type ViewType = "table" | "structure" | "stats" | "chart";
 
@@ -25,13 +26,23 @@ export default function Explorer() {
   const view = useMemo(() => {
     switch (selectedView) {
       case "table":
-        return <TableView />;
+        return (
+          <>
+            <DataNumbers />
+            <TableView />
+          </>
+        );
       case "structure":
         return <>{te("views.structure.title")}...</>;
       case "stats":
         return <>{te("views.stats.title")}...</>;
       case "chart":
-        return <>{te("views.chart.title")}...</>;
+        return (
+          <>
+            <DataNumbers />
+            <div>{te("views.chart.title")}...</div>
+          </>
+        );
       default:
         return null;
     }
@@ -72,7 +83,7 @@ export default function Explorer() {
         <div className="w-full">
           <Filters />
         </div>
-        <div className="w-full">{view}</div>
+        <div className="w-full flex flex-col gap-16">{view}</div>
       </div>
     </>
   );
