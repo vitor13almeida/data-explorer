@@ -1,5 +1,6 @@
 import { useResourceContext } from "@/hooks/useResourceContext";
 import { useTranslation } from "react-i18next";
+import Pill from "../Shared/Pill/Pill";
 
 export default function DataNumbers() {
   const { t: te } = useTranslation("explorer");
@@ -20,13 +21,15 @@ export default function DataNumbers() {
   return (
     <div className="flex flex-row flex-wrap gap-16 w-full">
       <div className="w-fit">
-        <b>{te("views.dataNumbers.total")}:</b> {total}
+        <b>{te("views.dataNumbers.total")}:</b> <Pill>{total}</Pill>
       </div>
       <div className="w-fit">
-        <b>{te("views.dataNumbers.totalFiltered")}:</b> {totalFiltered}
+        <b>{te("views.dataNumbers.totalFiltered")}:</b>{" "}
+        <Pill>{totalFiltered}</Pill>
       </div>
       <div className="w-fit">
-        <b>{te("views.dataNumbers.appliedFilters")}:</b> {nFiltersApplied}
+        <b>{te("views.dataNumbers.appliedFilters")}:</b>{" "}
+        <Pill>{nFiltersApplied}</Pill>
       </div>
     </div>
   );
