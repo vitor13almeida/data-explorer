@@ -125,13 +125,14 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
         if (response.status === 200 && response.data) {
           setData(response.data || { data: [], links: {}, meta: {} });
         } else {
+          setData(null);
           setErrorData(
             response.errors?.map((error) => error.detail.hint).join(" ") ||
               te("errors.data.badRequest"),
           );
           () =>
             toastContext.showToast({
-              id: new Date().toString(),
+              id: +new Date(),
               title: te("errors.data.title"),
               description:
                 response.errors?.map((error) => error.detail.hint).join(" ") ||
@@ -141,10 +142,11 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
             });
         }
       } catch (err) {
+        setData(null);
         setErrorData(te("errors.data.failed"));
         () =>
           toastContext.showToast({
-            id: new Date().toString(),
+            id: +new Date(),
             title: te("errors.data.title"),
             description: te("errors.data.failed"),
             type: "failure",
@@ -186,7 +188,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
           );
           () =>
             toastContext.showToast({
-              id: new Date().toString(),
+              id: +new Date(),
               title: te("errors.structure.title"),
               description:
                 response.errors?.map((error) => error.detail.hint).join(" ") ||
@@ -199,7 +201,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
         setErrorStructure(te("errors.structure.failed"));
         () =>
           toastContext.showToast({
-            id: new Date().toString(),
+            id: +new Date(),
             title: te("errors.structure.title"),
             description: te("errors.structure.failed"),
             type: "failure",

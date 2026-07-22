@@ -1,6 +1,6 @@
 import initTranslations from "@/app/i18n";
 import ExplorerPageContent from "@/components/Explorer/ExplorerPageContent";
-import { ResourceProvider } from "@/providers/ResourceProvider";
+import ExplorerProviders from "@/components/Explorer/ExplorerProviders";
 import { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -29,8 +29,8 @@ export default async function ExplorerPage({
 }) {
   const { locale, resource_id } = await params;
   return (
-    <ResourceProvider>
+    <ExplorerProviders>
       <ExplorerPageContent resourceId={resource_id} />
-    </ResourceProvider>
+    </ExplorerProviders>
   );
 }
