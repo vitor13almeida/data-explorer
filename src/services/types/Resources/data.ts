@@ -1,3 +1,4 @@
+import { FilterOperatorNumber } from "@/services/consts/explorer";
 import { ApiLinks, PaginationMeta } from "./common";
 
 export interface DataRow {
@@ -61,3 +62,7 @@ export type ResourceDataResponse =
   | ResourceDataResponseValidationError
   | ResourceDataResponseNotFound
   | ResourceDataResponseGenericError;
+
+// -----------------------------------------------------------------------
+
+export type FilterOperatorType = (typeof FilterOperatorNumber)[number];

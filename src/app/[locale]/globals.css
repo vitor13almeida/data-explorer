@@ -8,3 +8,9 @@
 .accordion-headless .agora-accordion .accordion-header {
   display: none !important;
 }
+
+button.operator-drawer-trigger {
+  min-width: 36px !important;
+  min-height: 36px !important;
+  padding: 4px !important;
+}

@@ -7,6 +7,7 @@ import { useResourceContext } from "@/hooks/useResourceContext";
 import { ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
 import FilterOperator from "./FilterOperator";
+import Filter from "./Filter";
 
 export default function Filters() {
   const { t: te } = useTranslation("explorer");
@@ -46,27 +47,9 @@ export default function Filters() {
             return (
               <div
                 key={`filter-header-${index}`}
-                className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3 flex flex-row gap-2"
+                className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3"
               >
-                <div className="grow">
-                  <InputText
-                    label={header}
-                    name={header}
-                    value={filters[header] ?? ""}
-                    onChange={handleChangeFilter}
-                  />
-                </div>
-                {structure && (
-                  <div className="shrink self-end">
-                    <FilterOperator
-                      dataType={
-                        structure.profile.columns[header].format === "string"
-                          ? "text"
-                          : "numeric"
-                      }
-                    />
-                  </div>
-                )}
+                <Filter header={header}/>
               </div>
             );
           })}

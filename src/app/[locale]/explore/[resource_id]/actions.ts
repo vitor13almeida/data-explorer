@@ -2,6 +2,7 @@
 
 import {
   ApiValidationErrorResponse,
+  FilterOperatorType,
   ResourceDataResponse,
   ResourceStructureResponse,
   ResourceStructureResponseValidationError,
@@ -29,7 +30,9 @@ export async function getData(
   page_size: number = 20,
   sortCol: string | null = null,
   sortOrder: string | null = null,
-  filters: Record<string, any> | null = null,
+  headers: string[] = [],
+  filtersOperator: Record<string, FilterOperatorType> = {},
+  filters: Record<string, any>,
 ): Promise<ResourceDataResponse> {
   try {
     const queryParams = prepareUrlSearchParams(
@@ -37,7 +40,9 @@ export async function getData(
       page_size,
       sortCol,
       sortOrder,
-      filters,
+      headers,
+      filtersOperator,
+      filters ?? {},
     );
 
     const apiUrl = `http://${TABULAR_API_URL}/api/resources/${resourceId}/data/?${queryParams.toString()}`;
@@ -54,10 +59,7 @@ export async function getData(
 
     if (!response.ok) {
       const errorObject = responseBody as
-        | ApiValidationErrorResponse
-        | Record<string, unknown>
-        | string
-        | null;
+        ApiValidationErrorResponse | Record<string, unknown> | string | null;
 
       if (
         typeof errorObject === "object" &&
@@ -68,7 +70,9 @@ export async function getData(
       ) {
         const firstError = errorObject.errors[0];
         const detailMessage =
-          firstError?.detail?.message || firstError?.detail?.hint || firstError?.title;
+          firstError?.detail?.message ||
+          firstError?.detail?.hint ||
+          firstError?.title;
 
         return {
           status: response.status,
@@ -134,7 +138,9 @@ export async function getStructure(
       ) {
         const firstError = errorObject.errors[0];
         const detailMessage =
-          firstError?.detail?.message || firstError?.detail?.hint || firstError?.title;
+          firstError?.detail?.message ||
+          firstError?.detail?.hint ||
+          firstError?.title;
 
         return {
           status: response.status,

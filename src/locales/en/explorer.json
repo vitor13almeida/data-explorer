@@ -41,5 +41,22 @@
       "badRequest": "Error loading the structure.",
       "failed": "Network fail loading the structure."
     }
+  },
+  "filters": {
+    "selectOperator": "Choose the operator for the filter",
+    "operator": "Filter operator",
+    "operators": {
+      "contains": "Contains",
+      "notcontains": "Does not contain",
+      "exact": "Exactly",
+      "differs": "Different",
+      "isnull": "Is empty",
+      "isnotnull": "Is not empty",
+      "less": "Less than or equal to",
+      "strictly_less": "Less than",
+      "strictly_greater": "Greater than",
+      "greater": "Greater than or equal to"
+    },
+    "operatorType": "Operator: {{operator}}"
   }
 }

@@ -7,6 +7,7 @@ import {
 import { PAGE_SIZES } from "@/services/consts/explorer";
 import {
   DatasetProfileResponse,
+  FilterOperatorType,
   PaginatedDataResponse,
   ResourceDataResponse,
   ResourceStructureResponse,
@@ -61,6 +62,8 @@ export type ResourceContextType = {
   setFilters: Dispatch<Record<string, any>>;
   applyFilters: () => void;
   clearFilters: () => void;
+  filtersOperator: Record<string, FilterOperatorType>;
+  setFiltersOperator: Dispatch<Record<string, FilterOperatorType>>;
 };
 
 export const ResourceContext = createContext<ResourceContextType | undefined>(
@@ -95,6 +98,9 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
 
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [filters, setFilters] = useState<Record<string, any>>({});
+  const [filtersOperator, setFiltersOperator] = useState<
+    Record<string, FilterOperatorType>
+  >({});
 
   const [isLoadingData, startDataTransition] = useTransition();
   const [isLoadingStructure, startStructureTransition] = useTransition();
@@ -120,7 +126,9 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
           pageSize,
           sortColumn,
           sortDirection,
-          appliedFilters.current,
+          headers,
+          filtersOperator,
+          appliedFilters.current ?? {},
         );
         if (response.status === 200 && response.data) {
           setData(response.data || { data: [], links: {}, meta: {} });
@@ -130,8 +138,8 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
             response.errors?.map((error) => error.detail.hint).join(" ") ||
               te("errors.data.badRequest"),
           );
-          () =>
-            toastContext.showToast({
+          toastContext.showToast(
+            {
               id: +new Date(),
               title: te("errors.data.title"),
               description:
@@ -139,19 +147,23 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
                 te("errors.data.badRequest"),
               type: "failure",
               closeLabel: t("close"),
-            });
+            },
+            5000,
+          );
         }
       } catch (err) {
         setData(null);
         setErrorData(te("errors.data.failed"));
-        () =>
-          toastContext.showToast({
+        toastContext.showToast(
+          {
             id: +new Date(),
             title: te("errors.data.title"),
             description: te("errors.data.failed"),
             type: "failure",
             closeLabel: t("close"),
-          });
+          },
+          5000,
+        );
       }
     });
   }, [
@@ -161,6 +173,8 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     pageSize,
     sortColumn,
     sortDirection,
+    headers,
+    filtersOperator,
     appliedFilters,
   ]);
 
@@ -186,8 +200,8 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
             response.errors?.map((error) => error.detail.hint).join(" ") ||
               te("errors.structure.badRequest"),
           );
-          () =>
-            toastContext.showToast({
+          toastContext.showToast(
+            {
               id: +new Date(),
               title: te("errors.structure.title"),
               description:
@@ -195,18 +209,22 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
                 te("errors.structure.badRequest"),
               type: "failure",
               closeLabel: t("close"),
-            });
+            },
+            5000,
+          );
         }
       } catch (err) {
         setErrorStructure(te("errors.structure.failed"));
-        () =>
-          toastContext.showToast({
+        toastContext.showToast(
+          {
             id: +new Date(),
             title: te("errors.structure.title"),
             description: te("errors.structure.failed"),
             type: "failure",
             closeLabel: t("close"),
-          });
+          },
+          5000,
+        );
       }
     });
   }, [startStructureTransition, resourceId]);
@@ -223,7 +241,9 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       page_size,
       sortCol,
       sortOrder,
-      filters,
+      headers,
+      filtersOperator,
+      filters ?? {},
     );
     window.history.replaceState(
       null,
@@ -233,7 +253,15 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
   };
 
   const applyFilters = () => {
-    appliedFilters.current = { ...filters };
+    let trimmedFilters = {};
+    Object.keys(filters).forEach((key) => {
+      trimmedFilters = {
+        ...trimmedFilters,
+        [key]: String(filters[key]).trim(),
+      };
+    });
+    setFilters(trimmedFilters);
+    appliedFilters.current = { ...trimmedFilters };
 
     void setUrlParams(
       page,
@@ -248,6 +276,12 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
   const clearFilters = () => {
     setFilters({});
     appliedFilters.current = {};
+
+    let fo = {};
+    headers.forEach((h) => {
+      fo = { ...fo, [h]: "contains" };
+    });
+    setFiltersOperator(fo);
 
     void setUrlParams(
       page,
@@ -293,7 +327,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!resourceId && isReady) return;
+    if (!resourceId && !isReady) return;
 
     void setUrlParams(
       page,
@@ -310,6 +344,15 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
 
     void loadStructure();
   }, [resourceId]);
+
+  useEffect(() => {
+    if (structure === null) return;
+    let fo = {};
+    headers.forEach((h) => {
+      fo = { ...fo, [h]: "contains" };
+    });
+    setFiltersOperator(fo);
+  }, [headers]);
 
   const value = useMemo(
     () => ({
@@ -346,6 +389,8 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       setFilters,
       applyFilters,
       clearFilters,
+      filtersOperator,
+      setFiltersOperator,
     }),
     [
       resourceId,
@@ -366,6 +411,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       sortDirection,
       showFilters,
       filters,
+      filtersOperator,
     ],
   );
 

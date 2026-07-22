@@ -1,134 +1,100 @@
 "use client";
 
 import Button from "@/components/Shared/Button/Button";
+import Drawer from "@/components/Shared/Drawer/Button";
 import Dropdown from "@/components/Shared/Dropdown/Dropdown";
 import DropdownOption from "@/components/Shared/Dropdown/DropdownOption";
 import DropdownSection from "@/components/Shared/Dropdown/DropdownSection";
+import InputSelect from "@/components/Shared/Input/InputSelect";
+import { useResourceContext } from "@/hooks/useResourceContext";
 import {
   FilterOperatorNumber,
   FilterOperatorText,
 } from "@/services/consts/explorer";
+import { FilterOperatorType } from "@/services/types/Resources";
 import {
-  DropdownElement,
+  DrawerElement,
   DropdownOptionProps,
 } from "@ama-pt/agora-design-system";
-import {
-  KeyboardEvent,
-  MouseEvent,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export type FilterOperatorI = {
-  dataType: "text" | "numeric";
+  header: string;
 };
 
-export default function FilterOperator({ dataType }: FilterOperatorI) {
-  const ref = useRef<DropdownElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+export default function FilterOperator({ header }: FilterOperatorI) {
+  const { t } = useTranslation("common");
+  const { t: te } = useTranslation("explorer");
+  const { structure, filtersOperator, setFiltersOperator } =
+    useResourceContext();
 
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [selected, setSelected] = useState([] as string[]);
+  const dataType =
+    structure?.profile.columns[header].format === "string" ? "text" : "numeric";
 
-  const toggleVisibility = () => {
-    if (ref.current?.visibility) {
-      ref.current?.hide();
-    } else {
-      ref.current?.show();
-    }
-  };
-
-  const handleKeydown = (evt: KeyboardEvent<HTMLButtonElement>) => {
-    const code = evt.code;
-
-    if (code === "Escape" && ref.current?.visibility) {
-      ref.current.hide();
-    }
-
-    if (code === "Enter" || code === "Space" || code === "NumpadEnter") {
-      toggleVisibility();
-    }
-  };
-
-  const handleClick = (evt: MouseEvent<HTMLButtonElement>) => {
-    if (typeof evt.detail === "number" && evt.detail === 0) {
-      //  EVENT DETAIL IS THE NUMBER OF CLICKS. KEYBOARD DOES NOT ADD A CLICK COUNTER.
-      //  KEYBOARD IS HANDLED ON KEYDOWN
-      return;
-    }
-
-    toggleVisibility();
-  };
-
-  const handleShow = () => {
-    setIsExpanded(true);
-    ref.current?.first();
-  };
-
-  const handleHide = () => {
-    setIsExpanded(false);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (evt: Event) => {
-      if (
-        ref.current?.visibility &&
-        !containerRef.current?.contains(evt.target as HTMLElement)
-      ) {
-        ref.current.hide();
-      }
-    };
-
-    document?.addEventListener("click", handleClickOutside);
-
-    return () => {
-      document?.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
+  const ref = useRef<DrawerElement>(null);
 
   const options = useMemo(() => {
     const arr = dataType === "text" ? FilterOperatorText : FilterOperatorNumber;
     return arr.map((o) => {
       return (
-        <DropdownOption value={o} key={o} selected={selected.indexOf(o) >= 0}>
-          {o}
+        <DropdownOption
+          value={o}
+          key={o}
+          selected={o === filtersOperator[header]}
+        >
+          {te(`filters.operators.${o}`)}
         </DropdownOption>
       );
     });
-  }, [selected, dataType]);
+  }, [dataType, filtersOperator, header]);
 
-  const handleChange = (options: DropdownOptionProps[]) => {
-    setSelected(options.map((o) => o.value));
+  const handleOpenDrawer = () => {
+    ref.current?.open();
   };
 
+  const handleCloseDrawer = () => {
+    ref.current?.close();
+  };
+
+  const handleChange = (options: DropdownOptionProps[]) => {
+    const nextSelected = options.map((o) => o.value);
+    setFiltersOperator({
+      ...filtersOperator,
+      [header]: (nextSelected.at(0) ?? "contains") as FilterOperatorType,
+    });
+  };
+
+  if (structure === null) {
+    return null;
+  }
+
   return (
-    <div className="flex flex-col">
+    <div className="relative flex w-fit flex-col">
       <Button
         hasIcon
         iconOnly
         trailingIcon={"agora-line-settings"}
         trailingIconHover={"agora-line-settings"}
-        appearance={"outline"}
-        aria-label={"Operador do filtro"}
-        aria-expanded={isExpanded}
-        role={"combobox"}
-        onClick={handleClick}
-        onKeyDown={handleKeydown}
+        appearance={"link"}
+        aria-label={te("filters.operatorSelect")}
+        onClick={handleOpenDrawer}
+        className="operator-drawer-trigger"
       />
-      <div className="relative">
-        <Dropdown
-          ref={ref}
-          onShow={handleShow}
-          onHide={handleHide}
-          aria-label={"Escolha o operador para o filtro"}
-          onChange={handleChange}
-          hideSectionNames
-        >
-          <DropdownSection name={"operador"}>{options}</DropdownSection>
-        </Dropdown>
-      </div>
+      <Drawer ref={ref} position="right">
+        <div className="flex flex-col gap-32 w-full h-full p-16">
+          <h3 className="text-neutral-900 text-l-bold">{header}</h3>
+          <InputSelect
+            label={te("filters.operator")}
+            onChange={handleChange}
+            hideSectionNames
+            className="w-full h-256"
+          >
+            <DropdownSection name={"operador"}>{options}</DropdownSection>
+          </InputSelect>
+          <Button onClick={handleCloseDrawer}>{t("close")}</Button>
+        </div>
+      </Drawer>
     </div>
   );
 }

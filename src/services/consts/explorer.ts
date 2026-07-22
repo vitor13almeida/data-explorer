@@ -2,11 +2,11 @@ export const PAGE_SIZES = [10, 20, 50];
 
 export const FilterOperatorText = [
   "contains",
+  "notcontains",
   "exact",
   "differs",
   "isnull",
   "isnotnull",
-  "notcontains",
 ] as const;
 
 export const FilterOperatorNumber = [
