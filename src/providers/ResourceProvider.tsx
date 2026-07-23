@@ -4,7 +4,7 @@ import {
   getData,
   getStructure,
 } from "@/app/[locale]/explore/[resource_id]/actions";
-import { PAGE_SIZES } from "@/services/consts/explorer";
+import { FilterOperatorNumber, PAGE_SIZES } from "@/services/consts/explorer";
 import {
   DatasetProfileResponse,
   FilterOperatorType,
@@ -106,6 +106,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
   const [isLoadingStructure, startStructureTransition] = useTransition();
 
   const appliedFilters = useRef<Record<string, any>>({});
+  const appliedFiltersOperator = useRef<Record<string, any>>({});
 
   const headers: string[] = structure?.profile.header ?? [];
   const total: number = structure?.profile.total_lines ?? 0;
@@ -127,7 +128,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
           sortColumn,
           sortDirection,
           headers,
-          filtersOperator,
+          appliedFiltersOperator.current ?? {},
           appliedFilters.current ?? {},
         );
         if (response.status === 200 && response.data) {
@@ -174,8 +175,6 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     sortColumn,
     sortDirection,
     headers,
-    filtersOperator,
-    appliedFilters,
   ]);
 
   const loadStructure = useCallback(async () => {
@@ -229,30 +228,24 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     });
   }, [startStructureTransition, resourceId]);
 
-  const setUrlParams = (
-    page: number = 0,
-    page_size: number = 20,
-    sortCol: string | null = null,
-    sortOrder: string | null = null,
-    filters: Record<string, any> | null = null,
-  ) => {
+  const setUrlParams = useCallback(() => {
     const params = prepareUrlSearchParams(
       page,
-      page_size,
-      sortCol,
-      sortOrder,
+      pageSize,
+      sortColumn,
+      sortDirection,
       headers,
-      filtersOperator,
-      filters ?? {},
+      appliedFiltersOperator.current,
+      appliedFilters.current ?? {},
     );
     window.history.replaceState(
       null,
       "",
       `${window.location.pathname}?${params}`,
     );
-  };
+  }, [page, pageSize, sortColumn, sortDirection, headers]);
 
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let trimmedFilters = {};
     Object.keys(filters).forEach((key) => {
       trimmedFilters = {
@@ -263,17 +256,13 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     setFilters(trimmedFilters);
     appliedFilters.current = { ...trimmedFilters };
 
-    void setUrlParams(
-      page,
-      pageSize,
-      sortColumn,
-      sortDirection,
-      appliedFilters.current,
-    );
-    void loadData();
-  };
+    appliedFiltersOperator.current = { ...filtersOperator };
 
-  const clearFilters = () => {
+    void setUrlParams();
+    void loadData();
+  }, [filters, filtersOperator, setUrlParams, loadData]);
+
+  const clearFilters = useCallback(() => {
     setFilters({});
     appliedFilters.current = {};
 
@@ -283,24 +272,23 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     });
     setFiltersOperator(fo);
 
-    void setUrlParams(
-      page,
-      pageSize,
-      sortColumn,
-      sortDirection,
-      appliedFilters.current,
-    );
+    appliedFiltersOperator.current = { ...fo };
+
+    void setUrlParams();
     void loadData();
-  };
+  }, [headers, setUrlParams, loadData]);
 
   useEffect(() => {
     let filtersToSet: Record<string, string> = {};
+    let operatorsToSet: Record<string, FilterOperatorType> = {};
+
     searchParams
       .entries()
       .toArray()
       .forEach((param) => {
         const key = param[0];
         const value = param[1];
+
         switch (key) {
           case "page":
             setPage(value ? (Number(value) ?? 0) : 0);
@@ -308,51 +296,77 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
           case "page_size":
             setPageSize(value ? (Number(value) ?? 0) : 0);
             break;
-          default:
+          default: {
             if (key.endsWith("__sort")) {
               setSortColumn(key.replace("__sort", ""));
               setSortDirection(value === "desc" ? "desc" : "asc");
-            } else if (key.endsWith("__contains")) {
-              filtersToSet = {
-                ...filtersToSet,
-                [key.replace("__contains", "")]: value,
-              };
+            } else {
+              const operator = FilterOperatorNumber.find((candidate) =>
+                key.endsWith(`__${candidate}`),
+              );
+
+              if (operator) {
+                const filterKey = key.replace(`__${operator}`, "");
+
+                filtersToSet = {
+                  ...filtersToSet,
+                  [filterKey]: value,
+                };
+                operatorsToSet = {
+                  ...operatorsToSet,
+                  [filterKey]: operator,
+                };
+              }
             }
             break;
+          }
         }
-        setFilters(filtersToSet);
-        appliedFilters.current = filtersToSet;
       });
+
+    setFilters(filtersToSet);
+    appliedFilters.current = { ...filtersToSet };
+    setFiltersOperator(operatorsToSet);
+    appliedFiltersOperator.current = { ...operatorsToSet };
     setIsReady(true);
   }, []);
 
   useEffect(() => {
-    if (!resourceId && !isReady) return;
+    if (!isReady) return;
 
-    void setUrlParams(
-      page,
-      pageSize,
-      sortColumn,
-      sortDirection,
-      appliedFilters.current,
-    );
+    void setUrlParams();
+  }, [page, pageSize, sortColumn, sortDirection, isReady]);
+
+  useEffect(() => {
+    if (!resourceId || !isReady) return;
+
     void loadData();
-  }, [resourceId, page, pageSize, sortColumn, sortDirection, appliedFilters]);
+  }, [resourceId, isReady, page, pageSize, sortColumn, sortDirection, loadData]);
 
   useEffect(() => {
     if (!resourceId) return;
 
     void loadStructure();
-  }, [resourceId]);
+  }, [resourceId, loadStructure]);
 
   useEffect(() => {
     if (structure === null) return;
-    let fo = {};
+
+    const nextOperators: Record<string, FilterOperatorType> = {
+      ...filtersOperator,
+    };
+    let hasChanges = false;
+
     headers.forEach((h) => {
-      fo = { ...fo, [h]: "contains" };
+      if (!nextOperators[h]) {
+        nextOperators[h] = "contains";
+        hasChanges = true;
+      }
     });
-    setFiltersOperator(fo);
-  }, [headers]);
+
+    if (hasChanges) {
+      setFiltersOperator(nextOperators);
+    }
+  }, [headers, structure, filtersOperator]);
 
   const value = useMemo(
     () => ({
