@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Table } from "@/components/Shared/Table";
 import { useResourceContext } from "@/hooks/useResourceContext";
 import { PAGE_SIZES } from "@/services/consts/explorer";
@@ -14,10 +14,8 @@ export default function TableView() {
   const { t: te } = useTranslation("explorer");
 
   const {
-    resourceId,
     isLoadingData,
     isLoadingStructure,
-    loadData,
     data,
     headers,
     totalFiltered,
@@ -31,7 +29,13 @@ export default function TableView() {
     setSortDirection,
   } = useResourceContext();
 
-  const sortNone: SortOrder[] = headers.map(() => "none");
+  const sortNone: SortOrder[] = headers.map((h) =>
+    h === sortColumn
+      ? sortDirection === "asc"
+        ? "ascending"
+        : "descending"
+      : "none",
+  );
 
   const [currentSortDescription, setCurrentSortDescription] =
     useState<string>("");
@@ -69,6 +73,23 @@ export default function TableView() {
     }
   };
 
+  const initializedRef = useRef(false);
+
+  useEffect(() => {
+    if (initializedRef.current || headers.length === 0) return;
+
+    const sortInitial: SortOrder[] = headers.map((h) =>
+      h === sortColumn
+        ? sortDirection === "asc"
+          ? "ascending"
+          : "descending"
+        : "none",
+    );
+
+    setColSortOrders(sortInitial);
+    initializedRef.current = true;
+  }, [headers]);
+
   if (isLoadingData || isLoadingStructure) {
     return (
       <div>
@@ -84,7 +105,7 @@ export default function TableView() {
         paginationProps={{
           itemsPerPageLabel: te("views.table.itemsPerPageLabel"),
           itemsPerPage: pageSize,
-          totalItems: totalFiltered, // number of items after aplying the filters
+          totalItems: totalFiltered,
           currentPage: page,
           availablePageSizes: PAGE_SIZES,
           buttonDropdownAriaLabel: te("views.table.buttonDropdownAriaLabel"),
@@ -95,7 +116,6 @@ export default function TableView() {
           onPageSizeChange: handleChangePageSize,
         }}
       >
-        {/* header */}
         <Table.Header>
           <Table.Row>
             {headers.map((header, index) => (
@@ -111,7 +131,6 @@ export default function TableView() {
           </Table.Row>
         </Table.Header>
 
-        {/* body */}
         <Table.Body>
           {rows.map((line, lineIndex) => {
             const values = Object.entries(line).filter(
