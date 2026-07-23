@@ -106,7 +106,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
   const [isLoadingStructure, startStructureTransition] = useTransition();
 
   const appliedFilters = useRef<Record<string, any>>({});
-  const appliedFiltersOperator = useRef<Record<string, any>>({});
+  const appliedFiltersOperator = useRef<Record<string, FilterOperatorType>>({});
 
   const headers: string[] = structure?.profile.header ?? [];
   const total: number = structure?.profile.total_lines ?? 0;
@@ -340,7 +340,15 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     if (!resourceId || !isReady) return;
 
     void loadData();
-  }, [resourceId, isReady, page, pageSize, sortColumn, sortDirection, loadData]);
+  }, [
+    resourceId,
+    isReady,
+    page,
+    pageSize,
+    sortColumn,
+    sortDirection,
+    loadData,
+  ]);
 
   useEffect(() => {
     if (!resourceId) return;
@@ -426,6 +434,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       showFilters,
       filters,
       filtersOperator,
+      appliedFiltersOperator,
     ],
   );
 
