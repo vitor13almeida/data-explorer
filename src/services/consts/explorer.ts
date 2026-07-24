@@ -29,10 +29,13 @@ export const FilterOperatorDate = [
   "greater",
 ] as const;
 
+export const FilterOperatorBool = [...FilterOperatorCommon] as const;
+
 export const FilterOperatorAll = [
   ...new Set([
     ...FilterOperatorText,
     ...FilterOperatorNumber,
     ...FilterOperatorDate,
+    ...FilterOperatorBool,
   ]),
 ] as const;

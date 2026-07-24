@@ -7,6 +7,7 @@ import DropdownSection from "@/components/Shared/Dropdown/DropdownSection";
 import InputSelect from "@/components/Shared/Input/InputSelect";
 import { useResourceContext } from "@/hooks/useResourceContext";
 import {
+  FilterOperatorBool,
   FilterOperatorCommon,
   FilterOperatorDate,
   FilterOperatorNumber,
@@ -46,6 +47,9 @@ export default function FilterOperator({ header }: FilterOperatorI) {
         break;
       case "date":
         arr = [...FilterOperatorDate];
+        break;
+      case "bool":
+        arr = [...FilterOperatorBool];
         break;
       default:
         arr = [...FilterOperatorCommon];

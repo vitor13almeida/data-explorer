@@ -43,6 +43,15 @@ function buildFieldSchema(
           t("errors.validator.date"),
         );
 
+    case "bool":
+      return z
+        .string()
+        .optional()
+        .refine(
+          (val) => val == null || val === "" || ["true", "false"].includes(val),
+          t("errors.validator.bool"),
+        );
+
     default:
       return z.string().optional();
   }

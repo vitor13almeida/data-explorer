@@ -1,5 +1,6 @@
 import {
   FilterOperatorAll,
+  FilterOperatorBool,
   FilterOperatorCommon,
   FilterOperatorDate,
   FilterOperatorNumber,
@@ -78,5 +79,7 @@ export type FilterOperatorTextType = (typeof FilterOperatorText)[number];
 export type FilterOperatorNumberType = (typeof FilterOperatorNumber)[number];
 
 export type FilterOperatorDateType = (typeof FilterOperatorDate)[number];
+
+export type FilterOperatorBoolType = (typeof FilterOperatorBool)[number];
 
 export type FilterOperatorType = (typeof FilterOperatorAll)[number];

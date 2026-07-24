@@ -44,7 +44,8 @@
     "validator": {
       "int": "Must be an integer",
       "float": "Must be a decimal number",
-      "date": "Expected format: YYYY-MM-DD"
+      "date": "Expected format: YYYY-MM-DD",
+      "bool": "Must be 'true' or 'false'"
     }
   },
   "filters": {
