@@ -2,12 +2,13 @@
 
 import Button from "@/components/Shared/Button/Button";
 import Drawer from "@/components/Shared/Drawer/Button";
-import Dropdown from "@/components/Shared/Dropdown/Dropdown";
 import DropdownOption from "@/components/Shared/Dropdown/DropdownOption";
 import DropdownSection from "@/components/Shared/Dropdown/DropdownSection";
 import InputSelect from "@/components/Shared/Input/InputSelect";
 import { useResourceContext } from "@/hooks/useResourceContext";
 import {
+  FilterOperatorCommon,
+  FilterOperatorDate,
   FilterOperatorNumber,
   FilterOperatorText,
 } from "@/services/consts/explorer";
@@ -16,7 +17,7 @@ import {
   DrawerElement,
   DropdownOptionProps,
 } from "@ama-pt/agora-design-system";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 export type FilterOperatorI = {
@@ -29,13 +30,27 @@ export default function FilterOperator({ header }: FilterOperatorI) {
   const { structure, filtersOperator, setFiltersOperator } =
     useResourceContext();
 
-  const dataType =
-    structure?.profile.columns[header].format === "string" ? "text" : "numeric";
+  const dataType = structure?.profile.columns[header].python_type;
 
   const ref = useRef<DrawerElement>(null);
 
   const options = useMemo(() => {
-    const arr = dataType === "text" ? FilterOperatorText : FilterOperatorNumber;
+    let arr: string[] = [];
+    switch (dataType) {
+      case "string":
+        arr = [...FilterOperatorText];
+        break;
+      case "int":
+      case "float":
+        arr = [...FilterOperatorNumber];
+        break;
+      case "date":
+        arr = [...FilterOperatorDate];
+        break;
+      default:
+        arr = [...FilterOperatorCommon];
+        break;
+    }
     return arr.map((o) => {
       return (
         <DropdownOption

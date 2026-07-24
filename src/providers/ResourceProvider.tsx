@@ -4,7 +4,10 @@ import {
   getData,
   getStructure,
 } from "@/app/[locale]/explore/[resource_id]/actions";
-import { FilterOperatorNumber, PAGE_SIZES } from "@/services/consts/explorer";
+import {
+  FilterOperatorAll,
+  PAGE_SIZES,
+} from "@/services/consts/explorer";
 import {
   DatasetProfileResponse,
   FilterOperatorType,
@@ -64,6 +67,9 @@ export type ResourceContextType = {
   clearFilters: () => void;
   filtersOperator: Record<string, FilterOperatorType>;
   setFiltersOperator: Dispatch<Record<string, FilterOperatorType>>;
+
+  invalidFilters: boolean;
+  setInvalidFilters: Dispatch<boolean>;
 };
 
 export const ResourceContext = createContext<ResourceContextType | undefined>(
@@ -102,11 +108,13 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     Record<string, FilterOperatorType>
   >({});
 
+  const [invalidFilters, setInvalidFilters] = useState<boolean>(false);
+
   const [isLoadingData, startDataTransition] = useTransition();
   const [isLoadingStructure, startStructureTransition] = useTransition();
 
   const appliedFilters = useRef<Record<string, any>>({});
-  const appliedFiltersOperator = useRef<Record<string, FilterOperatorType>>({});
+  const appliedFiltersOperator = useRef<Record<string, any>>({});
 
   const headers: string[] = structure?.profile.header ?? [];
   const total: number = structure?.profile.total_lines ?? 0;
@@ -301,7 +309,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
               setSortColumn(key.replace("__sort", ""));
               setSortDirection(value === "desc" ? "desc" : "asc");
             } else {
-              const operator = FilterOperatorNumber.find((candidate) =>
+              const operator = FilterOperatorAll.find((candidate) =>
                 key.endsWith(`__${candidate}`),
               );
 
@@ -362,6 +370,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     const nextOperators: Record<string, FilterOperatorType> = {
       ...filtersOperator,
     };
+    const nextFilters: Record<string, string> = { ...filters };
     let hasChanges = false;
 
     headers.forEach((h) => {
@@ -369,12 +378,18 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
         nextOperators[h] = "contains";
         hasChanges = true;
       }
+      if (nextFilters[h] === undefined) {
+        nextFilters[h] = "";
+        hasChanges = true;
+      }
     });
 
     if (hasChanges) {
       setFiltersOperator(nextOperators);
+      setFilters(nextFilters);
+      appliedFilters.current = { ...appliedFilters.current, ...nextFilters };
     }
-  }, [headers, structure, filtersOperator]);
+  }, [headers, structure]);
 
   const value = useMemo(
     () => ({
@@ -413,6 +428,9 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       clearFilters,
       filtersOperator,
       setFiltersOperator,
+
+      invalidFilters,
+      setInvalidFilters,
     }),
     [
       resourceId,
@@ -434,7 +452,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       showFilters,
       filters,
       filtersOperator,
-      appliedFiltersOperator,
+      invalidFilters,
     ],
   );
 

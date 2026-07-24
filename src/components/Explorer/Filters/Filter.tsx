@@ -2,17 +2,24 @@
 
 import InputText from "@/components/Shared/Input/InputText";
 import { useResourceContext } from "@/hooks/useResourceContext";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import FilterOperator from "./FilterOperator";
+import { useFilterValidation } from "@/hooks/useFilterValidation";
 
 export type FilterI = { header: string };
 
 export default function Filter({ header }: FilterI) {
   const { t: te } = useTranslation("explorer");
 
-  const { filters, setFilters, filtersOperator, structure } =
+  const { filters, setFilters, filtersOperator, structure, setInvalidFilters } =
     useResourceContext();
+  const { errors, isValid } = useFilterValidation(
+    filters,
+    filtersOperator,
+    structure,
+    te,
+  );
 
   const handleChangeFilter = (
     event: ChangeEvent<HTMLInputElement, HTMLInputElement>,
@@ -22,6 +29,10 @@ export default function Filter({ header }: FilterI) {
       [event.target.name]: event.target.value,
     });
   };
+
+  useEffect(() => {
+    setInvalidFilters(!isValid);
+  }, [isValid]);
 
   return (
     <div className="flex flex-row gap-2">
@@ -42,6 +53,8 @@ export default function Filter({ header }: FilterI) {
               </span>
             </div>
           }
+          hasError={!!errors[header]}
+          errorFeedbackText={errors[header]}
         />
       </div>
     </div>

@@ -40,6 +40,11 @@
       "title": "Erro de estrutura",
       "badRequest": "Erro ao carregar a estrutura.",
       "failed": "Falha de rede ao carregar a etrutura."
+    },
+    "validator": {
+      "int": "Deve ser um número inteiro",
+      "float": "Deve ser um número decimal",
+      "date": "Formato esperado: YYYY-MM-DD"
     }
   },
   "filters": {

@@ -40,6 +40,11 @@
       "title": "Structure error",
       "badRequest": "Error loading the structure.",
       "failed": "Network fail loading the structure."
+    },
+    "validator": {
+      "int": "Must be an integer",
+      "float": "Must be a decimal number",
+      "date": "Expected format: YYYY-MM-DD"
     }
   },
   "filters": {

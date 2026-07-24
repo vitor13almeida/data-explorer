@@ -1,4 +1,10 @@
-import { FilterOperatorNumber } from "@/services/consts/explorer";
+import {
+  FilterOperatorAll,
+  FilterOperatorCommon,
+  FilterOperatorDate,
+  FilterOperatorNumber,
+  FilterOperatorText,
+} from "@/services/consts/explorer";
 import { ApiLinks, PaginationMeta } from "./common";
 
 export interface DataRow {
@@ -65,4 +71,12 @@ export type ResourceDataResponse =
 
 // -----------------------------------------------------------------------
 
-export type FilterOperatorType = (typeof FilterOperatorNumber)[number];
+export type FilterOperatorCommonType = (typeof FilterOperatorCommon)[number];
+
+export type FilterOperatorTextType = (typeof FilterOperatorText)[number];
+
+export type FilterOperatorNumberType = (typeof FilterOperatorNumber)[number];
+
+export type FilterOperatorDateType = (typeof FilterOperatorDate)[number];
+
+export type FilterOperatorType = (typeof FilterOperatorAll)[number];

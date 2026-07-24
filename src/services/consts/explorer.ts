@@ -1,18 +1,38 @@
 export const PAGE_SIZES = [10, 20, 50];
 
-export const FilterOperatorText = [
-  "contains",
-  "notcontains",
+export const FilterOperatorCommon = [
   "exact",
   "differs",
   "isnull",
   "isnotnull",
 ] as const;
 
+export const FilterOperatorText = [
+  "contains",
+  "notcontains",
+  ...FilterOperatorCommon,
+] as const;
+
 export const FilterOperatorNumber = [
-  ...FilterOperatorText,
-  "less", // for numbers only
+  ...FilterOperatorCommon,
+  "less",
   "strictly_less",
   "strictly_greater",
   "greater",
+] as const;
+
+export const FilterOperatorDate = [
+  ...FilterOperatorCommon,
+  "less",
+  "strictly_less",
+  "strictly_greater",
+  "greater",
+] as const;
+
+export const FilterOperatorAll = [
+  ...new Set([
+    ...FilterOperatorText,
+    ...FilterOperatorNumber,
+    ...FilterOperatorDate,
+  ]),
 ] as const;

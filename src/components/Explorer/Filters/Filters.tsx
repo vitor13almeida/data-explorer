@@ -2,11 +2,9 @@
 
 import AccordionHeadless from "@/components/Shared/Accordion/AccordionHeadless";
 import Button from "@/components/Shared/Button/Button";
-import InputText from "@/components/Shared/Input/InputText";
 import { useResourceContext } from "@/hooks/useResourceContext";
 import { ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
-import FilterOperator from "./FilterOperator";
 import Filter from "./Filter";
 
 export default function Filters() {
@@ -19,7 +17,7 @@ export default function Filters() {
     setFilters,
     applyFilters,
     clearFilters,
-    structure,
+    invalidFilters,
   } = useResourceContext();
 
   const handleChangeFilter = (
@@ -42,24 +40,25 @@ export default function Filters() {
   return (
     <>
       <AccordionHeadless expanded={showFilters}>
-        <div className="w-full grid grid-cols-12 gap-16 items-end">
+        <div className="w-full grid grid-cols-12 gap-32 items-end">
           {headers.map((header, index) => {
             return (
               <div
                 key={`filter-header-${index}`}
                 className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3"
               >
-                <Filter header={header}/>
+                <Filter header={header} />
               </div>
             );
           })}
-          <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3 flex flex-row gap-8">
+          <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3 flex flex-row gap-32">
             <Button
               onClick={() => handleApplyFilters()}
               hasIcon
               trailingIcon="agora-line-search"
               trailingIconHover="agora-line-search"
               fullWidth={true}
+              disabled={invalidFilters}
             >
               {te("actions.filter")}
             </Button>
