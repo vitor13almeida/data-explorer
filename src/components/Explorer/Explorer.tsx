@@ -9,11 +9,15 @@ import FiltersToogle from "./Filters/FiltersToogle";
 import Filters from "./Filters/Filters";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import DataNumbers from "./DataNumbers";
+import { useResourceContext } from "@/hooks/useResourceContext";
+import { exportToCsv } from "@/utils/exportToCsv";
 
 type ViewType = "table" | "structure" | "stats" | "chart";
 
 export default function Explorer() {
   const { t: te } = useTranslation("explorer");
+
+  const { isLoadingData, data } = useResourceContext();
 
   const isMobbile = useMediaQuery("(min-width: 768px)");
 
@@ -21,6 +25,12 @@ export default function Explorer() {
 
   const handleSelectView = (view: ViewType) => {
     setSelectedView(view);
+  };
+
+  const handleClickExport = () => {
+    if (!isLoadingData && data && data.data.length > 0) {
+      exportToCsv(data.data);
+    }
   };
 
   const view = useMemo(() => {
@@ -77,6 +87,8 @@ export default function Explorer() {
               leadingIconHover="agora-line-file-share"
               title={te("actions.export")}
               appearance={"outline"}
+              disabled={!(!isLoadingData && data && data.data.length > 0)}
+              onClick={() => handleClickExport()}
             />
           </div>
         </div>
