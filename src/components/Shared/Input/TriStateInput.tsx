@@ -6,16 +6,16 @@ import { toBoolean } from "@/services/utils/data";
 
 const ICON_SIZE = 32;
 
-export type TriStateSwitchValue = boolean | null;
+export type TriStateInputValue = boolean | null;
 
 type TriStateSwitchProps = {
   name: string;
   label: string;
-  value: TriStateSwitchValue;
-  onChange: (value: TriStateSwitchValue) => void;
+  value: TriStateInputValue;
+  onChange: (value: TriStateInputValue) => void;
 } & Omit<HTMLAttributes<HTMLDivElement>, "onChange">;
 
-export function TriStateSwitch({
+export function TriStateInput({
   name,
   label,
   value,

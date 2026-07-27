@@ -8,9 +8,9 @@ import FilterOperator from "./FilterOperator";
 import { useFilterValidation } from "@/hooks/useFilterValidation";
 import { getDataType } from "@/services/utils/data";
 import {
-  TriStateSwitch,
-  TriStateSwitchValue,
-} from "@/components/Shared/Input/TriStateSwitch";
+  TriStateInput,
+  TriStateInputValue,
+} from "@/components/Shared/Input/TriStateInput";
 
 export type FilterI = { header: string };
 
@@ -41,7 +41,7 @@ export default function Filter({ header }: FilterI) {
     });
   };
 
-  const handleChangeBoolFilter = (name: string, value: TriStateSwitchValue) => {
+  const handleChangeBoolFilter = (name: string, value: TriStateInputValue) => {
     if (value === null) {
       removeFilter(name);
     } else {
@@ -63,7 +63,7 @@ export default function Filter({ header }: FilterI) {
       case "bool":
         return (
           <div className="flex flex-col gap-8">
-            <TriStateSwitch
+            <TriStateInput
               label={header}
               name={header}
               value={filters[header] ?? null}
