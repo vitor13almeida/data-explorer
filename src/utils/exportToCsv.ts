@@ -1,4 +1,4 @@
-import { DataRow } from "@/services/types/Resources";
+import { DataRow } from "@/services/types";
 
 export function exportToCsv(
   rows: DataRow[],

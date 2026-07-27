@@ -1,10 +1,8 @@
 import { z } from "zod";
 import { useMemo } from "react";
-import {
-  DatasetProfileResponse,
-  FilterOperatorType,
-} from "@/services/types/Resources";
+import { DatasetProfileResponse, FilterOperatorType } from "@/services/types";
 import { TFunction } from "i18next";
+import { toBoolean } from "@/services/utils/data";
 
 function buildFieldSchema(
   columnType: string,
@@ -45,11 +43,17 @@ function buildFieldSchema(
 
     case "bool":
       return z
-        .string()
+        .union([z.boolean(), z.string(), z.null()])
         .optional()
         .refine(
-          (val) => val == null || val === "" || ["true", "false"].includes(val),
-          t("errors.validator.bool"),
+          (val) =>
+            val === null ||
+            val === undefined ||
+            [true, false, "true", "false", "null"].includes(val as any),
+          "",
+        )
+        .transform((val) =>
+          toBoolean(val as boolean | string | null | undefined),
         );
 
     default:

@@ -6,7 +6,7 @@ import {
   ResourceDataResponse,
   ResourceStructureResponse,
   ResourceStructureResponseValidationError,
-} from "@/services/types/Resources";
+} from "@/services/types";
 import { TABULAR_API_URL } from "../../../../../next.config";
 import { prepareUrlSearchParams } from "@/utils/urlParams";
 

@@ -4,17 +4,15 @@ import {
   getData,
   getStructure,
 } from "@/app/[locale]/explore/[resource_id]/actions";
-import {
-  FilterOperatorAll,
-  PAGE_SIZES,
-} from "@/services/consts/explorer";
+import { FilterOperatorAll, PAGE_SIZES } from "@/services/consts/explorer";
 import {
   DatasetProfileResponse,
   FilterOperatorType,
   PaginatedDataResponse,
   ResourceDataResponse,
   ResourceStructureResponse,
-} from "@/services/types/Resources";
+} from "@/services/types";
+import { getInitialOperator } from "@/services/utils/data";
 import { prepareUrlSearchParams } from "@/utils/urlParams";
 import { useToastContext } from "@ama-pt/agora-design-system";
 import { useSearchParams } from "next/navigation";
@@ -63,6 +61,7 @@ export type ResourceContextType = {
   setShowFilters: Dispatch<boolean>;
   filters: Record<string, any>;
   setFilters: Dispatch<Record<string, any>>;
+  removeFilter: (filter: string) => void;
   applyFilters: () => void;
   clearFilters: () => void;
   filtersOperator: Record<string, FilterOperatorType>;
@@ -253,6 +252,14 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     );
   }, [page, pageSize, sortColumn, sortDirection, headers]);
 
+  const removeFilter = useCallback(
+    (filter: string) => {
+      const { [filter]: _, ...rest } = filters;
+      setFilters(rest);
+    },
+    [filters],
+  );
+
   const applyFilters = useCallback(() => {
     let trimmedFilters = {};
     Object.keys(filters).forEach((key) => {
@@ -276,7 +283,8 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
 
     let fo = {};
     headers.forEach((h) => {
-      fo = { ...fo, [h]: "contains" };
+      const value = getInitialOperator(h, structure);
+      fo = { ...fo, [h]: value };
     });
     setFiltersOperator(fo);
 
@@ -284,7 +292,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
 
     void setUrlParams();
     void loadData();
-  }, [headers, setUrlParams, loadData]);
+  }, [headers, setUrlParams, loadData, structure]);
 
   useEffect(() => {
     let filtersToSet: Record<string, string> = {};
@@ -315,7 +323,6 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
 
               if (operator) {
                 const filterKey = key.replace(`__${operator}`, "");
-
                 filtersToSet = {
                   ...filtersToSet,
                   [filterKey]: value,
@@ -375,7 +382,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
 
     headers.forEach((h) => {
       if (!nextOperators[h]) {
-        nextOperators[h] = "contains";
+        nextOperators[h] = getInitialOperator(h, structure);
         hasChanges = true;
       }
       if (nextFilters[h] === undefined) {
@@ -424,6 +431,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       setShowFilters,
       filters,
       setFilters,
+      removeFilter,
       applyFilters,
       clearFilters,
       filtersOperator,

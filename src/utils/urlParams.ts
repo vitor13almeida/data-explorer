@@ -1,4 +1,4 @@
-import { FilterOperatorType } from "@/services/types/Resources";
+import { FilterOperatorType } from "@/services/types";
 
 export function prepareUrlSearchParams(
   page: number = 0,

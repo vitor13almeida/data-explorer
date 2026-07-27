@@ -6,14 +6,8 @@ import DropdownOption from "@/components/Shared/Dropdown/DropdownOption";
 import DropdownSection from "@/components/Shared/Dropdown/DropdownSection";
 import InputSelect from "@/components/Shared/Input/InputSelect";
 import { useResourceContext } from "@/hooks/useResourceContext";
-import {
-  FilterOperatorBool,
-  FilterOperatorCommon,
-  FilterOperatorDate,
-  FilterOperatorNumber,
-  FilterOperatorText,
-} from "@/services/consts/explorer";
-import { FilterOperatorType } from "@/services/types/Resources";
+import { FilterOperatorType } from "@/services/types";
+import { getDataType, getOperatorOptions } from "@/services/utils/data";
 import {
   DrawerElement,
   DropdownOptionProps,
@@ -31,31 +25,13 @@ export default function FilterOperator({ header }: FilterOperatorI) {
   const { structure, filtersOperator, setFiltersOperator } =
     useResourceContext();
 
-  const dataType = structure?.profile.columns[header].python_type;
+  const dataType = getDataType(header, structure);
 
   const ref = useRef<DrawerElement>(null);
 
   const options = useMemo(() => {
-    let arr: string[] = [];
-    switch (dataType) {
-      case "string":
-        arr = [...FilterOperatorText];
-        break;
-      case "int":
-      case "float":
-        arr = [...FilterOperatorNumber];
-        break;
-      case "date":
-        arr = [...FilterOperatorDate];
-        break;
-      case "bool":
-        arr = [...FilterOperatorBool];
-        break;
-      default:
-        arr = [...FilterOperatorCommon];
-        break;
-    }
-    return arr.map((o) => {
+    const opts = getOperatorOptions(dataType);
+    return opts.map((o) => {
       return (
         <DropdownOption
           value={o}

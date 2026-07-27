@@ -14,3 +14,14 @@ button.operator-drawer-trigger {
   min-height: 36px !important;
   padding: 4px !important;
 }
+
+.agora-accordion:not(.mobile) .accordion-body .children-wrapper > div {
+  border: none !important;
+  padding: 0 !important;
+}
+
+.tri-state-switch .agora-btn-link-primary svg,
+.tri-state-switch .agora-btn-outline-primary svg,
+.tri-state-switch .agora-btn-solid-primary svg {
+  fill: none !important;
+}
