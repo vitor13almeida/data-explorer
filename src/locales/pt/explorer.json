@@ -29,5 +29,46 @@
     "filter": "Filtrar",
     "clear": "Limpar",
     "export": "Exportar"
+  },
+  "errors": {
+    "data": {
+      "title": "Erro de dados",
+      "badRequest": "Erro ao carregar os dados.",
+      "failed": "Falha de rede ao carregar os dados."
+    },
+    "structure": {
+      "title": "Erro de estrutura",
+      "badRequest": "Erro ao carregar a estrutura.",
+      "failed": "Falha de rede ao carregar a etrutura."
+    },
+    "validator": {
+      "int": "Deve ser um número inteiro",
+      "float": "Deve ser um número decimal",
+      "date": "Formato esperado: YYYY-MM-DD",
+      "bool": "Deve ser 'true' ou 'false'"
+    },
+    "visibleColumns": {
+      "title": "Colunas visíveis",
+      "description": "Precisa de pelo menos uma coluna visível"
+    }
+  },
+  "filters": {
+    "selectOperator": "Escolha o operador para o filtro",
+    "operator": "Operador do filtro",
+    "operators": {
+      "contains": "Contém",
+      "notcontains": "Não contém",
+      "exact": "Exatamente",
+      "differs": "Diferente",
+      "isnull": "É vazio",
+      "isnotnull": "Não é vazio",
+      "less": "Menor ou igual",
+      "strictly_less": "Menor",
+      "strictly_greater": "Maior",
+      "greater": "Maior ou igual"
+    },
+    "operatorType": "Operador: {{operator}}",
+    "visible": "Visível",
+    "invisible": "Invisível"
   }
 }

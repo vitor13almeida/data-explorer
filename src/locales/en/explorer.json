@@ -29,5 +29,46 @@
     "filter": "Filter",
     "clear": "Clear",
     "export": "Export"
+  },
+  "errors": {
+    "data": {
+      "title": "Data error",
+      "badRequest": "Error loading the data.",
+      "failed": "Network fail loading the data."
+    },
+    "structure": {
+      "title": "Structure error",
+      "badRequest": "Error loading the structure.",
+      "failed": "Network fail loading the structure."
+    },
+    "validator": {
+      "int": "Must be an integer",
+      "float": "Must be a decimal number",
+      "date": "Expected format: YYYY-MM-DD",
+      "bool": "Must be 'true' or 'false'"
+    },
+    "visibleColumns": {
+      "title": "Visible columns",
+      "description": "You need at least one visible column"
+    }
+  },
+  "filters": {
+    "selectOperator": "Choose the operator for the filter",
+    "operator": "Filter operator",
+    "operators": {
+      "contains": "Contains",
+      "notcontains": "Does not contain",
+      "exact": "Exactly",
+      "differs": "Different",
+      "isnull": "Is empty",
+      "isnotnull": "Is not empty",
+      "less": "Less than or equal to",
+      "strictly_less": "Less than",
+      "strictly_greater": "Greater than",
+      "greater": "Greater than or equal to"
+    },
+    "operatorType": "Operator: {{operator}}",
+    "visible": "Visible",
+    "invisible": "Invisible"
   }
 }

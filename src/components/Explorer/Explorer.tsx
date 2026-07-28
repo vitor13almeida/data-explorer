@@ -9,18 +9,30 @@ import FiltersToogle from "./Filters/FiltersToogle";
 import Filters from "./Filters/Filters";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import DataNumbers from "./DataNumbers";
+import { useResourceContext } from "@/hooks/useResourceContext";
+import { exportToCsv } from "@/utils/exportToCsv";
 
 type ViewType = "table" | "structure" | "stats" | "chart";
 
 export default function Explorer() {
   const { t: te } = useTranslation("explorer");
 
+  const { isLoadingData, data } = useResourceContext();
+
   const isMobbile = useMediaQuery("(min-width: 768px)");
 
   const [selectedView, setSelectedView] = useState<ViewType>("table");
 
+  const showActions = ["table", "chart"].includes(selectedView);
+
   const handleSelectView = (view: ViewType) => {
     setSelectedView(view);
+  };
+
+  const handleClickExport = () => {
+    if (!isLoadingData && data && data.data.length > 0) {
+      exportToCsv(data.data);
+    }
   };
 
   const view = useMemo(() => {
@@ -68,17 +80,21 @@ export default function Explorer() {
               </Button>
             </ButtonGroup>
           </div>
-          <div className="flex flex-row gap-8 flex-wrap skrink">
-            <FiltersToogle />
-            <Button
-              iconOnly={true}
-              hasIcon={true}
-              leadingIcon="agora-line-file-share"
-              leadingIconHover="agora-line-file-share"
-              title={te("actions.export")}
-              appearance={"outline"}
-            />
-          </div>
+          {showActions && (
+            <div className="flex flex-row gap-8 flex-wrap skrink">
+              <FiltersToogle />
+              <Button
+                iconOnly={true}
+                hasIcon={true}
+                leadingIcon="agora-line-file-share"
+                leadingIconHover="agora-line-file-share"
+                title={te("actions.export")}
+                appearance={"outline"}
+                disabled={!(!isLoadingData && data && data.data.length > 0)}
+                onClick={() => handleClickExport()}
+              />
+            </div>
+          )}
         </div>
         <div className="w-full">
           <Filters />

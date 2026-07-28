@@ -57,28 +57,28 @@ interface ResourceStructureResponseOk {
   status: 200;
   data: DatasetProfileResponse;
   error?: never;
-  rawErrors?: never;
+  errors?: never;
 }
 
 export interface ResourceStructureResponseValidationError {
   status: 400 | 500;
   data?: never;
   error: string;
-  rawErrors: ApiDatabaseErrorItem[];
+  errors: ApiDatabaseErrorItem[];
 }
 
 interface ResourceStructureResponseNotFound {
   status: 404;
   data?: never;
   error: string;
-  rawErrors?: never;
+  errors?: never;
 }
 
 interface ResourceStructureResponseGenericError {
   status: Exclude<number, 200 | 400 | 404 | 500> | (number & {});
   data?: never;
   error: string;
-  rawErrors?: ApiDatabaseErrorItem[];
+  errors?: ApiDatabaseErrorItem[];
 }
 
 export type ResourceStructureResponse =

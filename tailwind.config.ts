@@ -45,9 +45,7 @@ const TailwindConfig: Config = {
     },
   },
   plugins: AgoraTailwindConfig.plugins,
-  safelist: [
-    ...AgoraTailwindConfig.safelist,
-  ],
+  safelist: [...AgoraTailwindConfig.safelist],
   corePlugins: {
     preflight: false,
   },

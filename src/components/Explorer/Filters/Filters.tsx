@@ -2,10 +2,10 @@
 
 import AccordionHeadless from "@/components/Shared/Accordion/AccordionHeadless";
 import Button from "@/components/Shared/Button/Button";
-import InputText from "@/components/Shared/Input/InputText";
 import { useResourceContext } from "@/hooks/useResourceContext";
 import { ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
+import Filter from "./Filter";
 
 export default function Filters() {
   const { t: te } = useTranslation("explorer");
@@ -13,20 +13,11 @@ export default function Filters() {
   const {
     showFilters,
     headers,
-    filters,
-    setFilters,
+    nHeadersVisible,
     applyFilters,
     clearFilters,
+    invalidFilters,
   } = useResourceContext();
-
-  const handleChangeFilter = (
-    event: ChangeEvent<HTMLInputElement, HTMLInputElement>,
-  ) => {
-    setFilters({
-      ...filters,
-      [event.target.name]: event.target.value,
-    });
-  };
 
   const handleApplyFilters = () => {
     applyFilters();
@@ -39,29 +30,25 @@ export default function Filters() {
   return (
     <>
       <AccordionHeadless expanded={showFilters}>
-        <div className="w-full grid grid-cols-12 gap-8 items-end">
+        <div className="w-full grid grid-cols-12 gap-32 items-end">
           {headers.map((header, index) => {
             return (
               <div
                 key={`filter-header-${index}`}
                 className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3"
               >
-                <InputText
-                  label={header}
-                  name={header}
-                  value={filters[header] ?? ""}
-                  onChange={handleChangeFilter}
-                />
+                <Filter header={header} />
               </div>
             );
           })}
-          <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3 flex flex-row gap-8">
+          <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3 flex flex-row gap-32">
             <Button
               onClick={() => handleApplyFilters()}
               hasIcon
               trailingIcon="agora-line-search"
               trailingIconHover="agora-line-search"
               fullWidth={true}
+              disabled={invalidFilters || nHeadersVisible < 1}
             >
               {te("actions.filter")}
             </Button>

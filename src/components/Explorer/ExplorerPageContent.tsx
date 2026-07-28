@@ -1,31 +1,12 @@
 "use client";
 
 import { useResourceContext } from "@/hooks/useResourceContext";
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Explorer from "./Explorer";
 
-export type ResourcePageContentProps = {
-  resourceId: string;
-};
-
-export default function ExplorerPageContent({
-  resourceId: resourceIdProp,
-}: ResourcePageContentProps) {
+export default function ExplorerPageContent() {
   const { t: tr } = useTranslation("explorer");
-  const {
-    setResourceId,
-    isLoadingData,
-    data,
-    errorData,
-    isLoadingStructure,
-    structure,
-    errorStructure,
-  } = useResourceContext();
-
-  useEffect(() => {
-    setResourceId(resourceIdProp);
-  }, []);
+  const { isLoadingData, data, errorData, structure } = useResourceContext();
 
   return (
     <main className="flex w-full flex-col items-center p-32 gap-64">
@@ -59,17 +40,10 @@ export default function ExplorerPageContent({
           <div className="flex flex-col gap-32">
             <h2 className="text-2xl-bold text-black">Structure received</h2>
             <div className="h-256 overflow-auto">
-              {isLoadingStructure ? (
-                <>Loading...</>
-              ) : (
-                <pre className="text-s-regular">
-                  {JSON.stringify(structure, null, 2)}
-                </pre>
-              )}
+              <pre className="text-s-regular">
+                {JSON.stringify(structure, null, 2)}
+              </pre>
             </div>
-            {errorStructure && (
-              <p className="text-s-regular text-danger-600">{errorStructure}</p>
-            )}
           </div>
         </div>
       </section>

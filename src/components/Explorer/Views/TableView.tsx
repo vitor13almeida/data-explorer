@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Table } from "@/components/Shared/Table";
 import { useResourceContext } from "@/hooks/useResourceContext";
 import { PAGE_SIZES } from "@/services/consts/explorer";
@@ -14,12 +14,9 @@ export default function TableView() {
   const { t: te } = useTranslation("explorer");
 
   const {
-    resourceId,
     isLoadingData,
-    isLoadingStructure,
-    loadData,
     data,
-    headers,
+    appliedHeadersVisibility,
     totalFiltered,
     page,
     setPage,
@@ -31,7 +28,17 @@ export default function TableView() {
     setSortDirection,
   } = useResourceContext();
 
-  const sortNone: SortOrder[] = headers.map(() => "none");
+  const cols = Object.keys(appliedHeadersVisibility).filter(
+    (h) => appliedHeadersVisibility[h] === true,
+  );
+
+  const sortNone: SortOrder[] = cols.map((h) =>
+    h === sortColumn
+      ? sortDirection === "asc"
+        ? "ascending"
+        : "descending"
+      : "none",
+  );
 
   const [currentSortDescription, setCurrentSortDescription] =
     useState<string>("");
@@ -52,7 +59,7 @@ export default function TableView() {
 
   const handleSort = (colIdx: number, order: SortOrder) => {
     setCurrentSortDescription(
-      `Applying sort order ${order} via column ${headers[colIdx]}`,
+      `Applying sort order ${order} via column ${cols[colIdx]}`,
     );
 
     const newSortOrders = sortNone as SortOrder[];
@@ -64,15 +71,32 @@ export default function TableView() {
       setSortColumn(null);
       setSortDirection(null);
     } else {
-      setSortColumn(headers[colIdx]);
+      setSortColumn(cols[colIdx]);
       setSortDirection(order.startsWith("asc") ? "asc" : "desc");
     }
   };
 
-  if (isLoadingData || isLoadingStructure) {
+  const initializedRef = useRef(false);
+
+  useEffect(() => {
+    if (initializedRef.current || cols.length === 0) return;
+
+    const sortInitial: SortOrder[] = cols.map((h) =>
+      h === sortColumn
+        ? sortDirection === "asc"
+          ? "ascending"
+          : "descending"
+        : "none",
+    );
+
+    setColSortOrders(sortInitial);
+    initializedRef.current = true;
+  }, [cols]);
+
+  if (isLoadingData) {
     return (
       <div>
-        <p>Loading...</p>
+        <p>Loading data...</p>
       </div>
     );
   }
@@ -84,7 +108,7 @@ export default function TableView() {
         paginationProps={{
           itemsPerPageLabel: te("views.table.itemsPerPageLabel"),
           itemsPerPage: pageSize,
-          totalItems: totalFiltered, // number of items after aplying the filters
+          totalItems: totalFiltered,
           currentPage: page,
           availablePageSizes: PAGE_SIZES,
           buttonDropdownAriaLabel: te("views.table.buttonDropdownAriaLabel"),
@@ -95,23 +119,21 @@ export default function TableView() {
           onPageSizeChange: handleChangePageSize,
         }}
       >
-        {/* header */}
         <Table.Header>
           <Table.Row>
-            {headers.map((header, index) => (
+            {cols.map((col, index) => (
               <Table.HeaderCell
-                key={header}
+                key={col}
                 onSortChange={(order: SortOrder) => handleSort(index, order)}
                 sortOrder={colSortOrders[index]}
                 sortType={"numeric"}
               >
-                {header}
+                {col}
               </Table.HeaderCell>
             ))}
           </Table.Row>
         </Table.Header>
 
-        {/* body */}
         <Table.Body>
           {rows.map((line, lineIndex) => {
             const values = Object.entries(line).filter(
