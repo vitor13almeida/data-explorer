@@ -49,7 +49,8 @@ function buildFieldSchema(
           (val) =>
             val === null ||
             val === undefined ||
-            [true, false, "true", "false", "null"].includes(val as any),
+            [true, false, "true", "false", "null", ""].includes(val as any),
+
           "",
         )
         .transform((val) =>
@@ -102,6 +103,10 @@ export function useFilterValidation(
         fieldErrors[field] = issue.message;
       }
     });
+
+    console.log("result", result);
+    console.log("fieldErrors", fieldErrors);
+
     return fieldErrors;
   }, [schema, filters]);
 

@@ -68,6 +68,23 @@ export function TriStateInput({
           </div>
         </Button>
       </div>
+
+      <input
+        type={"radio"}
+        className={"sr-only"}
+        name={name}
+        value={"false"}
+        checked={myValue === false}
+        onChange={() => {}}
+      />
+      <input
+        type={"radio"}
+        className={"sr-only"}
+        name={name}
+        value={"true"}
+        checked={myValue === true}
+        onChange={() => {}}
+      />
     </div>
   );
 }

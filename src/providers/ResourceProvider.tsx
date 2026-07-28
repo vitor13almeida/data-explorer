@@ -298,6 +298,11 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     let filtersToSet: Record<string, string> = {};
     let operatorsToSet: Record<string, FilterOperatorType> = {};
 
+    headers.forEach((h) => {
+      const value = getInitialOperator(h, structure);
+      filtersToSet = { ...filtersToSet, [h]: value };
+    });
+
     searchParams
       .entries()
       .toArray()

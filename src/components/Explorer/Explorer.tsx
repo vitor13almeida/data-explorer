@@ -23,6 +23,8 @@ export default function Explorer() {
 
   const [selectedView, setSelectedView] = useState<ViewType>("table");
 
+  const showActions = ["table", "chart"].includes(selectedView);
+
   const handleSelectView = (view: ViewType) => {
     setSelectedView(view);
   };
@@ -78,19 +80,21 @@ export default function Explorer() {
               </Button>
             </ButtonGroup>
           </div>
-          <div className="flex flex-row gap-8 flex-wrap skrink">
-            <FiltersToogle />
-            <Button
-              iconOnly={true}
-              hasIcon={true}
-              leadingIcon="agora-line-file-share"
-              leadingIconHover="agora-line-file-share"
-              title={te("actions.export")}
-              appearance={"outline"}
-              disabled={!(!isLoadingData && data && data.data.length > 0)}
-              onClick={() => handleClickExport()}
-            />
-          </div>
+          {showActions && (
+            <div className="flex flex-row gap-8 flex-wrap skrink">
+              <FiltersToogle />
+              <Button
+                iconOnly={true}
+                hasIcon={true}
+                leadingIcon="agora-line-file-share"
+                leadingIconHover="agora-line-file-share"
+                title={te("actions.export")}
+                appearance={"outline"}
+                disabled={!(!isLoadingData && data && data.data.length > 0)}
+                onClick={() => handleClickExport()}
+              />
+            </div>
+          )}
         </div>
         <div className="w-full">
           <Filters />
