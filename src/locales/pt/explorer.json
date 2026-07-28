@@ -16,7 +16,11 @@
       "nextButtonAriaLabel": "Página seguinte"
     },
     "structure": {
-      "title": "Estrutura"
+      "title": "Estrutura",
+      "totalItems": "Total de registos",
+      "resourceId": "ID do recurso",
+      "datasetId": "ID do conjunto de dados",
+      "fields": "Campos"
     },
     "stats": {
       "title": "Métricas"

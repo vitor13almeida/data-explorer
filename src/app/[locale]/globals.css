@@ -25,3 +25,7 @@ button.operator-drawer-trigger {
 .tri-state-switch .agora-btn-solid-primary svg {
   fill: none !important;
 }
+
+.agora-button-group {
+  width: 100% !important;
+}

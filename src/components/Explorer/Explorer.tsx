@@ -11,6 +11,7 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import DataNumbers from "./DataNumbers";
 import { useResourceContext } from "@/hooks/useResourceContext";
 import { exportToCsv } from "@/utils/exportToCsv";
+import StructureView from "./Views/StructureView";
 
 type ViewType = "table" | "structure" | "stats" | "chart";
 
@@ -45,7 +46,11 @@ export default function Explorer() {
           </>
         );
       case "structure":
-        return <>{te("views.structure.title")}...</>;
+        return (
+          <>
+            <StructureView />
+          </>
+        );
       case "stats":
         return <>{te("views.stats.title")}...</>;
       case "chart":
@@ -64,8 +69,10 @@ export default function Explorer() {
     <>
       <div className="w-full flex flex-col gap-32">
         <div className="flex flex-col md:flex-row gap-32 md:gap-64 w-full items-center">
-          <div className="grow">
-            <ButtonGroup orientation={isMobbile ? "vertical" : "horizontal"}>
+          <div className="grow w-full md:w-auto">
+            <ButtonGroup
+              orientation={isMobbile ? "vertical" : "horizontal"}
+            >
               <Button onClick={() => handleSelectView("table")}>
                 {te("views.table.title")}
               </Button>
