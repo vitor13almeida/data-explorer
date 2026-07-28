@@ -104,9 +104,6 @@ export function useFilterValidation(
       }
     });
 
-    console.log("result", result);
-    console.log("fieldErrors", fieldErrors);
-
     return fieldErrors;
   }, [schema, filters]);
 

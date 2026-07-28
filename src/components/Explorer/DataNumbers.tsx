@@ -7,14 +7,13 @@ export default function DataNumbers() {
 
   const {
     isLoadingData,
-    isLoadingStructure,
     data,
     total,
     totalFiltered,
     nFiltersApplied,
   } = useResourceContext();
 
-  if (isLoadingData || isLoadingStructure || data === null) {
+  if (isLoadingData || data === null) {
     return null;
   }
 

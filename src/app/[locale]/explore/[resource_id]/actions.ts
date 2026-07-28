@@ -33,6 +33,7 @@ export async function getData(
   headers: string[] = [],
   filtersOperator: Record<string, FilterOperatorType> = {},
   filters: Record<string, any>,
+  columns: string[] = [],
 ): Promise<ResourceDataResponse> {
   try {
     const queryParams = prepareUrlSearchParams(
@@ -43,6 +44,7 @@ export async function getData(
       headers,
       filtersOperator,
       filters ?? {},
+      columns,
     );
 
     const apiUrl = `http://${TABULAR_API_URL}/api/resources/${resourceId}/data/?${queryParams.toString()}`;

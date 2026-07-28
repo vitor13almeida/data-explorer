@@ -46,6 +46,10 @@
       "float": "Must be a decimal number",
       "date": "Expected format: YYYY-MM-DD",
       "bool": "Must be 'true' or 'false'"
+    },
+    "visibleColumns": {
+      "title": "Visible columns",
+      "description": "You need at least one visible column"
     }
   },
   "filters": {
@@ -63,6 +67,8 @@
       "strictly_greater": "Greater than",
       "greater": "Greater than or equal to"
     },
-    "operatorType": "Operator: {{operator}}"
+    "operatorType": "Operator: {{operator}}",
+    "visible": "Visible",
+    "invisible": "Invisible"
   }
 }

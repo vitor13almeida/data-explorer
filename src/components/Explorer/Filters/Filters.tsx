@@ -13,21 +13,11 @@ export default function Filters() {
   const {
     showFilters,
     headers,
-    filters,
-    setFilters,
+    nHeadersVisible,
     applyFilters,
     clearFilters,
     invalidFilters,
   } = useResourceContext();
-
-  const handleChangeFilter = (
-    event: ChangeEvent<HTMLInputElement, HTMLInputElement>,
-  ) => {
-    setFilters({
-      ...filters,
-      [event.target.name]: event.target.value,
-    });
-  };
 
   const handleApplyFilters = () => {
     applyFilters();
@@ -58,7 +48,7 @@ export default function Filters() {
               trailingIcon="agora-line-search"
               trailingIconHover="agora-line-search"
               fullWidth={true}
-              disabled={invalidFilters}
+              disabled={invalidFilters || nHeadersVisible < 1}
             >
               {te("actions.filter")}
             </Button>

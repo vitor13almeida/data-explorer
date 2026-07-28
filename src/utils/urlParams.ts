@@ -8,8 +8,9 @@ export function prepareUrlSearchParams(
   headers: string[] = [],
   filtersOperator: Record<string, FilterOperatorType> = {},
   filters: Record<string, any>,
+  columns: string[] = [],
 ): URLSearchParams {
-  let params = {
+  let params: Record<string, any> = {
     page: page.toString(),
     page_size: page_size.toString(),
   };
@@ -37,6 +38,10 @@ export function prepareUrlSearchParams(
         [filterParamKey]: filterParamValue,
       };
     });
+  }
+
+  if (columns.length > 0) {
+    params = { ...params, columns: columns.join(",") };
   }
 
   const queryParams = new URLSearchParams(params);

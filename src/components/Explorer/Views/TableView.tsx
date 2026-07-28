@@ -15,9 +15,8 @@ export default function TableView() {
 
   const {
     isLoadingData,
-    isLoadingStructure,
     data,
-    headers,
+    appliedHeadersVisibility,
     totalFiltered,
     page,
     setPage,
@@ -29,7 +28,11 @@ export default function TableView() {
     setSortDirection,
   } = useResourceContext();
 
-  const sortNone: SortOrder[] = headers.map((h) =>
+  const cols = Object.keys(appliedHeadersVisibility).filter(
+    (h) => appliedHeadersVisibility[h] === true,
+  );
+
+  const sortNone: SortOrder[] = cols.map((h) =>
     h === sortColumn
       ? sortDirection === "asc"
         ? "ascending"
@@ -56,7 +59,7 @@ export default function TableView() {
 
   const handleSort = (colIdx: number, order: SortOrder) => {
     setCurrentSortDescription(
-      `Applying sort order ${order} via column ${headers[colIdx]}`,
+      `Applying sort order ${order} via column ${cols[colIdx]}`,
     );
 
     const newSortOrders = sortNone as SortOrder[];
@@ -68,7 +71,7 @@ export default function TableView() {
       setSortColumn(null);
       setSortDirection(null);
     } else {
-      setSortColumn(headers[colIdx]);
+      setSortColumn(cols[colIdx]);
       setSortDirection(order.startsWith("asc") ? "asc" : "desc");
     }
   };
@@ -76,9 +79,9 @@ export default function TableView() {
   const initializedRef = useRef(false);
 
   useEffect(() => {
-    if (initializedRef.current || headers.length === 0) return;
+    if (initializedRef.current || cols.length === 0) return;
 
-    const sortInitial: SortOrder[] = headers.map((h) =>
+    const sortInitial: SortOrder[] = cols.map((h) =>
       h === sortColumn
         ? sortDirection === "asc"
           ? "ascending"
@@ -88,12 +91,12 @@ export default function TableView() {
 
     setColSortOrders(sortInitial);
     initializedRef.current = true;
-  }, [headers]);
+  }, [cols]);
 
-  if (isLoadingData || isLoadingStructure) {
+  if (isLoadingData) {
     return (
       <div>
-        <p>Loading...</p>
+        <p>Loading data...</p>
       </div>
     );
   }
@@ -118,14 +121,14 @@ export default function TableView() {
       >
         <Table.Header>
           <Table.Row>
-            {headers.map((header, index) => (
+            {cols.map((col, index) => (
               <Table.HeaderCell
-                key={header}
+                key={col}
                 onSortChange={(order: SortOrder) => handleSort(index, order)}
                 sortOrder={colSortOrders[index]}
                 sortType={"numeric"}
               >
-                {header}
+                {col}
               </Table.HeaderCell>
             ))}
           </Table.Row>

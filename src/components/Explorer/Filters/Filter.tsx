@@ -11,6 +11,7 @@ import {
   TriStateInput,
   TriStateInputValue,
 } from "@/components/Shared/Input/TriStateInput";
+import FilterVisibility from "./FilterVisibility";
 
 export type FilterI = { header: string };
 
@@ -59,52 +60,50 @@ export default function Filter({ header }: FilterI) {
   const dataType = getDataType(header, structure);
 
   const getInput = () => {
+    let input = null;
     switch (dataType) {
       case "bool":
-        return (
-          <div className="flex flex-col gap-8">
-            <TriStateInput
-              label={header}
-              name={header}
-              value={filters[header] ?? null}
-              onChange={(value) => handleChangeBoolFilter(header, value)}
-            />
-            <div className="flex flex-row gap-8 items-center text-neutral-700">
-              {structure && <FilterOperator header={header} />}
-              <span>
-                {te("filters.operatorType", {
-                  operator: te(`filters.operators.${filtersOperator[header]}`),
-                })}
-              </span>
-            </div>
-          </div>
+        input = (
+          <TriStateInput
+            label={header}
+            name={header}
+            value={filters[header] ?? null}
+            onChange={(value) => handleChangeBoolFilter(header, value)}
+          />
         );
-
+        break;
       default:
-        return (
+        input = (
           <InputText
             label={header}
             name={header}
             value={filters[header] ?? ""}
             onChange={handleChangeFilter}
             hasHelperText
-            helperText={
-              <div className="flex flex-row gap-8 items-center text-neutral-700">
-                {structure && <FilterOperator header={header} />}
-                <span>
-                  {te("filters.operatorType", {
-                    operator: te(
-                      `filters.operators.${filtersOperator[header]}`,
-                    ),
-                  })}
-                </span>
-              </div>
-            }
             hasError={!!errors[header]}
             errorFeedbackText={errors[header]}
           />
         );
+        break;
     }
+    return (
+      <div className="flex flex-col gap-8">
+        {input}
+        {structure && (
+          <>
+            <div className="flex flex-row gap-8 items-center text-neutral-700">
+              <FilterOperator header={header} />
+              <span>
+                {te("filters.operatorType", {
+                  operator: te(`filters.operators.${filtersOperator[header]}`),
+                })}
+              </span>
+            </div>
+            <FilterVisibility header={header} />
+          </>
+        )}
+      </div>
+    );
   };
 
   return (

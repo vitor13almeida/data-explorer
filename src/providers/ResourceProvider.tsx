@@ -1,16 +1,12 @@
 "use client";
 
-import {
-  getData,
-  getStructure,
-} from "@/app/[locale]/explore/[resource_id]/actions";
+import { getData } from "@/app/[locale]/explore/[resource_id]/actions";
 import { FilterOperatorAll, PAGE_SIZES } from "@/services/consts/explorer";
 import {
   DatasetProfileResponse,
   FilterOperatorType,
   PaginatedDataResponse,
   ResourceDataResponse,
-  ResourceStructureResponse,
 } from "@/services/types";
 import { getInitialOperator } from "@/services/utils/data";
 import { prepareUrlSearchParams } from "@/utils/urlParams";
@@ -31,18 +27,20 @@ import { useTranslation } from "react-i18next";
 
 export type ResourceContextType = {
   resourceId: string;
-  setResourceId: Dispatch<string>;
 
   isLoadingData: boolean;
   loadData: () => void;
   errorData: string | null;
   data: PaginatedDataResponse | null;
 
-  isLoadingStructure: boolean;
-  errorStructure: string | null;
-  structure: DatasetProfileResponse | null;
+  structure: DatasetProfileResponse;
 
   headers: string[];
+  headersVisibility: Record<string, boolean>;
+  setHeadersVisibility: Dispatch<Record<string, boolean>>;
+  nHeadersVisible: number;
+  appliedHeadersVisibility: Record<string, boolean>;
+
   total: number;
   totalFiltered: number;
   nFiltersApplied: number;
@@ -75,7 +73,17 @@ export const ResourceContext = createContext<ResourceContextType | undefined>(
   undefined,
 );
 
-export function ResourceProvider({ children }: { children: ReactNode }) {
+export type ResourceProviderI = {
+  resourceId: string;
+  structure: DatasetProfileResponse;
+  children: ReactNode;
+};
+
+export function ResourceProvider({
+  resourceId,
+  structure,
+  children,
+}: ResourceProviderI) {
   const searchParams = useSearchParams();
   const toastContext = useToastContext();
   const { t } = useTranslation("common");
@@ -83,15 +91,12 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
 
   const [isReady, setIsReady] = useState<boolean>(false);
 
-  const [resourceId, setResourceId] = useState<string>("");
-
   const [data, setData] = useState<PaginatedDataResponse | null>(null);
   const [errorData, setErrorData] = useState<string | null>(null);
 
-  const [structure, setStructure] = useState<DatasetProfileResponse | null>(
-    null,
-  );
-  const [errorStructure, setErrorStructure] = useState<string | null>(null);
+  const [headersVisibility, setHeadersVisibility] = useState<
+    Record<string, boolean>
+  >({});
 
   const [page, setPage] = useState<number>(0);
   const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[0]);
@@ -110,20 +115,35 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
   const [invalidFilters, setInvalidFilters] = useState<boolean>(false);
 
   const [isLoadingData, startDataTransition] = useTransition();
-  const [isLoadingStructure, startStructureTransition] = useTransition();
 
   const appliedFilters = useRef<Record<string, any>>({});
   const appliedFiltersOperator = useRef<Record<string, any>>({});
+  const appliedHeadersVisibility = useRef<Record<string, boolean>>({});
 
   const headers: string[] = structure?.profile.header ?? [];
+  const nHeaders: number = Object.values(headers).length;
+  const nHeadersVisible: number = Object.values(headersVisibility).filter(
+    (v) => v === true,
+  ).length;
+
   const total: number = structure?.profile.total_lines ?? 0;
   const totalFiltered: number = data?.meta.total ?? 0;
   const nFiltersApplied: number = Object.keys(appliedFilters.current).filter(
     (filter) => !!appliedFilters.current[filter],
   ).length;
 
+  const getColumnsForFilters = useCallback(() => {
+    const applied = appliedHeadersVisibility.current;
+    const nVisible = Object.values(applied).filter((v) => v === true).length;
+    return nVisible < nHeaders
+      ? Object.keys(applied).filter((h) => applied[h] === true)
+      : [];
+  }, [nHeaders]);
+
   const loadData = useCallback(async () => {
     if (!resourceId.trim()) return;
+
+    const columnsForFilters = getColumnsForFilters();
 
     startDataTransition(async () => {
       setErrorData(null);
@@ -137,6 +157,7 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
           headers,
           appliedFiltersOperator.current ?? {},
           appliedFilters.current ?? {},
+          columnsForFilters,
         );
         if (response.status === 200 && response.data) {
           setData(response.data || { data: [], links: {}, meta: {} });
@@ -182,60 +203,12 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     sortColumn,
     sortDirection,
     headers,
+    getColumnsForFilters,
   ]);
 
-  const loadStructure = useCallback(async () => {
-    if (!resourceId.trim()) return;
-
-    startStructureTransition(async () => {
-      setErrorStructure(null);
-      try {
-        const response: ResourceStructureResponse =
-          await getStructure(resourceId);
-        if (response.status === 200 && response.data) {
-          setStructure(
-            response.data || {
-              profile: {},
-              dataset_id: "",
-              deleted_at: "",
-              indexes: null,
-            },
-          );
-        } else {
-          setErrorStructure(
-            response.errors?.map((error) => error.detail.hint).join(" ") ||
-              te("errors.structure.badRequest"),
-          );
-          toastContext.showToast(
-            {
-              id: +new Date(),
-              title: te("errors.structure.title"),
-              description:
-                response.errors?.map((error) => error.detail.hint).join(" ") ||
-                te("errors.structure.badRequest"),
-              type: "failure",
-              closeLabel: t("close"),
-            },
-            5000,
-          );
-        }
-      } catch (err) {
-        setErrorStructure(te("errors.structure.failed"));
-        toastContext.showToast(
-          {
-            id: +new Date(),
-            title: te("errors.structure.title"),
-            description: te("errors.structure.failed"),
-            type: "failure",
-            closeLabel: t("close"),
-          },
-          5000,
-        );
-      }
-    });
-  }, [startStructureTransition, resourceId]);
-
   const setUrlParams = useCallback(() => {
+    const columnsForFilters = getColumnsForFilters();
+
     const params = prepareUrlSearchParams(
       page,
       pageSize,
@@ -244,13 +217,21 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       headers,
       appliedFiltersOperator.current,
       appliedFilters.current ?? {},
+      columnsForFilters,
     );
     window.history.replaceState(
       null,
       "",
       `${window.location.pathname}?${params}`,
     );
-  }, [page, pageSize, sortColumn, sortDirection, headers]);
+  }, [
+    page,
+    pageSize,
+    sortColumn,
+    sortDirection,
+    headers,
+    getColumnsForFilters,
+  ]);
 
   const removeFilter = useCallback(
     (filter: string) => {
@@ -273,22 +254,29 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
 
     appliedFiltersOperator.current = { ...filtersOperator };
 
+    appliedHeadersVisibility.current = { ...headersVisibility };
+
     void setUrlParams();
     void loadData();
-  }, [filters, filtersOperator, setUrlParams, loadData]);
+  }, [filters, filtersOperator, setUrlParams, loadData, headersVisibility]);
 
   const clearFilters = useCallback(() => {
     setFilters({});
     appliedFilters.current = {};
 
     let fo = {};
+    let fv = {};
     headers.forEach((h) => {
       const value = getInitialOperator(h, structure);
       fo = { ...fo, [h]: value };
+      fv = { ...fv, [h]: true };
     });
-    setFiltersOperator(fo);
 
+    setFiltersOperator(fo);
     appliedFiltersOperator.current = { ...fo };
+
+    setHeadersVisibility(fv);
+    appliedHeadersVisibility.current = { ...fv };
 
     void setUrlParams();
     void loadData();
@@ -297,10 +285,12 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let filtersToSet: Record<string, string> = {};
     let operatorsToSet: Record<string, FilterOperatorType> = {};
+    let showCol: Record<string, boolean> = {};
 
     headers.forEach((h) => {
       const value = getInitialOperator(h, structure);
       filtersToSet = { ...filtersToSet, [h]: value };
+      showCol = { ...showCol, [h]: true };
     });
 
     searchParams
@@ -317,6 +307,15 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
           case "page_size":
             setPageSize(value ? (Number(value) ?? 0) : 0);
             break;
+          case "columns": {
+            const colsParams = value.split(",");
+            let hv: Record<string, boolean> = {};
+            headers.forEach((h) => {
+              hv = { ...hv, [h]: colsParams.includes(h) };
+            });
+            showCol = { ...hv };
+            break;
+          }
           default: {
             if (key.endsWith("__sort")) {
               setSortColumn(key.replace("__sort", ""));
@@ -347,6 +346,9 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     appliedFilters.current = { ...filtersToSet };
     setFiltersOperator(operatorsToSet);
     appliedFiltersOperator.current = { ...operatorsToSet };
+    setHeadersVisibility(showCol);
+    appliedHeadersVisibility.current = { ...showCol };
+
     setIsReady(true);
   }, []);
 
@@ -369,12 +371,6 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     sortDirection,
     loadData,
   ]);
-
-  useEffect(() => {
-    if (!resourceId) return;
-
-    void loadStructure();
-  }, [resourceId, loadStructure]);
 
   useEffect(() => {
     if (structure === null) return;
@@ -403,21 +399,40 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
     }
   }, [headers, structure]);
 
+  useEffect(() => {
+    if (isReady) {
+      if (nHeadersVisible < 1) {
+        toastContext.showToast(
+          {
+            id: +new Date(),
+            title: te("errors.visibleColumns.title"),
+            description: te("errors.visibleColumns.description"),
+            type: "warning",
+            closeLabel: t("close"),
+          },
+          5000,
+        );
+      }
+    }
+  }, [isReady, nHeadersVisible]);
+
   const value = useMemo(
     () => ({
       resourceId,
-      setResourceId,
 
       isLoadingData,
       loadData,
       errorData,
       data,
 
-      isLoadingStructure,
-      errorStructure,
       structure,
 
       headers,
+      headersVisibility,
+      setHeadersVisibility,
+      nHeadersVisible,
+      appliedHeadersVisibility: appliedHeadersVisibility.current,
+
       total,
       totalFiltered,
       nFiltersApplied,
@@ -451,10 +466,10 @@ export function ResourceProvider({ children }: { children: ReactNode }) {
       loadData,
       errorData,
       data,
-      isLoadingStructure,
-      errorStructure,
       structure,
       headers,
+      headersVisibility,
+      nHeadersVisible,
       total,
       totalFiltered,
       nFiltersApplied,
