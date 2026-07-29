@@ -23,6 +23,7 @@
       "fields": "Campos",
       "totalColumns": "Total de colunas",
       "categoricalColumns": "Colunas categóricas",
+      "uniqueValues": "Valores únicos",
       "formatTooltip": "Formato dos dados",
       "typeTooltip": "Tipo de dados",
       "scoreTooltip": "Confiança na deteção do tipo"

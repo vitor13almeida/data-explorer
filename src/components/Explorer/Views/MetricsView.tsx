@@ -19,6 +19,7 @@ import {
 import { useTranslation } from "react-i18next";
 
 const ICON_SIZE = 20;
+const MAX_UNIQUE_VALUES = 10;
 
 function isNumeric(profile: ColumnProfile): profile is NumericColumnProfile {
   return "min" in profile;
@@ -33,7 +34,7 @@ type MetricI = {
 function Metric({ label, value, icon: Icon }: MetricI) {
   return (
     <div className="flex items-center justify-between gap-8 py-4">
-      <span className="flex items-center gap-8 text-xs text-neutral-500">
+      <span className="flex items-center gap-8 text-m-regular text-neutral-500">
         {Icon && <Icon size={ICON_SIZE} />}
         {label}
       </span>
@@ -57,12 +58,12 @@ function TopsList({ tops }: TopsListI) {
         <div key={idx} className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <span
-              className="text-xs text-neutral-700 truncate max-w-[70%]"
+              className="text-m-regular text-neutral-700 truncate max-w-[70%]"
               title={top.value}
             >
               {top.value || "—"}
             </span>
-            <span className="text-xs text-neutral-400">{top.count}</span>
+            <span className="text-m-regular text-neutral-400">{top.count}</span>
           </div>
           <div className="h-1 w-full rounded-full bg-neutral-100">
             <div
@@ -76,11 +77,30 @@ function TopsList({ tops }: TopsListI) {
   );
 }
 
+function UniqueValuesList({ values }: { values: string[] }) {
+  if (values.length === 0) return null;
+
+  return (
+    <div className="flex flex-wrap gap-4">
+      {values.map((value, idx) => (
+        <span
+          key={idx}
+          className="inline-flex items-center rounded-16 bg-primary-50 px-8 py-2 text-m-regular text-primary-700 truncate max-w-full"
+          title={value}
+        >
+          {value || "—"}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 type ColumnCardI = {
   name: string;
   type: string;
   profile: ColumnProfile;
   isCategorical: boolean;
+  uniqueValues: string[];
   labels: Record<string, string>;
 };
 
@@ -89,8 +109,14 @@ function ColumnCard({
   type,
   profile,
   isCategorical,
+  uniqueValues,
   labels,
 }: ColumnCardI) {
+  const showUniqueValues =
+    isCategorical &&
+    uniqueValues.length > 0 &&
+    uniqueValues.length <= MAX_UNIQUE_VALUES;
+
   return (
     <div className="flex flex-col gap-12 rounded-lg border border-neutral-200 bg-white p-16">
       <div className="flex items-center justify-between gap-8">
@@ -102,11 +128,11 @@ function ColumnCard({
         </span>
         <div className="flex items-center gap-4 shrink-0">
           {isCategorical && (
-            <span className="inline-flex items-center rounded-16 bg-warning-100 px-8 py-2 text-xs text-warning-700">
+            <span className="inline-flex items-center rounded-16 bg-warning-100 px-8 py-2 text-m-regular text-warning-700">
               {labels.categorical}
             </span>
           )}
-          <span className="inline-flex items-center rounded-16 bg-neutral-100 px-8 py-2 text-xs text-neutral-600">
+          <span className="inline-flex items-center rounded-16 bg-neutral-100 px-8 py-2 text-m-regular text-neutral-600">
             {type}
           </span>
         </div>
@@ -149,6 +175,15 @@ function ColumnCard({
           <TopsList tops={profile.tops} />
         </div>
       )}
+
+      {showUniqueValues && (
+        <div className="flex flex-col gap-8">
+          <span className="text-m-medium text-neutral-500">
+            {labels.uniqueValues}
+          </span>
+          <UniqueValuesList values={uniqueValues} />
+        </div>
+      )}
     </div>
   );
 }
@@ -157,8 +192,15 @@ export default function MetricsView() {
   const { structure } = useResourceContext();
   const { t: te } = useTranslation("explorer");
 
-  const { profile, columns, categorical, nb_duplicates, encoding, separator } =
-    structure.profile;
+  const {
+    profile,
+    columns,
+    categorical,
+    unique_values,
+    nb_duplicates,
+    encoding,
+    separator,
+  } = structure.profile;
   const columnEntries = Object.entries(profile);
   const categoricalSet = new Set(categorical);
 
@@ -189,6 +231,7 @@ export default function MetricsView() {
     mean: te("views.metrics.mean"),
     std: te("views.metrics.std"),
     topValues: te("views.metrics.topValues"),
+    uniqueValues: te("views.metrics.uniqueValues"),
     categorical: te("views.metrics.categorical"),
   };
 
@@ -216,6 +259,7 @@ export default function MetricsView() {
             type={columns[name]?.python_type ?? "—"}
             profile={colProfile}
             isCategorical={categoricalSet.has(name)}
+            uniqueValues={unique_values[name] ?? []}
             labels={labels}
           />
         ))}
