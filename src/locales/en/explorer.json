@@ -22,8 +22,16 @@
       "datasetId": "Dataset ID",
       "fields": "Fields"
     },
-    "stats": {
-      "title": "Metrics"
+    "metrics": {
+      "title": "Metrics",
+      "distinct": "Distinct values",
+      "missing": "Missing values",
+      "min": "Minimum",
+      "max": "Maximum",
+      "mean": "Mean",
+      "std": "Standard deviation",
+      "topValues": "Most frequent values",
+      "empty": "No metrics available."
     },
     "chart": {
       "title": "Chart"

@@ -22,8 +22,16 @@
       "datasetId": "ID do conjunto de dados",
       "fields": "Campos"
     },
-    "stats": {
-      "title": "Métricas"
+    "metrics": {
+      "title": "Métricas",
+      "distinct": "Valores distintos",
+      "missing": "Valores em falta",
+      "min": "Mínimo",
+      "max": "Máximo",
+      "mean": "Média",
+      "std": "Desvio padrão",
+      "topValues": "Valores mais frequentes",
+      "empty": "Não existem métricas disponíveis."
     },
     "chart": {
       "title": "Gráfico"
