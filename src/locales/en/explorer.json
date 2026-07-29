@@ -16,7 +16,11 @@
       "nextButtonAriaLabel": "Next page"
     },
     "structure": {
-      "title": "Structure"
+      "title": "Structure",
+      "totalItems": "Total records",
+      "resourceId": "Resource ID",
+      "datasetId": "Dataset ID",
+      "fields": "Fields"
     },
     "stats": {
       "title": "Metrics"
