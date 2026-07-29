@@ -20,7 +20,12 @@
       "totalItems": "Total records",
       "resourceId": "Resource ID",
       "datasetId": "Dataset ID",
-      "fields": "Fields"
+      "fields": "Fields",
+      "totalColumns": "Total columns",
+      "categoricalColumns": "Categorical columns",
+      "formatTooltip": "Data format",
+      "typeTooltip": "Data type",
+      "scoreTooltip": "Type detection confidence"
     },
     "metrics": {
       "title": "Metrics",

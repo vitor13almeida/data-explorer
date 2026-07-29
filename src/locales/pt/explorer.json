@@ -20,7 +20,12 @@
       "totalItems": "Total de registos",
       "resourceId": "ID do recurso",
       "datasetId": "ID do conjunto de dados",
-      "fields": "Campos"
+      "fields": "Campos",
+      "totalColumns": "Total de colunas",
+      "categoricalColumns": "Colunas categóricas",
+      "formatTooltip": "Formato dos dados",
+      "typeTooltip": "Tipo de dados",
+      "scoreTooltip": "Confiança na deteção do tipo"
     },
     "metrics": {
       "title": "Métricas",
