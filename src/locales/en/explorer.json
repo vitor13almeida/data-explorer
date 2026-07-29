@@ -31,7 +31,11 @@
       "mean": "Mean",
       "std": "Standard deviation",
       "topValues": "Most frequent values",
-      "empty": "No metrics available."
+      "empty": "No metrics available.",
+      "duplicates": "Duplicates",
+      "encoding": "Encoding",
+      "separator": "Separator",
+      "categorical": "Categorical"
     },
     "chart": {
       "title": "Chart"

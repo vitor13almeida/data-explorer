@@ -31,7 +31,11 @@
       "mean": "Média",
       "std": "Desvio padrão",
       "topValues": "Valores mais frequentes",
-      "empty": "Não existem métricas disponíveis."
+      "empty": "Não existem métricas disponíveis.",
+      "duplicates": "Duplicados",
+      "encoding": "Codificação",
+      "separator": "Separador",
+      "categorical": "Categórico"
     },
     "chart": {
       "title": "Gráfico"

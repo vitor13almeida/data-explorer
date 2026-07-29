@@ -1,13 +1,28 @@
 "use client";
 
+import StatCard, { StatCardI } from "@/components/Shared/Card/StatsCard";
 import { useResourceContext } from "@/hooks/useResourceContext";
 import {
   ColumnProfile,
   NumericColumnProfile,
   TopValue,
 } from "@/services/types";
-import { BarChart2, TrendingUp, TrendingDown, Activity } from "react-feather";
+import {
+  BarChart2,
+  TrendingUp,
+  TrendingDown,
+  Activity,
+  Copy,
+  Code,
+  Layers,
+} from "react-feather";
 import { useTranslation } from "react-i18next";
+
+const ICON_SIZE = 20;
+
+function isNumeric(profile: ColumnProfile): profile is NumericColumnProfile {
+  return "min" in profile;
+}
 
 type MetricI = {
   label: string;
@@ -18,17 +33,13 @@ type MetricI = {
 function Metric({ label, value, icon: Icon }: MetricI) {
   return (
     <div className="flex items-center justify-between gap-8 py-4">
-      <span className="flex items-center gap-4 text-xs text-neutral-500">
-        {Icon && <Icon size={16} />}
+      <span className="flex items-center gap-8 text-xs text-neutral-500">
+        {Icon && <Icon size={ICON_SIZE} />}
         {label}
       </span>
       <span className="text-m-medium text-neutral-900">{value}</span>
     </div>
   );
-}
-
-function isNumeric(profile: ColumnProfile): profile is NumericColumnProfile {
-  return "min" in profile;
 }
 
 type TopsListI = {
@@ -69,10 +80,17 @@ type ColumnCardI = {
   name: string;
   type: string;
   profile: ColumnProfile;
+  isCategorical: boolean;
   labels: Record<string, string>;
 };
 
-function ColumnCard({ name, type, profile, labels }: ColumnCardI) {
+function ColumnCard({
+  name,
+  type,
+  profile,
+  isCategorical,
+  labels,
+}: ColumnCardI) {
   return (
     <div className="flex flex-col gap-12 rounded-lg border border-neutral-200 bg-white p-16">
       <div className="flex items-center justify-between gap-8">
@@ -82,9 +100,16 @@ function ColumnCard({ name, type, profile, labels }: ColumnCardI) {
         >
           {name}
         </span>
-        <span className="inline-flex items-center rounded-16 bg-neutral-100 px-8 py-2 text-xs text-neutral-600">
-           {type}
-        </span>
+        <div className="flex items-center gap-4 shrink-0">
+          {isCategorical && (
+            <span className="inline-flex items-center rounded-16 bg-warning-100 px-8 py-2 text-xs text-warning-700">
+              {labels.categorical}
+            </span>
+          )}
+          <span className="inline-flex items-center rounded-16 bg-neutral-100 px-8 py-2 text-xs text-neutral-600">
+            {type}
+          </span>
+        </div>
       </div>
 
       <div className="flex flex-col divide-y divide-neutral-100">
@@ -132,8 +157,29 @@ export default function MetricsView() {
   const { structure } = useResourceContext();
   const { t: te } = useTranslation("explorer");
 
-  const { profile, columns } = structure.profile;
+  const { profile, columns, categorical, nb_duplicates, encoding, separator } =
+    structure.profile;
   const columnEntries = Object.entries(profile);
+  const categoricalSet = new Set(categorical);
+
+  const summaryItems: StatCardI[] = [
+    {
+      icon: Copy,
+      label: te("views.metrics.duplicates"),
+      value: nb_duplicates,
+    },
+    {
+      icon: Code,
+      label: te("views.metrics.encoding"),
+      value: encoding,
+    },
+    {
+      icon: Layers,
+      label: te("views.metrics.separator"),
+      value:
+        separator === "," ? "vírgula" : separator === "\t" ? "tab" : separator,
+    },
+  ];
 
   const labels = {
     distinct: te("views.metrics.distinct"),
@@ -143,6 +189,7 @@ export default function MetricsView() {
     mean: te("views.metrics.mean"),
     std: te("views.metrics.std"),
     topValues: te("views.metrics.topValues"),
+    categorical: te("views.metrics.categorical"),
   };
 
   if (columnEntries.length === 0) {
@@ -154,16 +201,25 @@ export default function MetricsView() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-16">
-      {columnEntries.map(([name, colProfile]) => (
-        <ColumnCard
-          key={name}
-          name={name}
-          type={columns[name]?.python_type ?? "—"}
-          profile={colProfile}
-          labels={labels}
-        />
-      ))}
+    <div className="flex flex-col gap-24">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-16">
+        {summaryItems.map((item) => (
+          <StatCard key={item.label} {...item} />
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-16">
+        {columnEntries.map(([name, colProfile]) => (
+          <ColumnCard
+            key={name}
+            name={name}
+            type={columns[name]?.python_type ?? "—"}
+            profile={colProfile}
+            isCategorical={categoricalSet.has(name)}
+            labels={labels}
+          />
+        ))}
+      </div>
     </div>
   );
 }
