@@ -10,6 +10,6 @@ export const CHART_TYPES = [
 ] as const;
 
 export const CHART_COLOR = {
-  border: "rgb(75, 192, 192)",
-  background: "rgba(75, 192, 192, 0.5)",
+  border: "rgb(3, 74, 216)",
+  background: "rgba(3, 74, 216, 0.5)",
 } as const;

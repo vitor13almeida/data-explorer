@@ -79,6 +79,21 @@ export default function ChartSelectors() {
     <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-12 gap-16">
       <div className="col-span-2 lg:col-span-3">
         <InputSelect
+          label={te("views.chart.chartType")}
+          placeholder={te("views.chart.chartTypePlaceholder")}
+          multiple={false}
+          hideSectionNames
+          value={chart}
+          onChange={(e: DropdownOptionProps[]) =>
+            setChart((extractValue(e) || "Line") as ChartType)
+          }
+        >
+          {optionsChart}
+        </InputSelect>
+      </div>
+
+      <div className="col-span-2 lg:col-span-3">
+        <InputSelect
           label={te("views.chart.xAxis")}
           placeholder={te("views.chart.axisPlaceholder")}
           multiple={false}
@@ -119,21 +134,6 @@ export default function ChartSelectors() {
           </InputSelect>
         </div>
       )}
-
-      <div className="col-span-2 lg:col-span-3">
-        <InputSelect
-          label={te("views.chart.chartType")}
-          placeholder={te("views.chart.chartTypePlaceholder")}
-          multiple={false}
-          hideSectionNames
-          value={chart}
-          onChange={(e: DropdownOptionProps[]) =>
-            setChart((extractValue(e) || "Line") as ChartType)
-          }
-        >
-          {optionsChart}
-        </InputSelect>
-      </div>
     </div>
   );
 }

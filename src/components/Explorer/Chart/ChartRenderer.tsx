@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { ComponentType, useMemo } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -31,8 +31,9 @@ import {
   Pie,
   Scatter,
 } from "react-chartjs-2";
-import { ChartType } from "@/services/types/charts";
 import { useChartContext } from "@/hooks/useChartContext";
+import { useResourceContext } from "@/hooks/useResourceContext";
+import { ChartType } from "@/services/types/charts";
 import { CHART_COLOR } from "@/services/consts/chart";
 
 ChartJS.register(
@@ -55,7 +56,10 @@ ChartJS.register(
   ScatterController,
 );
 
-const CHART_COMPONENTS: Record<Exclude<ChartType, "Bubble">, typeof Line> = {
+const CHART_COMPONENTS: Record<
+  Exclude<ChartType, "Bubble">,
+  ComponentType<any>
+> = {
   Line,
   Bar,
   Radar,
@@ -66,21 +70,27 @@ const CHART_COMPONENTS: Record<Exclude<ChartType, "Bubble">, typeof Line> = {
 };
 
 export default function ChartRenderer() {
-  const { data, xAxisKey, yAxisKey, rAxisKey, chart } = useChartContext();
+  const { xAxisKey, yAxisKey, rAxisKey, chart } = useChartContext();
+  const { data: resourceData } = useResourceContext();
+
+  const rows = useMemo(
+    () => (resourceData?.data ?? []).map(({ __id, ...rest }) => rest),
+    [resourceData],
+  );
 
   const standardData = useMemo(
     () => ({
-      labels: data.map((d) => d[xAxisKey] ?? ""),
+      labels: rows.map((d) => d[xAxisKey] ?? ""),
       datasets: [
         {
           label: yAxisKey,
-          data: data.map((d) => Number(d[yAxisKey])),
+          data: rows.map((d) => Number(d[yAxisKey])),
           borderColor: CHART_COLOR.border,
           backgroundColor: CHART_COLOR.background,
         },
       ],
     }),
-    [data, xAxisKey, yAxisKey],
+    [rows, xAxisKey, yAxisKey],
   );
 
   const bubbleData = useMemo(
@@ -88,7 +98,7 @@ export default function ChartRenderer() {
       datasets: [
         {
           label: `${yAxisKey} vs ${xAxisKey}`,
-          data: data.map((d) => ({
+          data: rows.map((d) => ({
             x: Number(d[xAxisKey]),
             y: Number(d[yAxisKey]),
             r: Number(d[rAxisKey] || 5),
@@ -98,8 +108,10 @@ export default function ChartRenderer() {
         },
       ],
     }),
-    [data, xAxisKey, yAxisKey, rAxisKey],
+    [rows, xAxisKey, yAxisKey, rAxisKey],
   );
+
+  if (rows.length === 0) return null;
 
   if (chart === "Bubble") {
     return <Bubble data={bubbleData} />;

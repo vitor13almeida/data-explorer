@@ -5,29 +5,22 @@ import Pill from "../Shared/Pill/Pill";
 export default function DataNumbers() {
   const { t: te } = useTranslation("explorer");
 
-  const {
-    isLoadingData,
-    data,
-    total,
-    totalFiltered,
-    nFiltersApplied,
-  } = useResourceContext();
+  const { data, total, totalFiltered, nFiltersApplied } = useResourceContext();
 
-  if (isLoadingData || data === null) {
+  if (data === null) {
     return null;
   }
 
   return (
     <div className="flex flex-row flex-wrap gap-16 w-full">
       <div className="w-fit">
-        <b>{te("views.dataNumbers.total")}:</b> <Pill>{total}</Pill>
+        <b>{te("dataNumbers.total")}:</b> <Pill>{total}</Pill>
       </div>
       <div className="w-fit">
-        <b>{te("views.dataNumbers.totalFiltered")}:</b>{" "}
-        <Pill>{totalFiltered}</Pill>
+        <b>{te("dataNumbers.totalFiltered")}:</b> <Pill>{totalFiltered}</Pill>
       </div>
       <div className="w-fit">
-        <b>{te("views.dataNumbers.appliedFilters")}:</b>{" "}
+        <b>{te("dataNumbers.appliedFilters")}:</b>{" "}
         <Pill>{nFiltersApplied}</Pill>
       </div>
     </div>

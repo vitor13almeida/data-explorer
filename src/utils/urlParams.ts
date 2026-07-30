@@ -1,8 +1,9 @@
+import { INITIAL_PAGE, PAGE_SIZES } from "@/services/consts/explorer";
 import { FilterOperatorType } from "@/services/types";
 
 export function prepareUrlSearchParams(
-  page: number = 0,
-  page_size: number = 20,
+  page: number = INITIAL_PAGE,
+  page_size: number = PAGE_SIZES[0],
   sortCol: string | null = null,
   sortOrder: string | null = null,
   headers: string[] = [],

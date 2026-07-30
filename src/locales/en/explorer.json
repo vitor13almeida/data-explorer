@@ -2,11 +2,6 @@
   "title": "Data",
   "description": "Explore all data, in different formats and views",
   "views": {
-    "dataNumbers": {
-      "total": "Total",
-      "totalFiltered": "Filtered items",
-      "appliedFilters": "Applied filters"
-    },
     "table": {
       "title": "Data",
       "itemsPerPageLabel": "Items per page: ",
@@ -64,6 +59,18 @@
         "Scatter": "Scatter"
       }
     }
+  },
+  "dataNumbers": {
+    "total": "Total",
+    "totalFiltered": "Filtered items",
+    "appliedFilters": "Applied filters"
+  },
+  "pagination": {
+    "itemsPerPage": "Items per page",
+    "range": "{{start}}-{{end}} of {{total}}",
+    "pageOf": "{{current}} of {{total}}",
+    "prev": "Previous page",
+    "next": "Next page"
   },
   "actions": {
     "filter": "Filter",

@@ -1,14 +1,19 @@
 "use client";
 
-import { useChartContext } from "@/hooks/useChartContext";
 import { useTranslation } from "react-i18next";
+import { useResourceContext } from "@/hooks/useResourceContext";
+import { useChartContext } from "@/hooks/useChartContext";
 import ChartSelectors from "../Chart/ChartSelectors";
 import ChartRenderer from "../Chart/ChartRenderer";
+import ChartPagination from "../Chart/ChartPagination";
 import { ChartProvider } from "@/providers/ChartProvider";
 
 function ChartContent() {
   const { t: te } = useTranslation("explorer");
-  const { hasData, hasNumericData } = useChartContext();
+  const { data } = useResourceContext();
+  const { hasNumericData } = useChartContext();
+
+  const hasData = (data?.data ?? []).length > 0;
 
   if (!hasData) {
     return (
@@ -30,6 +35,7 @@ function ChartContent() {
     <div className="flex flex-col gap-24">
       <ChartSelectors />
       <ChartRenderer />
+      <ChartPagination />
     </div>
   );
 }

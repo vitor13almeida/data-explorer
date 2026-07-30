@@ -2,13 +2,11 @@
 
 import { createContext, Dispatch, ReactNode, useMemo, useState } from "react";
 import { useResourceContext } from "@/hooks/useResourceContext";
-import { CHART_TYPES_WITH_R } from "@/services/types/charts";
-import { ChartType } from "chart.js";
+import { CHART_TYPES_WITH_R, ChartType } from "@/services/types/charts";
 
 export type ChartContextType = {
   keys: string[];
   numericKeys: string[];
-  data: Record<string, any>[];
 
   xAxisKey: string;
   setXAxisKey: Dispatch<string>;
@@ -21,7 +19,6 @@ export type ChartContextType = {
   setChart: Dispatch<ChartType>;
   showR: boolean;
 
-  hasData: boolean;
   hasNumericData: boolean;
 };
 
@@ -32,15 +29,12 @@ export const ChartContext = createContext<ChartContextType | undefined>(
 export function ChartProvider({ children }: { children: ReactNode }) {
   const { data: resourceData } = useResourceContext();
 
-  const rows = useMemo(
-    () => (resourceData?.data ?? []).map(({ __id, ...rest }) => rest),
-    [resourceData],
-  );
+  const rows = resourceData?.data ?? [];
 
-  const keys = useMemo(
-    () => (rows.length > 0 ? Object.keys(rows[0]) : []),
-    [rows],
-  );
+  const keys = useMemo(() => {
+    if (rows.length === 0) return [];
+    return Object.keys(rows[0]).filter((k) => k !== "__id");
+  }, [rows]);
 
   const numericKeys = useMemo(
     () => keys.filter((k) => rows.some((d) => !isNaN(Number(d[k])))),
@@ -53,10 +47,8 @@ export function ChartProvider({ children }: { children: ReactNode }) {
   const [chart, setChart] = useState<ChartType>("Line");
 
   const showR = CHART_TYPES_WITH_R.includes(chart);
-  const hasData = rows.length > 0;
   const hasNumericData = numericKeys.length > 0;
 
-  // initialise defaults when data arrives
   useMemo(() => {
     if (keys.length > 0 && !xAxisKey) setXAxisKey(keys[0]);
     if (numericKeys.length > 0 && !yAxisKey) setYAxisKey(numericKeys[0]);
@@ -66,7 +58,6 @@ export function ChartProvider({ children }: { children: ReactNode }) {
     () => ({
       keys,
       numericKeys,
-      data: rows,
       xAxisKey,
       setXAxisKey,
       yAxisKey,
@@ -76,19 +67,16 @@ export function ChartProvider({ children }: { children: ReactNode }) {
       chart,
       setChart,
       showR,
-      hasData,
       hasNumericData,
     }),
     [
       keys,
       numericKeys,
-      rows,
       xAxisKey,
       yAxisKey,
       rAxisKey,
       chart,
       showR,
-      hasData,
       hasNumericData,
     ],
   );

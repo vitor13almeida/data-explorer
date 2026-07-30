@@ -1,7 +1,11 @@
 "use client";
 
 import { getData } from "@/app/[locale]/explore/[resource_id]/actions";
-import { FilterOperatorAll, PAGE_SIZES } from "@/services/consts/explorer";
+import {
+  FilterOperatorAll,
+  INITIAL_PAGE,
+  PAGE_SIZES,
+} from "@/services/consts/explorer";
 import {
   DatasetProfileResponse,
   FilterOperatorType,
@@ -98,7 +102,7 @@ export function ResourceProvider({
     Record<string, boolean>
   >({});
 
-  const [page, setPage] = useState<number>(0);
+  const [page, setPage] = useState<number>(INITIAL_PAGE);
   const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[0]);
 
   const [sortColumn, setSortColumn] = useState<string | null>(null);
