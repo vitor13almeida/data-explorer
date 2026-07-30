@@ -20,10 +20,28 @@
       "totalItems": "Total de registos",
       "resourceId": "ID do recurso",
       "datasetId": "ID do conjunto de dados",
-      "fields": "Campos"
+      "fields": "Campos",
+      "totalColumns": "Total de colunas",
+      "categoricalColumns": "Colunas categóricas",
+      "uniqueValues": "Valores únicos",
+      "formatTooltip": "Formato dos dados",
+      "typeTooltip": "Tipo de dados",
+      "scoreTooltip": "Confiança na deteção do tipo"
     },
-    "stats": {
-      "title": "Métricas"
+    "metrics": {
+      "title": "Métricas",
+      "distinct": "Valores distintos",
+      "missing": "Valores em falta",
+      "min": "Mínimo",
+      "max": "Máximo",
+      "mean": "Média",
+      "std": "Desvio padrão",
+      "topValues": "Valores mais frequentes",
+      "empty": "Não existem métricas disponíveis.",
+      "duplicates": "Duplicados",
+      "encoding": "Codificação",
+      "separator": "Separador",
+      "categorical": "Categórico"
     },
     "chart": {
       "title": "Gráfico"

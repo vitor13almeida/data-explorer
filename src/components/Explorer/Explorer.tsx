@@ -12,8 +12,9 @@ import DataNumbers from "./DataNumbers";
 import { useResourceContext } from "@/hooks/useResourceContext";
 import { exportToCsv } from "@/utils/exportToCsv";
 import StructureView from "./Views/StructureView";
+import MetricsView from "./Views/MetricsView";
 
-type ViewType = "table" | "structure" | "stats" | "chart";
+type ViewType = "table" | "structure" | "metrics" | "chart";
 
 export default function Explorer() {
   const { t: te } = useTranslation("explorer");
@@ -51,8 +52,12 @@ export default function Explorer() {
             <StructureView />
           </>
         );
-      case "stats":
-        return <>{te("views.stats.title")}...</>;
+      case "metrics":
+        return (
+          <>
+            <MetricsView />
+          </>
+        );
       case "chart":
         return (
           <>
@@ -70,17 +75,15 @@ export default function Explorer() {
       <div className="w-full flex flex-col gap-32">
         <div className="flex flex-col md:flex-row gap-32 md:gap-64 w-full items-center">
           <div className="grow w-full md:w-auto">
-            <ButtonGroup
-              orientation={isMobbile ? "vertical" : "horizontal"}
-            >
+            <ButtonGroup orientation={isMobbile ? "vertical" : "horizontal"}>
               <Button onClick={() => handleSelectView("table")}>
                 {te("views.table.title")}
               </Button>
               <Button onClick={() => handleSelectView("structure")}>
                 {te("views.structure.title")}
               </Button>
-              <Button onClick={() => handleSelectView("stats")}>
-                {te("views.stats.title")}
+              <Button onClick={() => handleSelectView("metrics")}>
+                {te("views.metrics.title")}
               </Button>
               <Button onClick={() => handleSelectView("chart")}>
                 {te("views.chart.title")}

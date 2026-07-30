@@ -20,10 +20,28 @@
       "totalItems": "Total records",
       "resourceId": "Resource ID",
       "datasetId": "Dataset ID",
-      "fields": "Fields"
+      "fields": "Fields",
+      "totalColumns": "Total columns",
+      "categoricalColumns": "Categorical columns",
+      "uniqueValues": "Unique values",
+      "formatTooltip": "Data format",
+      "typeTooltip": "Data type",
+      "scoreTooltip": "Type detection confidence"
     },
-    "stats": {
-      "title": "Metrics"
+    "metrics": {
+      "title": "Metrics",
+      "distinct": "Distinct values",
+      "missing": "Missing values",
+      "min": "Minimum",
+      "max": "Maximum",
+      "mean": "Mean",
+      "std": "Standard deviation",
+      "topValues": "Most frequent values",
+      "empty": "No metrics available.",
+      "duplicates": "Duplicates",
+      "encoding": "Encoding",
+      "separator": "Separator",
+      "categorical": "Categorical"
     },
     "chart": {
       "title": "Chart"
