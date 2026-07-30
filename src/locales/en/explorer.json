@@ -44,7 +44,25 @@
       "categorical": "Categorical"
     },
     "chart": {
-      "title": "Chart"
+      "title": "Chart",
+      "xAxis": "X Axis",
+      "yAxis": "Y Axis",
+      "rAxis": "R Axis",
+      "axisPlaceholder": "Select a column",
+      "chartType": "Chart type",
+      "chartTypePlaceholder": "Select a type",
+      "noData": "No data available.",
+      "noNumericData": "No numeric data available.",
+      "types": {
+        "Line": "Line",
+        "Bar": "Bar",
+        "Radar": "Radar",
+        "Doughnut": "Doughnut",
+        "Polar Area": "Polar Area",
+        "Bubble": "Bubble",
+        "Pie": "Pie",
+        "Scatter": "Scatter"
+      }
     }
   },
   "actions": {

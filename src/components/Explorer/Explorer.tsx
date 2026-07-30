@@ -13,6 +13,7 @@ import { useResourceContext } from "@/hooks/useResourceContext";
 import { exportToCsv } from "@/utils/exportToCsv";
 import StructureView from "./Views/StructureView";
 import MetricsView from "./Views/MetricsView";
+import ChartView from "./Views/ChartView";
 
 type ViewType = "table" | "structure" | "metrics" | "chart";
 
@@ -62,7 +63,7 @@ export default function Explorer() {
         return (
           <>
             <DataNumbers />
-            <div>{te("views.chart.title")}...</div>
+            <ChartView />
           </>
         );
       default:

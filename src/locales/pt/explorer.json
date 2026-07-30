@@ -44,7 +44,25 @@
       "categorical": "Categórico"
     },
     "chart": {
-      "title": "Gráfico"
+      "title": "Gráfico",
+      "xAxis": "Eixo X",
+      "yAxis": "Eixo Y",
+      "rAxis": "Eixo R",
+      "axisPlaceholder": "Selecione uma coluna",
+      "chartType": "Tipo de gráfico",
+      "chartTypePlaceholder": "Selecione um tipo",
+      "noData": "Não existem dados disponíveis.",
+      "noNumericData": "Não existem dados numéricos disponíveis.",
+      "types": {
+        "Line": "Linha",
+        "Bar": "Barras",
+        "Radar": "Radar",
+        "Doughnut": "Anel",
+        "Polar Area": "Área polar",
+        "Bubble": "Bolhas",
+        "Pie": "Circular",
+        "Scatter": "Dispersão"
+      }
     }
   },
   "actions": {
