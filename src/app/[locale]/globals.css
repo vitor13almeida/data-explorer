@@ -29,3 +29,7 @@ button.operator-drawer-trigger {
 .agora-button-group {
   width: 100% !important;
 }
+
+.chart-page-size-selector .agora-input-select .agora-input-select-label {
+  display: none !important;
+}
