@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Table } from "@/components/Shared/Table";
 import { useResourceContext } from "@/hooks/useResourceContext";
-import { PAGE_SIZES } from "@/services/consts/explorer";
+import { INITIAL_PAGE, PAGE_SIZES } from "@/services/consts/explorer";
 import { useTranslation } from "react-i18next";
 import { SortOrder } from "@ama-pt/agora-design-system";
 
@@ -44,7 +44,7 @@ export default function TableView() {
   const handleChangePageSize = (newSize: number) => {
     if (PAGE_SIZES.includes(newSize)) {
       setPageSize(newSize);
-      setPage(1);
+      setPage(INITIAL_PAGE);
     }
   };
 
@@ -97,7 +97,7 @@ export default function TableView() {
   }
 
   return (
-    <div className="max-h-[800px] overflow-y-auto">
+    <div className="max-h-[600px] overflow-y-auto">
       <Table.Root
         sortDescription={currentSortDescription}
         paginationProps={{

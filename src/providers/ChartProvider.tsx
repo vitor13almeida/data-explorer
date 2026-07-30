@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, Dispatch, ReactNode, useMemo, useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useResourceContext } from "@/hooks/useResourceContext";
 import { CHART_TYPES_WITH_R, ChartType } from "@/services/types/charts";
 
@@ -49,7 +56,7 @@ export function ChartProvider({ children }: { children: ReactNode }) {
   const showR = CHART_TYPES_WITH_R.includes(chart);
   const hasNumericData = numericKeys.length > 0;
 
-  useMemo(() => {
+  useEffect(() => {
     if (keys.length > 0 && !xAxisKey) setXAxisKey(keys[0]);
     if (numericKeys.length > 0 && !yAxisKey) setYAxisKey(numericKeys[0]);
   }, [keys, numericKeys]);

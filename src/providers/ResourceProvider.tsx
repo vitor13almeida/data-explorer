@@ -260,6 +260,8 @@ export function ResourceProvider({
 
     appliedHeadersVisibility.current = { ...headersVisibility };
 
+    setPage(INITIAL_PAGE);
+
     void setUrlParams();
     void loadData();
   }, [filters, filtersOperator, setUrlParams, loadData, headersVisibility]);
@@ -281,6 +283,8 @@ export function ResourceProvider({
 
     setHeadersVisibility(fv);
     appliedHeadersVisibility.current = { ...fv };
+
+    setPage(INITIAL_PAGE);
 
     void setUrlParams();
     void loadData();
@@ -306,10 +310,10 @@ export function ResourceProvider({
 
         switch (key) {
           case "page":
-            setPage(value ? (Number(value) ?? 0) : 0);
+            setPage(value ? Number(value) || INITIAL_PAGE : INITIAL_PAGE);
             break;
           case "page_size":
-            setPageSize(value ? (Number(value) ?? 0) : 0);
+            setPageSize(value ? Number(value) || PAGE_SIZES[0] : PAGE_SIZES[0]);
             break;
           case "columns": {
             const colsParams = value.split(",");

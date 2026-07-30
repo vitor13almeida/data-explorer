@@ -5,7 +5,7 @@ import DropdownSection from "@/components/Shared/Dropdown/DropdownSection";
 import InputSelect from "@/components/Shared/Input/InputSelect";
 import Button from "@/components/Shared/Button/Button";
 import { useResourceContext } from "@/hooks/useResourceContext";
-import { PAGE_SIZES } from "@/services/consts/explorer";
+import { INITIAL_PAGE, PAGE_SIZES } from "@/services/consts/explorer";
 import { DropdownOptionProps } from "@ama-pt/agora-design-system";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -21,7 +21,7 @@ export default function ChartPagination() {
     useResourceContext();
 
   const totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize));
-  const isFirstPage = page <= 1;
+  const isFirstPage = page <= INITIAL_PAGE;
   const isLastPage = page >= totalPages;
   const rangeStart = totalFiltered === 0 ? 0 : (page - 1) * pageSize + 1;
   const rangeEnd = Math.min(page * pageSize, totalFiltered);
@@ -30,7 +30,7 @@ export default function ChartPagination() {
     const value = Number(extractValue(e));
     if (PAGE_SIZES.includes(value)) {
       setPageSize(value);
-      setPage(1);
+      setPage(INITIAL_PAGE);
     }
   };
 
@@ -57,7 +57,7 @@ export default function ChartPagination() {
         <span className="text-m-regular text-neutral-500 leading-none">
           {te("pagination.itemsPerPage")}
         </span>
-        <div className="w-128 chart-page-size-selector">
+        <div className="w-128">
           <InputSelect
             label=""
             placeholder=""
@@ -81,15 +81,14 @@ export default function ChartPagination() {
 
       <div className="flex items-center gap-4">
         <Button
-          type="button"
           appearance="outline"
+          hasIcon={true}
+          iconOnly={true}
+          trailingIcon="agora-line-chevron-left"
+          trailingIconHover="agora-line-chevron-left"
           disabled={isFirstPage}
           onClick={() => setPage(page - 1)}
           aria-label={te("pagination.prev")}
-          hasIcon
-          iconOnly
-          trailingIcon="agora-line-chevron-left"
-          trailingIconHover="agora-line-chevron-left"
         />
 
         <span className="text-m-regular text-neutral-700 min-w-[80px] text-center">
@@ -100,15 +99,14 @@ export default function ChartPagination() {
         </span>
 
         <Button
-          type="button"
           appearance="outline"
+          hasIcon={true}
+          iconOnly={true}
+          trailingIcon="agora-line-chevron-right"
+          trailingIconHover="agora-line-chevron-right"
           disabled={isLastPage}
           onClick={() => setPage(page + 1)}
           aria-label={te("pagination.next")}
-          hasIcon
-          iconOnly
-          trailingIcon="agora-line-chevron-right"
-          trailingIconHover="agora-line-chevron-right"
         />
       </div>
     </div>
