@@ -13,6 +13,11 @@
       "description": "An unexpected error occurred. Please try again later.",
       "goBack": "Go back",
       "tryAgain": "Try again"
+    },
+    "resourceNotFound": {
+      "title": "Resource not found",
+      "description": "The resource you're looking for doesn't exist or has been removed.",
+      "goBack": "Go back"
     }
   }
 }

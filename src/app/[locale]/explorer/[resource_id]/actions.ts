@@ -60,6 +60,14 @@ export async function getData(
 
     const responseBody = await readResponseBody(response);
 
+    if (response.status === 404) {
+      return {
+        status: 404,
+        error: "Resource not found",
+        errors: [],
+      };
+    }
+
     if (!response.ok) {
       const errorObject = responseBody as
         ApiValidationErrorResponse | Record<string, unknown> | string | null;
@@ -95,7 +103,6 @@ export async function getData(
   } catch (error: any) {
     console.error("Falha no fetch de dados do recurso:", error);
 
-    // Distinguish connection errors from other errors
     const isNetworkError =
       error instanceof TypeError || error.message.includes("fetch");
 
@@ -124,6 +131,14 @@ export async function getStructure(
     });
 
     const responseBody = await readResponseBody(response);
+
+    if (response.status === 404) {
+      return {
+        status: 404,
+        error: "Resource not found",
+        errors: [],
+      };
+    }
 
     if (!response.ok) {
       const errorObject = responseBody as
@@ -163,7 +178,6 @@ export async function getStructure(
   } catch (error: any) {
     console.error("Falha no fetch de dados do recurso:", error);
 
-    // Distinguish connection errors from other errors
     const isNetworkError =
       error instanceof TypeError || error.message.includes("fetch");
 
