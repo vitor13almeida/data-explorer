@@ -3,7 +3,7 @@
 import {
   createContext,
   Dispatch,
-  MutableRefObject,
+  RefObject,
   ReactNode,
   useCallback,
   useEffect,
@@ -32,7 +32,7 @@ export type ChartContextType = {
 
   hasNumericData: boolean;
 
-  chartRef: MutableRefObject<ChartJS | null>;
+  chartRef: RefObject<ChartJS | null>;
   exportChartAsPng: () => void;
 };
 
