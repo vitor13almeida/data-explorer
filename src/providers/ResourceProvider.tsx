@@ -1,6 +1,6 @@
 "use client";
 
-import { getData } from "@/app/[locale]/explore/[resource_id]/actions";
+import { getData } from "@/app/[locale]/explorer/[resource_id]/actions";
 import {
   FilterOperatorAll,
   INITIAL_PAGE,
