@@ -10,6 +10,7 @@ import Filters from "./Filters/Filters";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import DataNumbers from "./DataNumbers";
 import { useResourceContext } from "@/hooks/useResourceContext";
+import { useChartContext } from "@/hooks/useChartContext";
 import { exportToCsv } from "@/utils/exportToCsv";
 import StructureView from "./Views/StructureView";
 import MetricsView from "./Views/MetricsView";
@@ -17,26 +18,89 @@ import ChartView from "./Views/ChartView";
 
 type ViewType = "table" | "structure" | "metrics" | "chart";
 
-export default function Explorer() {
+function ExplorerActions({ selectedView }: { selectedView: ViewType }) {
   const { t: te } = useTranslation("explorer");
-
   const { isLoadingData, data } = useResourceContext();
 
-  const isMobbile = useMediaQuery("(min-width: 768px)");
+  const hasData = !isLoadingData && data && data.data.length > 0;
 
-  const [selectedView, setSelectedView] = useState<ViewType>("table");
-
-  const showActions = ["table", "chart"].includes(selectedView);
-
-  const handleSelectView = (view: ViewType) => {
-    setSelectedView(view);
-  };
-
-  const handleClickExport = () => {
-    if (!isLoadingData && data && data.data.length > 0) {
+  const handleClickExportCsv = () => {
+    if (hasData) {
       exportToCsv(data.data);
     }
   };
+
+  if (selectedView === "table") {
+    return (
+      <div className="flex flex-row gap-8 flex-wrap shrink">
+        <FiltersToogle />
+        <Button
+          iconOnly
+          hasIcon
+          leadingIcon="agora-line-file-share"
+          leadingIconHover="agora-line-file-share"
+          title={te("actions.exportCsv")}
+          appearance="outline"
+          disabled={!hasData}
+          onClick={handleClickExportCsv}
+        />
+      </div>
+    );
+  }
+
+  if (selectedView === "chart") {
+    return <ChartActions />;
+  }
+
+  return null;
+}
+
+function ChartActions() {
+  const { t: te } = useTranslation("explorer");
+  const { isLoadingData, data } = useResourceContext();
+  const { exportChartAsPng } = useChartContext();
+
+  const hasData = !isLoadingData && data && data.data.length > 0;
+
+  const handleClickExportCsv = () => {
+    if (hasData) {
+      exportToCsv(data!.data);
+    }
+  };
+
+  return (
+    <div className="flex flex-row gap-8 flex-wrap shrink">
+      <FiltersToogle />
+      <Button
+        iconOnly
+        hasIcon
+        leadingIcon="agora-line-document"
+        leadingIconHover="agora-line-document"
+        title={te("actions.exportCsv")}
+        appearance="outline"
+        disabled={!hasData}
+        onClick={handleClickExportCsv}
+      />
+      <Button
+        iconOnly
+        hasIcon
+        leadingIcon="agora-line-bar-chart"
+        leadingIconHover="agora-line-bar-chart"
+        title={te("actions.exportChart")}
+        appearance="outline"
+        disabled={!hasData}
+        onClick={exportChartAsPng}
+      />
+    </div>
+  );
+}
+
+export default function Explorer() {
+  const { t: te } = useTranslation("explorer");
+
+  const isMobile = useMediaQuery("(min-width: 768px)");
+
+  const [selectedView, setSelectedView] = useState<ViewType>("table");
 
   const view = useMemo(() => {
     switch (selectedView) {
@@ -48,17 +112,9 @@ export default function Explorer() {
           </>
         );
       case "structure":
-        return (
-          <>
-            <StructureView />
-          </>
-        );
+        return <StructureView />;
       case "metrics":
-        return (
-          <>
-            <MetricsView />
-          </>
-        );
+        return <MetricsView />;
       case "chart":
         return (
           <>
@@ -72,46 +128,30 @@ export default function Explorer() {
   }, [selectedView]);
 
   return (
-    <>
-      <div className="w-full flex flex-col gap-32">
-        <div className="flex flex-col md:flex-row gap-32 md:gap-64 w-full items-center">
-          <div className="grow w-full md:w-auto">
-            <ButtonGroup orientation={isMobbile ? "vertical" : "horizontal"}>
-              <Button onClick={() => handleSelectView("table")}>
-                {te("views.table.title")}
-              </Button>
-              <Button onClick={() => handleSelectView("structure")}>
-                {te("views.structure.title")}
-              </Button>
-              <Button onClick={() => handleSelectView("metrics")}>
-                {te("views.metrics.title")}
-              </Button>
-              <Button onClick={() => handleSelectView("chart")}>
-                {te("views.chart.title")}
-              </Button>
-            </ButtonGroup>
-          </div>
-          {showActions && (
-            <div className="flex flex-row gap-8 flex-wrap skrink">
-              <FiltersToogle />
-              <Button
-                iconOnly={true}
-                hasIcon={true}
-                leadingIcon="agora-line-file-share"
-                leadingIconHover="agora-line-file-share"
-                title={te("actions.export")}
-                appearance={"outline"}
-                disabled={!(!isLoadingData && data && data.data.length > 0)}
-                onClick={() => handleClickExport()}
-              />
-            </div>
-          )}
+    <div className="w-full flex flex-col gap-32">
+      <div className="flex flex-col md:flex-row gap-32 md:gap-64 w-full items-center">
+        <div className="grow w-full md:w-auto">
+          <ButtonGroup orientation={isMobile ? "vertical" : "horizontal"}>
+            <Button onClick={() => setSelectedView("table")}>
+              {te("views.table.title")}
+            </Button>
+            <Button onClick={() => setSelectedView("structure")}>
+              {te("views.structure.title")}
+            </Button>
+            <Button onClick={() => setSelectedView("metrics")}>
+              {te("views.metrics.title")}
+            </Button>
+            <Button onClick={() => setSelectedView("chart")}>
+              {te("views.chart.title")}
+            </Button>
+          </ButtonGroup>
         </div>
-        <div className="w-full">
-          <Filters />
-        </div>
-        <div className="w-full flex flex-col gap-16">{view}</div>
+        <ExplorerActions selectedView={selectedView} />
       </div>
-    </>
+      <div className="w-full">
+        <Filters />
+      </div>
+      <div className="w-full flex flex-col gap-16">{view}</div>
+    </div>
   );
 }

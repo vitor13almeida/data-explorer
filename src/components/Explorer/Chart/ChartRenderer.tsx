@@ -1,6 +1,6 @@
 "use client";
 
-import { ComponentType, useMemo } from "react";
+import { useMemo, useCallback, ComponentType } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -70,12 +70,19 @@ const CHART_COMPONENTS: Record<
 };
 
 export default function ChartRenderer() {
-  const { xAxisKey, yAxisKey, rAxisKey, chart } = useChartContext();
+  const { xAxisKey, yAxisKey, rAxisKey, chart, chartRef } = useChartContext();
   const { data: resourceData } = useResourceContext();
 
   const rows = useMemo(
     () => (resourceData?.data ?? []).map(({ __id, ...rest }) => rest),
     [resourceData],
+  );
+
+  const handleRef = useCallback(
+    (instance: ChartJS | undefined | null) => {
+      chartRef.current = instance ?? null;
+    },
+    [chartRef],
   );
 
   const standardData = useMemo(
@@ -114,9 +121,9 @@ export default function ChartRenderer() {
   if (rows.length === 0) return null;
 
   if (chart === "Bubble") {
-    return <Bubble data={bubbleData} />;
+    return <Bubble ref={handleRef} data={bubbleData} />;
   }
 
   const Component = CHART_COMPONENTS[chart];
-  return <Component data={standardData as any} />;
+  return <Component ref={handleRef} data={standardData} />;
 }

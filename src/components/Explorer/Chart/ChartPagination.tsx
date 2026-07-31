@@ -57,10 +57,10 @@ export default function ChartPagination() {
         <span className="text-m-regular text-neutral-500 leading-none">
           {te("pagination.itemsPerPage")}
         </span>
-        <div className="w-128">
+        <div className="w-128 chart-page-size-selector">
           <InputSelect
-            label=""
-            placeholder=""
+            label={""}
+            placeholder={""}
             multiple={false}
             hideSectionNames
             value={String(pageSize)}

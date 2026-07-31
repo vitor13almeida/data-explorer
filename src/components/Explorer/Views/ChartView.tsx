@@ -6,9 +6,8 @@ import { useChartContext } from "@/hooks/useChartContext";
 import ChartSelectors from "../Chart/ChartSelectors";
 import ChartRenderer from "../Chart/ChartRenderer";
 import ChartPagination from "../Chart/ChartPagination";
-import { ChartProvider } from "@/providers/ChartProvider";
 
-function ChartContent() {
+export default function ChartView() {
   const { t: te } = useTranslation("explorer");
   const { data } = useResourceContext();
   const { hasNumericData } = useChartContext();
@@ -37,13 +36,5 @@ function ChartContent() {
       <ChartRenderer />
       <ChartPagination />
     </div>
-  );
-}
-
-export default function ChartView() {
-  return (
-    <ChartProvider>
-      <ChartContent />
-    </ChartProvider>
   );
 }

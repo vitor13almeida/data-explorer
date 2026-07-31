@@ -75,7 +75,8 @@
   "actions": {
     "filter": "Filtrar",
     "clear": "Limpar",
-    "export": "Exportar"
+    "exportCsv": "Exportar CSV",
+    "exportChart": "Exportar gráfico"
   },
   "errors": {
     "data": {

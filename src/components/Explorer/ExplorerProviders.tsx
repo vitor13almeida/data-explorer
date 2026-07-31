@@ -1,5 +1,6 @@
 "use client";
 
+import { ChartProvider } from "@/providers/ChartProvider";
 import { ResourceProvider } from "@/providers/ResourceProvider";
 import { DatasetProfileResponse } from "@/services/types";
 import { ToastProvider } from "@ama-pt/agora-design-system";
@@ -19,7 +20,7 @@ export default function ExplorerProviders({
   return (
     <ToastProvider position={"bottom-right"}>
       <ResourceProvider resourceId={resourceId} structure={structure}>
-        {children}
+        <ChartProvider>{children}</ChartProvider>
       </ResourceProvider>
     </ToastProvider>
   );

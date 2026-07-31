@@ -3,13 +3,17 @@
 import {
   createContext,
   Dispatch,
+  MutableRefObject,
   ReactNode,
+  useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { useResourceContext } from "@/hooks/useResourceContext";
 import { CHART_TYPES_WITH_R, ChartType } from "@/services/types/charts";
+import { Chart as ChartJS } from "chart.js";
 
 export type ChartContextType = {
   keys: string[];
@@ -27,6 +31,9 @@ export type ChartContextType = {
   showR: boolean;
 
   hasNumericData: boolean;
+
+  chartRef: MutableRefObject<ChartJS | null>;
+  exportChartAsPng: () => void;
 };
 
 export const ChartContext = createContext<ChartContextType | undefined>(
@@ -53,8 +60,21 @@ export function ChartProvider({ children }: { children: ReactNode }) {
   const [rAxisKey, setRAxisKey] = useState("");
   const [chart, setChart] = useState<ChartType>("Line");
 
+  const chartRef = useRef<ChartJS | null>(null);
+
   const showR = CHART_TYPES_WITH_R.includes(chart);
   const hasNumericData = numericKeys.length > 0;
+
+  const exportChartAsPng = useCallback(() => {
+    const instance = chartRef.current;
+    if (!instance) return;
+
+    const url = instance.toBase64Image("image/png", 1);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "chart.png";
+    link.click();
+  }, []);
 
   useEffect(() => {
     if (keys.length > 0 && !xAxisKey) setXAxisKey(keys[0]);
@@ -75,6 +95,8 @@ export function ChartProvider({ children }: { children: ReactNode }) {
       setChart,
       showR,
       hasNumericData,
+      chartRef,
+      exportChartAsPng,
     }),
     [
       keys,
@@ -85,6 +107,7 @@ export function ChartProvider({ children }: { children: ReactNode }) {
       chart,
       showR,
       hasNumericData,
+      exportChartAsPng,
     ],
   );
 
