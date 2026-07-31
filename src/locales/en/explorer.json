@@ -41,7 +41,7 @@
     "chart": {
       "title": "Chart",
       "xAxis": "X Axis",
-      "yAxis": "Y Axis",
+      "yAxes": "Y Axes",
       "rAxis": "R Axis",
       "axisPlaceholder": "Select a column",
       "chartType": "Chart type",

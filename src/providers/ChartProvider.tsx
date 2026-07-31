@@ -12,8 +12,9 @@ import {
   useState,
 } from "react";
 import { useResourceContext } from "@/hooks/useResourceContext";
-import { CHART_TYPES_WITH_R, ChartType } from "@/services/types/charts";
 import { Chart as ChartJS } from "chart.js";
+import { CHART_TYPES_WITH_R, ChartType } from "@/services/types/charts";
+import { CHART_TYPES_SINGLE_DATASET } from "@/services/consts/chart";
 
 export type ChartContextType = {
   keys: string[];
@@ -21,14 +22,15 @@ export type ChartContextType = {
 
   xAxisKey: string;
   setXAxisKey: Dispatch<string>;
-  yAxisKey: string;
-  setYAxisKey: Dispatch<string>;
+  yAxisKeys: string[];
+  setYAxisKeys: Dispatch<string[]>;
   rAxisKey: string;
   setRAxisKey: Dispatch<string>;
 
   chart: ChartType;
   setChart: Dispatch<ChartType>;
   showR: boolean;
+  multipleDatasets: boolean;
 
   hasNumericData: boolean;
 
@@ -56,13 +58,14 @@ export function ChartProvider({ children }: { children: ReactNode }) {
   );
 
   const [xAxisKey, setXAxisKey] = useState("");
-  const [yAxisKey, setYAxisKey] = useState("");
+  const [yAxisKeys, setYAxisKeys] = useState<string[]>([]);
   const [rAxisKey, setRAxisKey] = useState("");
   const [chart, setChart] = useState<ChartType>("Line");
 
   const chartRef = useRef<ChartJS | null>(null);
 
   const showR = CHART_TYPES_WITH_R.includes(chart);
+  const multipleDatasets = !CHART_TYPES_SINGLE_DATASET.includes(chart);
   const hasNumericData = numericKeys.length > 0;
 
   const exportChartAsPng = useCallback(() => {
@@ -78,8 +81,15 @@ export function ChartProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (keys.length > 0 && !xAxisKey) setXAxisKey(keys[0]);
-    if (numericKeys.length > 0 && !yAxisKey) setYAxisKey(numericKeys[0]);
+    if (numericKeys.length > 0 && yAxisKeys.length === 0)
+      setYAxisKeys([numericKeys[0]]);
   }, [keys, numericKeys]);
+
+  useEffect(() => {
+    if (!multipleDatasets && yAxisKeys.length > 1) {
+      setYAxisKeys([yAxisKeys[0]]);
+    }
+  }, [multipleDatasets]);
 
   const value = useMemo(
     () => ({
@@ -87,13 +97,14 @@ export function ChartProvider({ children }: { children: ReactNode }) {
       numericKeys,
       xAxisKey,
       setXAxisKey,
-      yAxisKey,
-      setYAxisKey,
+      yAxisKeys,
+      setYAxisKeys,
       rAxisKey,
       setRAxisKey,
       chart,
       setChart,
       showR,
+      multipleDatasets,
       hasNumericData,
       chartRef,
       exportChartAsPng,
@@ -102,10 +113,11 @@ export function ChartProvider({ children }: { children: ReactNode }) {
       keys,
       numericKeys,
       xAxisKey,
-      yAxisKey,
+      yAxisKeys,
       rAxisKey,
       chart,
       showR,
+      multipleDatasets,
       hasNumericData,
       exportChartAsPng,
     ],

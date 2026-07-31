@@ -30,44 +30,6 @@ function ExplorerActions({ selectedView }: { selectedView: ViewType }) {
     }
   };
 
-  if (selectedView === "table") {
-    return (
-      <div className="flex flex-row gap-8 flex-wrap shrink">
-        <FiltersToogle />
-        <Button
-          iconOnly
-          hasIcon
-          leadingIcon="agora-line-file-share"
-          leadingIconHover="agora-line-file-share"
-          title={te("actions.exportCsv")}
-          appearance="outline"
-          disabled={!hasData}
-          onClick={handleClickExportCsv}
-        />
-      </div>
-    );
-  }
-
-  if (selectedView === "chart") {
-    return <ChartActions />;
-  }
-
-  return null;
-}
-
-function ChartActions() {
-  const { t: te } = useTranslation("explorer");
-  const { isLoadingData, data } = useResourceContext();
-  const { exportChartAsPng } = useChartContext();
-
-  const hasData = !isLoadingData && data && data.data.length > 0;
-
-  const handleClickExportCsv = () => {
-    if (hasData) {
-      exportToCsv(data!.data);
-    }
-  };
-
   return (
     <div className="flex flex-row gap-8 flex-wrap shrink">
       <FiltersToogle />
@@ -81,6 +43,20 @@ function ChartActions() {
         disabled={!hasData}
         onClick={handleClickExportCsv}
       />
+      {selectedView === "chart" && <ChartActions />}
+    </div>
+  );
+}
+
+function ChartActions() {
+  const { t: te } = useTranslation("explorer");
+  const { isLoadingData, data } = useResourceContext();
+  const { exportChartAsPng } = useChartContext();
+
+  const hasData = !isLoadingData && data && data.data.length > 0;
+
+  return (
+    <>
       <Button
         iconOnly
         hasIcon
@@ -91,7 +67,7 @@ function ChartActions() {
         disabled={!hasData}
         onClick={exportChartAsPng}
       />
-    </div>
+    </>
   );
 }
 

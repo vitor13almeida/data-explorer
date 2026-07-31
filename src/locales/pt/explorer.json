@@ -41,7 +41,7 @@
     "chart": {
       "title": "Gráfico",
       "xAxis": "Eixo X",
-      "yAxis": "Eixo Y",
+      "yAxes": "Eixos Y",
       "rAxis": "Eixo R",
       "axisPlaceholder": "Selecione uma coluna",
       "chartType": "Tipo de gráfico",

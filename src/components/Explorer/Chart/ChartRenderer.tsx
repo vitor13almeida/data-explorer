@@ -34,7 +34,7 @@ import {
 import { useChartContext } from "@/hooks/useChartContext";
 import { useResourceContext } from "@/hooks/useResourceContext";
 import { ChartType } from "@/services/types/charts";
-import { CHART_COLOR } from "@/services/consts/chart";
+import { getChartColor } from "@/services/utils/charts";
 
 ChartJS.register(
   CategoryScale,
@@ -70,7 +70,7 @@ const CHART_COMPONENTS: Record<
 };
 
 export default function ChartRenderer() {
-  const { xAxisKey, yAxisKey, rAxisKey, chart, chartRef } = useChartContext();
+  const { xAxisKey, yAxisKeys, rAxisKey, chart, chartRef } = useChartContext();
   const { data: resourceData } = useResourceContext();
 
   const rows = useMemo(
@@ -88,37 +88,39 @@ export default function ChartRenderer() {
   const standardData = useMemo(
     () => ({
       labels: rows.map((d) => d[xAxisKey] ?? ""),
-      datasets: [
-        {
-          label: yAxisKey,
-          data: rows.map((d) => Number(d[yAxisKey])),
-          borderColor: CHART_COLOR.border,
-          backgroundColor: CHART_COLOR.background,
-        },
-      ],
+      datasets: yAxisKeys.map((key, index) => {
+        const color = getChartColor(index);
+        return {
+          label: key,
+          data: rows.map((d) => Number(d[key])),
+          borderColor: color.border,
+          backgroundColor: color.background,
+        };
+      }),
     }),
-    [rows, xAxisKey, yAxisKey],
+    [rows, xAxisKey, yAxisKeys],
   );
 
   const bubbleData = useMemo(
     () => ({
-      datasets: [
-        {
-          label: `${yAxisKey} vs ${xAxisKey}`,
+      datasets: yAxisKeys.map((key, index) => {
+        const color = getChartColor(index);
+        return {
+          label: `${key} vs ${xAxisKey}`,
           data: rows.map((d) => ({
             x: Number(d[xAxisKey]),
-            y: Number(d[yAxisKey]),
+            y: Number(d[key]),
             r: Number(d[rAxisKey] || 5),
           })),
-          borderColor: CHART_COLOR.border,
-          backgroundColor: CHART_COLOR.background,
-        },
-      ],
+          borderColor: color.border,
+          backgroundColor: color.background,
+        };
+      }),
     }),
-    [rows, xAxisKey, yAxisKey, rAxisKey],
+    [rows, xAxisKey, yAxisKeys, rAxisKey],
   );
 
-  if (rows.length === 0) return null;
+  if (rows.length === 0 || yAxisKeys.length === 0) return null;
 
   if (chart === "Bubble") {
     return <Bubble ref={handleRef} data={bubbleData} />;

@@ -12,9 +12,14 @@ import { useTranslation } from "react-i18next";
 
 function useDropdownOptions(
   items: readonly string[],
-  selected: string,
+  selected: string | string[],
   prefix: string,
 ) {
+  const selectedSet = useMemo(
+    () => new Set(Array.isArray(selected) ? selected : [selected]),
+    [selected],
+  );
+
   return useMemo(
     () => (
       <DropdownSection label={`section-${prefix}`} name={`section-${prefix}`}>
@@ -22,19 +27,23 @@ function useDropdownOptions(
           <DropdownOption
             key={`${prefix}-${index}`}
             value={item}
-            selected={item === selected}
+            selected={selectedSet.has(item)}
           >
             {item}
           </DropdownOption>
         ))}
       </DropdownSection>
     ),
-    [items, selected, prefix],
+    [items, selectedSet, prefix],
   );
 }
 
 function extractValue(event: DropdownOptionProps[]): string {
   return event[0]?.value ?? "";
+}
+
+function extractValues(event: DropdownOptionProps[]): string[] {
+  return event.map((e) => e.value).filter(Boolean) as string[];
 }
 
 export default function ChartSelectors() {
@@ -45,17 +54,18 @@ export default function ChartSelectors() {
     numericKeys,
     xAxisKey,
     setXAxisKey,
-    yAxisKey,
-    setYAxisKey,
+    yAxisKeys,
+    setYAxisKeys,
     rAxisKey,
     setRAxisKey,
     chart,
     setChart,
     showR,
+    multipleDatasets,
   } = useChartContext();
 
   const optionsX = useDropdownOptions(keys, xAxisKey, "x");
-  const optionsY = useDropdownOptions(numericKeys, yAxisKey, "y");
+  const optionsY = useDropdownOptions(numericKeys, yAxisKeys, "y");
   const optionsR = useDropdownOptions(numericKeys, rAxisKey, "r");
 
   const optionsChart = useMemo(
@@ -74,6 +84,16 @@ export default function ChartSelectors() {
     ),
     [chart, te],
   );
+
+  const handleYChange = (e: DropdownOptionProps[]) => {
+    if (multipleDatasets) {
+      const values = extractValues(e);
+      setYAxisKeys(values.length > 0 ? values : []);
+    } else {
+      const value = extractValue(e);
+      setYAxisKeys(value ? [value] : []);
+    }
+  };
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-12 gap-16">
@@ -107,12 +127,14 @@ export default function ChartSelectors() {
 
       <div className="col-span-2 lg:col-span-3">
         <InputSelect
-          label={te("views.chart.yAxis")}
+          label={te(
+            multipleDatasets ? "views.chart.yAxes" : "views.chart.yAxis",
+          )}
           placeholder={te("views.chart.axisPlaceholder")}
-          multiple={false}
+          multiple={multipleDatasets}
           hideSectionNames
-          value={yAxisKey}
-          onChange={(e: DropdownOptionProps[]) => setYAxisKey(extractValue(e))}
+          value={multipleDatasets ? yAxisKeys.join(",") : (yAxisKeys[0] ?? "")}
+          onChange={handleYChange}
         >
           {optionsY}
         </InputSelect>
