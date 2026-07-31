@@ -97,7 +97,7 @@ export default function TableView() {
   }
 
   return (
-    <div className="max-h-[600px] overflow-y-auto">
+    <div className="max-h-[800px] overflow-y-auto">
       <Table.Root
         sortDescription={currentSortDescription}
         paginationProps={{
