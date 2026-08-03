@@ -16,7 +16,9 @@ import StructureView from "./Views/StructureView";
 import MetricsView from "./Views/MetricsView";
 import ChartView from "./Views/ChartView";
 
-type ViewType = "table" | "structure" | "metrics" | "chart";
+const VIEW_TYPES = ["table", "structure", "metrics", "chart"] as const;
+
+type ViewType = (typeof VIEW_TYPES)[number];
 
 function ChartActions() {
   const { t: te } = useTranslation("explorer");
@@ -118,18 +120,11 @@ export default function Explorer() {
       <div className="flex flex-col md:flex-row gap-32 md:gap-64 w-full items-center">
         <div className="grow w-full md:w-auto">
           <ButtonGroup orientation={isMobile ? "vertical" : "horizontal"}>
-            <Button onClick={() => setSelectedView("table")}>
-              {te("views.table.title")}
-            </Button>
-            <Button onClick={() => setSelectedView("structure")}>
-              {te("views.structure.title")}
-            </Button>
-            <Button onClick={() => setSelectedView("metrics")}>
-              {te("views.metrics.title")}
-            </Button>
-            <Button onClick={() => setSelectedView("chart")}>
-              {te("views.chart.title")}
-            </Button>
+            {VIEW_TYPES.map((view) => (
+              <Button key={view} onClick={() => setSelectedView(view)}>
+                {te(`views.${view}.title`)}
+              </Button>
+            ))}
           </ButtonGroup>
         </div>
         <ExplorerActions selectedView={selectedView} />
