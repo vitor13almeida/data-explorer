@@ -36,7 +36,14 @@
       "duplicates": "Duplicados",
       "encoding": "Codificação",
       "separator": "Separador",
-      "categorical": "Categórico"
+      "categorical": "Categórico",
+      "uniqueValues": "Valores únicos",
+      "alerts": {
+        "missingValues": "{{count}} coluna(s) com mais de {{threshold}}% de valores em falta",
+        "outliers": "{{count}} coluna(s) com possíveis valores atípicos",
+        "lowScore": "{{count}} coluna(s) com confiança na deteção do tipo abaixo de {{threshold}}%",
+        "duplicates": "{{percentage}}% dos registos são duplicados"
+      }
     },
     "chart": {
       "title": "Gráfico",

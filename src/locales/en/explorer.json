@@ -36,7 +36,14 @@
       "duplicates": "Duplicates",
       "encoding": "Encoding",
       "separator": "Separator",
-      "categorical": "Categorical"
+      "categorical": "Categorical",
+      "uniqueValues": "Unique values",
+      "alerts": {
+        "missingValues": "{{count}} column(s) with more than {{threshold}}% missing values",
+        "outliers": "{{count}} column(s) with possible outliers",
+        "lowScore": "{{count}} column(s) with type detection confidence below {{threshold}}%",
+        "duplicates": "{{percentage}}% of records are duplicates"
+      }
     },
     "chart": {
       "title": "Chart",
