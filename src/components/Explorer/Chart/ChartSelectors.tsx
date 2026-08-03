@@ -132,6 +132,7 @@ export default function ChartSelectors() {
           )}
           placeholder={te("views.chart.axisPlaceholder")}
           multiple={multipleDatasets}
+          type={multipleDatasets ? "checkbox" : "text"}
           hideSectionNames
           value={multipleDatasets ? yAxisKeys.join(",") : (yAxisKeys[0] ?? "")}
           onChange={handleYChange}
