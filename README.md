@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Explorador de Dados Tabulares
 
-## Getting Started
+Uma aplicação web para explorar, analisar e visualizar dados abertos de forma interativa. Construída com Next.js e pensada para tornar acessível a qualquer pessoa a consulta dos conjuntos de dados disponibilizados no portal dados.gov.pt.
 
-First, run the development server:
+O objetivo é simples: dado um recurso com dados estruturados, permitir que o utilizador os explore de diferentes perspetivas, desde a consulta direta em tabela até à análise visual através de gráficos, passando pela inspeção da estrutura e métricas estatísticas de cada coluna.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Como funciona
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Os dados disponíveis no dados.gov.pt são processados pelo Hydra, um serviço que percorre os conjuntos de dados do portal, analisa a sua estrutura e prepara os dados para consulta. O resultado desse processamento fica acessível através da Tabular API, que expõe os dados já estruturados, com informação sobre tipos de colunas, perfis estatísticos e capacidades de filtragem e ordenação.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Esta aplicação consome a Tabular API e apresenta os dados em quatro vistas complementares. Toda a navegação, filtragem, ordenação e paginação é refletida no URL, permitindo partilhar e guardar o estado exato de uma consulta.
 
-## Learn More
+A interface está disponível em português e inglês, adaptando-se automaticamente ao idioma do utilizador.
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Vistas disponíveis
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Tabela
 
-## Deploy on Vercel
+A vista principal. Mostra os dados em formato tabular com paginação, ordenação por coluna e a possibilidade de escolher quais as colunas visíveis. Cada coluna pode ser filtrada individualmente, com operadores que variam consoante o tipo de dados (texto, número, data ou booleano). Os filtros são validados localmente antes de serem enviados à API.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Estrutura
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Apresenta a informação técnica do recurso: número total de registos, identificadores do recurso e do dataset, número de colunas e quantas são categóricas. Abaixo, lista todos os campos com o respetivo formato, tipo de dados e a confiança na deteção automática do tipo.
+
+### Métricas
+
+Mostra um resumo estatístico do recurso e de cada coluna. A nível global, apresenta o número de duplicados, a codificação do ficheiro e o separador utilizado. Por coluna, mostra valores distintos, valores em falta, e para colunas numéricas inclui o mínimo, máximo, média e desvio padrão. As colunas categóricas mostram os valores mais frequentes com barras proporcionais e, quando têm poucos valores únicos, listam-nos como badges.
+
+### Gráfico
+
+Permite visualizar os dados num de oito tipos de gráfico: linha, barras, radar, anel, área polar, bolhas, circular e dispersão. O utilizador escolhe as colunas para os eixos e, nos tipos de gráfico que o suportam, pode selecionar múltiplas colunas no eixo Y para sobrepor datasets no mesmo gráfico, cada um com uma cor distinta. Inclui paginação própria e a possibilidade de exportar o gráfico como imagem.
+
+
+## Funcionalidades
+
+- Filtragem por coluna com operadores específicos por tipo de dados (contém, igual, diferente, maior, menor, nulo, entre outros)
+- Validação dos filtros com Zod antes do envio à API
+- Ordenação por qualquer coluna, refletida no URL
+- Paginação com controlo do número de itens por página
+- Visibilidade de colunas configurável
+- Exportação dos dados visíveis para ficheiro CSV
+- Exportação do gráfico como imagem PNG
+- Comparação de múltiplas colunas no mesmo gráfico
+- Estado completo da consulta persistido no URL (filtros, ordenação, página, colunas visíveis)
+- Interface bilingue em português e inglês
+- Páginas de erro dedicadas para recursos não encontrados e erros genéricos
+- Design responsivo que se adapta a dispositivos móveis e desktop
+
+
+## Arquitetura
+
+O fluxo de dados segue este caminho:
+
+1. O Hydra percorre os conjuntos de dados publicados no dados.gov.pt, analisa a estrutura de cada recurso e processa os dados para consulta
+2. A Tabular API disponibiliza os dados processados pelo Hydra, expondo endpoints para consulta de dados, estrutura e perfil estatístico de cada recurso
+3. Esta aplicação consome a Tabular API no lado do servidor (para a estrutura) e no lado do cliente (para os dados), apresentando tudo numa interface interativa
+
+
+## Tecnologias
+
+- Next.js 16 com App Router
+- React 19
+- TypeScript
+- Tailwind CSS 3
+- react-i18next para internacionalização
+- Agora Design System
+- Zod 4 para validação
+- Chart.js com react-chartjs-2
