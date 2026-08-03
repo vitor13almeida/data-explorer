@@ -51,7 +51,7 @@ function ExplorerActions({ selectedView }: { selectedView: ViewType }) {
 function ChartActions() {
   const { t: te } = useTranslation("explorer");
   const { isLoadingData, data } = useResourceContext();
-  const { exportChartAsPng } = useChartContext();
+  const { exportChartAsPng, toggleFullscreen } = useChartContext();
 
   const hasData = !isLoadingData && data && data.data.length > 0;
 
@@ -66,6 +66,16 @@ function ChartActions() {
         appearance="outline"
         disabled={!hasData}
         onClick={exportChartAsPng}
+      />
+      <Button
+        iconOnly
+        hasIcon
+        leadingIcon="agora-line-maximize"
+        leadingIconHover="agora-line-maximize"
+        title={te("actions.fullscreen")}
+        appearance="outline"
+        disabled={!hasData}
+        onClick={toggleFullscreen}
       />
     </>
   );

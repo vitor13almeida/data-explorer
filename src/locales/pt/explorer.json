@@ -77,7 +77,8 @@
     "filter": "Filtrar",
     "clear": "Limpar",
     "exportCsv": "Exportar CSV",
-    "exportChart": "Exportar gráfico"
+    "exportChart": "Exportar gráfico",
+    "fullscreen": "Ecrã inteiro"
   },
   "errors": {
     "data": {

@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
 import { AgoraTailwindConfig } from "@ama-pt/agora-design-system";
 
 const TailwindConfig: Config = {
@@ -44,7 +45,12 @@ const TailwindConfig: Config = {
       },
     },
   },
-  plugins: AgoraTailwindConfig.plugins,
+  plugins: [
+    ...AgoraTailwindConfig.plugins,
+    plugin(function ({ addVariant }) {
+      addVariant("fullscreen", "&:fullscreen");
+    }),
+  ],
   safelist: [...AgoraTailwindConfig.safelist],
   corePlugins: {
     preflight: false,
