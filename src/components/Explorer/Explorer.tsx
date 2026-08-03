@@ -18,36 +18,6 @@ import ChartView from "./Views/ChartView";
 
 type ViewType = "table" | "structure" | "metrics" | "chart";
 
-function ExplorerActions({ selectedView }: { selectedView: ViewType }) {
-  const { t: te } = useTranslation("explorer");
-  const { isLoadingData, data } = useResourceContext();
-
-  const hasData = !isLoadingData && data && data.data.length > 0;
-
-  const handleClickExportCsv = () => {
-    if (hasData) {
-      exportToCsv(data.data);
-    }
-  };
-
-  return (
-    <div className="flex flex-row gap-8 flex-wrap shrink">
-      <FiltersToogle />
-      <Button
-        iconOnly
-        hasIcon
-        leadingIcon="agora-line-document"
-        leadingIconHover="agora-line-document"
-        title={te("actions.exportCsv")}
-        appearance="outline"
-        disabled={!hasData}
-        onClick={handleClickExportCsv}
-      />
-      {selectedView === "chart" && <ChartActions />}
-    </div>
-  );
-}
-
 function ChartActions() {
   const { t: te } = useTranslation("explorer");
   const { isLoadingData, data } = useResourceContext();
@@ -78,6 +48,36 @@ function ChartActions() {
         onClick={toggleFullscreen}
       />
     </>
+  );
+}
+
+function ExplorerActions({ selectedView }: { selectedView: ViewType }) {
+  const { t: te } = useTranslation("explorer");
+  const { isLoadingData, data } = useResourceContext();
+
+  const hasData = !isLoadingData && data && data.data.length > 0;
+
+  const handleClickExportCsv = () => {
+    if (hasData) {
+      exportToCsv(data.data);
+    }
+  };
+
+  return (
+    <div className="flex flex-row gap-8 flex-wrap shrink">
+      <FiltersToogle />
+      <Button
+        iconOnly
+        hasIcon
+        leadingIcon="agora-line-document"
+        leadingIconHover="agora-line-document"
+        title={te("actions.exportCsv")}
+        appearance="outline"
+        disabled={!hasData}
+        onClick={handleClickExportCsv}
+      />
+      {selectedView === "chart" && <ChartActions />}
+    </div>
   );
 }
 
