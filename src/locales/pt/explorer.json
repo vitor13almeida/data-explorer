@@ -2,11 +2,6 @@
   "title": "Dados",
   "description": "Explore todos os dados, em diferentes formatos e visualizações",
   "views": {
-    "dataNumbers": {
-      "total": "Total",
-      "totalFiltered": "Itens filtrados",
-      "appliedFilters": "Filtros aplicados"
-    },
     "table": {
       "title": "Dados",
       "itemsPerPageLabel": "Itens por página: ",
@@ -41,16 +36,56 @@
       "duplicates": "Duplicados",
       "encoding": "Codificação",
       "separator": "Separador",
-      "categorical": "Categórico"
+      "categorical": "Categórico",
+      "uniqueValues": "Valores únicos",
+      "alerts": {
+        "missingValues": "{{count}} coluna(s) com mais de {{threshold}}% de valores em falta",
+        "outliers": "{{count}} coluna(s) com possíveis valores atípicos",
+        "lowScore": "{{count}} coluna(s) com confiança na deteção do tipo abaixo de {{threshold}}%",
+        "duplicates": "{{percentage}}% dos registos são duplicados"
+      }
     },
     "chart": {
-      "title": "Gráfico"
+      "title": "Gráfico",
+      "xAxis": "Eixo X",
+      "yAxis": "Eixo Y",
+      "yAxes": "Eixos Y",
+      "rAxis": "Eixo R",
+      "axisPlaceholder": "Selecione uma coluna",
+      "chartType": "Tipo de gráfico",
+      "chartTypePlaceholder": "Selecione um tipo",
+      "noData": "Não existem dados disponíveis.",
+      "noNumericData": "Não existem dados numéricos disponíveis.",
+      "types": {
+        "Line": "Linha",
+        "Bar": "Barras",
+        "Radar": "Radar",
+        "Doughnut": "Anel",
+        "Polar Area": "Área polar",
+        "Bubble": "Bolhas",
+        "Pie": "Circular",
+        "Scatter": "Dispersão"
+      }
     }
+  },
+  "pagination": {
+    "itemsPerPage": "Items por página",
+    "range": "{{start}}-{{end}} de {{total}}",
+    "pageOf": "{{current}} de {{total}}",
+    "prev": "Página anterior",
+    "next": "Página seguinte"
+  },
+  "dataNumbers": {
+    "total": "Total",
+    "totalFiltered": "Itens filtrados",
+    "appliedFilters": "Filtros aplicados"
   },
   "actions": {
     "filter": "Filtrar",
     "clear": "Limpar",
-    "export": "Exportar"
+    "exportCsv": "Exportar CSV",
+    "exportChart": "Exportar gráfico",
+    "fullscreen": "Ecrã inteiro"
   },
   "errors": {
     "data": {

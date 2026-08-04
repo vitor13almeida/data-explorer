@@ -1,5 +1,23 @@
 {
   "title": "Explorador de dados",
   "description": "Uma ferramenta que oferece a exploração de dados abertos para facilitar a sua análise e reutilização.",
-  "close": "Fechar"
+  "close": "Fechar",
+  "errors": {
+    "notFound": {
+      "description": "A página que procura não existe ou foi removida.",
+      "goBack": "Voltar",
+      "goHome": "Ir para o início"
+    },
+    "generic": {
+      "title": "Ocorreu um erro",
+      "description": "Algo correu mal. Por favor, tente novamente mais tarde.",
+      "goBack": "Voltar",
+      "tryAgain": "Tentar novamente"
+    },
+    "resourceNotFound": {
+      "title": "Recurso não encontrado",
+      "description": "O recurso que procura não existe ou foi removido.",
+      "goBack": "Voltar"
+    }
+  }
 }

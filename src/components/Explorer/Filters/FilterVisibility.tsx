@@ -11,7 +11,7 @@ export default function FilterVisibility({ header }: FilterVisibilityI) {
 
   const { headersVisibility, setHeadersVisibility } = useResourceContext();
 
-  const value: boolean = headersVisibility[header];
+  const value: boolean = headersVisibility[header] ?? true;
 
   const handleChange = () => {
     setHeadersVisibility({ ...headersVisibility, [header]: !value });

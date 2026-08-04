@@ -91,7 +91,7 @@ export default function StructureView() {
                   {definition.python_type}
                 </span>
                 <span
-                  className={`inline-flex items-center rounded-16 px-8 py-2 text-xs ${getScoreStyle(definition.score)}`}
+                  className={`inline-flex items-center rounded-16 px-8 py-2 text-m-regular ${getScoreStyle(definition.score)}`}
                   title={te("views.structure.scoreTooltip")}
                 >
                   {(definition.score * 100).toFixed(0)}%

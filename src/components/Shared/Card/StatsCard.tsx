@@ -15,7 +15,7 @@ export default function StatCard({ icon: Icon, label, value }: StatCardI) {
         <Icon size={ICON_SIZE} className="text-primary-600" />
       </div>
       <div className="flex flex-col overflow-hidden">
-        <span className="text-xs text-neutral-500">{label}</span>
+        <span className="text-m-regular text-neutral-500">{label}</span>
         <span
           className="text-sm font-medium text-neutral-900 truncate"
           title={value}

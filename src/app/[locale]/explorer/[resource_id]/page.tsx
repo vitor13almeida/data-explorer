@@ -35,32 +35,21 @@ export default async function ExplorerPage({
 }) {
   const { locale, resource_id } = await params;
 
-  const { t: te } = await initTranslations({
-    locale,
-    namespaces: ["explorer"],
-  });
-
   if (!resource_id.trim()) notFound();
 
-  let structure: DatasetProfileResponse | null = null;
+  const response: ResourceStructureResponse = await getStructure(resource_id);
 
-  try {
-    const response: ResourceStructureResponse = await getStructure(resource_id);
-    if (response.status === 200 && response.data) {
-      structure = response.data;
-    } else {
-      throw new Error(
-        response.errors?.map((error) => error.detail.hint).join(" ") ||
-          te("errors.structure.badRequest"),
-      );
-    }
-  } catch (err) {
-    throw new Error(te("errors.structure.failed"));
+  if (response.status === 404) {
+    notFound();
+  }
+
+  if (response.status !== 200 || !response.data) {
+    throw new Error(response.error || "Failed to load structure");
   }
 
   return (
-    <ExplorerProviders resourceId={resource_id} structure={structure}>
-      <ExplorerPageContent/>
+    <ExplorerProviders resourceId={resource_id} structure={response.data}>
+      <ExplorerPageContent />
     </ExplorerProviders>
   );
 }

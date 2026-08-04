@@ -1,7 +1,11 @@
 "use client";
 
-import { getData } from "@/app/[locale]/explore/[resource_id]/actions";
-import { FilterOperatorAll, PAGE_SIZES } from "@/services/consts/explorer";
+import { getData } from "@/app/[locale]/explorer/[resource_id]/actions";
+import {
+  FilterOperatorAll,
+  INITIAL_PAGE,
+  PAGE_SIZES,
+} from "@/services/consts/explorer";
 import {
   DatasetProfileResponse,
   FilterOperatorType,
@@ -98,7 +102,7 @@ export function ResourceProvider({
     Record<string, boolean>
   >({});
 
-  const [page, setPage] = useState<number>(0);
+  const [page, setPage] = useState<number>(INITIAL_PAGE);
   const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[0]);
 
   const [sortColumn, setSortColumn] = useState<string | null>(null);
@@ -256,6 +260,8 @@ export function ResourceProvider({
 
     appliedHeadersVisibility.current = { ...headersVisibility };
 
+    setPage(INITIAL_PAGE);
+
     void setUrlParams();
     void loadData();
   }, [filters, filtersOperator, setUrlParams, loadData, headersVisibility]);
@@ -277,6 +283,8 @@ export function ResourceProvider({
 
     setHeadersVisibility(fv);
     appliedHeadersVisibility.current = { ...fv };
+
+    setPage(INITIAL_PAGE);
 
     void setUrlParams();
     void loadData();
@@ -302,10 +310,10 @@ export function ResourceProvider({
 
         switch (key) {
           case "page":
-            setPage(value ? (Number(value) ?? 0) : 0);
+            setPage(value ? Number(value) || INITIAL_PAGE : INITIAL_PAGE);
             break;
           case "page_size":
-            setPageSize(value ? (Number(value) ?? 0) : 0);
+            setPageSize(value ? Number(value) || PAGE_SIZES[0] : PAGE_SIZES[0]);
             break;
           case "columns": {
             const colsParams = value.split(",");

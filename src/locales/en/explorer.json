@@ -2,11 +2,6 @@
   "title": "Data",
   "description": "Explore all data, in different formats and views",
   "views": {
-    "dataNumbers": {
-      "total": "Total",
-      "totalFiltered": "Filtered items",
-      "appliedFilters": "Applied filters"
-    },
     "table": {
       "title": "Data",
       "itemsPerPageLabel": "Items per page: ",
@@ -41,16 +36,56 @@
       "duplicates": "Duplicates",
       "encoding": "Encoding",
       "separator": "Separator",
-      "categorical": "Categorical"
+      "categorical": "Categorical",
+      "uniqueValues": "Unique values",
+      "alerts": {
+        "missingValues": "{{count}} column(s) with more than {{threshold}}% missing values",
+        "outliers": "{{count}} column(s) with possible outliers",
+        "lowScore": "{{count}} column(s) with type detection confidence below {{threshold}}%",
+        "duplicates": "{{percentage}}% of records are duplicates"
+      }
     },
     "chart": {
-      "title": "Chart"
+      "title": "Chart",
+      "xAxis": "X Axis",
+      "yAxis": "Y Axis",
+      "yAxes": "Y Axes",
+      "rAxis": "R Axis",
+      "axisPlaceholder": "Select a column",
+      "chartType": "Chart type",
+      "chartTypePlaceholder": "Select a type",
+      "noData": "No data available.",
+      "noNumericData": "No numeric data available.",
+      "types": {
+        "Line": "Line",
+        "Bar": "Bar",
+        "Radar": "Radar",
+        "Doughnut": "Doughnut",
+        "Polar Area": "Polar Area",
+        "Bubble": "Bubble",
+        "Pie": "Pie",
+        "Scatter": "Scatter"
+      }
     }
+  },
+  "dataNumbers": {
+    "total": "Total",
+    "totalFiltered": "Filtered items",
+    "appliedFilters": "Applied filters"
+  },
+  "pagination": {
+    "itemsPerPage": "Items per page",
+    "range": "{{start}}-{{end}} of {{total}}",
+    "pageOf": "{{current}} of {{total}}",
+    "prev": "Previous page",
+    "next": "Next page"
   },
   "actions": {
     "filter": "Filter",
     "clear": "Clear",
-    "export": "Export"
+    "exportCsv": "Export CSV",
+    "exportChart": "Export chart",
+    "fullscreen": "Fullscreen"
   },
   "errors": {
     "data": {

@@ -1,14 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Table } from "@/components/Shared/Table";
 import { useResourceContext } from "@/hooks/useResourceContext";
-import { PAGE_SIZES } from "@/services/consts/explorer";
+import { INITIAL_PAGE, PAGE_SIZES } from "@/services/consts/explorer";
 import { useTranslation } from "react-i18next";
 import { SortOrder } from "@ama-pt/agora-design-system";
-
-type SortCol = {
-  column: string | null;
-  order: "asc" | "desc" | null;
-};
 
 export default function TableView() {
   const { t: te } = useTranslation("explorer");
@@ -49,12 +44,12 @@ export default function TableView() {
   const handleChangePageSize = (newSize: number) => {
     if (PAGE_SIZES.includes(newSize)) {
       setPageSize(newSize);
-      setPage(0);
+      setPage(INITIAL_PAGE);
     }
   };
 
-  const handleChangePage = (newPage: number) => {
-    setPage(newPage);
+  const handleChangePage = (tablePage: number) => {
+    setPage(tablePage + 1);
   };
 
   const handleSort = (colIdx: number, order: SortOrder) => {
@@ -102,14 +97,14 @@ export default function TableView() {
   }
 
   return (
-    <div className="max-h-[600px] overflow-y-auto">
+    <div className="max-h-[800px] overflow-y-auto">
       <Table.Root
         sortDescription={currentSortDescription}
         paginationProps={{
           itemsPerPageLabel: te("views.table.itemsPerPageLabel"),
           itemsPerPage: pageSize,
           totalItems: totalFiltered,
-          currentPage: page,
+          currentPage: page - 1,
           availablePageSizes: PAGE_SIZES,
           buttonDropdownAriaLabel: te("views.table.buttonDropdownAriaLabel"),
           dropdownListAriaLabel: te("views.table.dropdownListAriaLabel"),
@@ -135,24 +130,18 @@ export default function TableView() {
         </Table.Header>
 
         <Table.Body>
-          {rows.map((line, lineIndex) => {
-            const values = Object.entries(line).filter(
-              ([key]) => key !== "__id",
-            );
-
-            return (
-              <Table.Row key={`line-${lineIndex}`}>
-                {values.map(([key, value], keyIndex) => (
-                  <Table.Cell
-                    key={`line-${lineIndex}-key-${keyIndex}`}
-                    headerLabel={key}
-                  >
-                    {String(value ?? "")}
-                  </Table.Cell>
-                ))}
-              </Table.Row>
-            );
-          })}
+          {rows.map((line, lineIndex) => (
+            <Table.Row key={`line-${lineIndex}`}>
+              {cols.map((col, colIndex) => (
+                <Table.Cell
+                  key={`line-${lineIndex}-col-${colIndex}`}
+                  headerLabel={col}
+                >
+                  {String(line[col] ?? "")}
+                </Table.Cell>
+              ))}
+            </Table.Row>
+          ))}
         </Table.Body>
       </Table.Root>
     </div>
