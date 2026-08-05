@@ -65,7 +65,12 @@ O fluxo de dados segue este caminho:
 - React 19
 - TypeScript
 - Tailwind CSS 3
+- Chart.js com react-chartjs-2
+- Zod 4 para validação
 - react-i18next para internacionalização
 - Agora Design System
-- Zod 4 para validação
-- Chart.js com react-chartjs-2
+
+## Documentação
+
+- [Arquitetura](docs/architecture.md) — fluxo de dados, providers, server actions, validação e gestão de erros
+- [Tipos e formatos de dados](docs/data-formats.md) — referência dos formatos devolvidos pela Tabular API e como são validados
