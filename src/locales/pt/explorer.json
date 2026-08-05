@@ -86,7 +86,8 @@
     "clear": "Limpar",
     "exportCsv": "Exportar CSV",
     "exportChart": "Exportar gráfico",
-    "fullscreen": "Ecrã inteiro"
+    "fullscreen": "Ecrã inteiro",
+    "exitFullscreen": "Sair de ecrã inteiro"
   },
   "errors": {
     "data": {

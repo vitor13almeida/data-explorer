@@ -34,6 +34,7 @@ export type ChartContextType = {
 
   hasNumericData: boolean;
 
+  isFullscreen: boolean;
   chartRef: RefObject<ChartJS | null>;
   chartContainerRef: RefObject<HTMLDivElement | null>;
   exportChartAsPng: () => void;
@@ -64,6 +65,8 @@ export function ChartProvider({ children }: { children: ReactNode }) {
   const [rAxisKey, setRAxisKey] = useState("");
   const [chart, setChart] = useState<ChartType>("Line");
 
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
   const chartRef = useRef<ChartJS | null>(null);
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -75,7 +78,19 @@ export function ChartProvider({ children }: { children: ReactNode }) {
     const instance = chartRef.current;
     if (!instance) return;
 
-    const url = instance.toBase64Image("image/png", 1);
+    const originalCanvas = instance.canvas;
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = originalCanvas.width;
+    tempCanvas.height = originalCanvas.height;
+
+    const ctx = tempCanvas.getContext("2d");
+    if (!ctx) return;
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+    ctx.drawImage(originalCanvas, 0, 0);
+
+    const url = tempCanvas.toDataURL("image/png", 1);
     const link = document.createElement("a");
     link.href = url;
     link.download = "chart.png";
@@ -88,8 +103,10 @@ export function ChartProvider({ children }: { children: ReactNode }) {
 
     if (document.fullscreenElement) {
       document.exitFullscreen();
+      setIsFullscreen(false);
     } else {
       element.requestFullscreen();
+      setIsFullscreen(true);
     }
   }, []);
 
@@ -120,6 +137,7 @@ export function ChartProvider({ children }: { children: ReactNode }) {
       showR,
       multipleDatasets,
       hasNumericData,
+      isFullscreen,
       chartRef,
       chartContainerRef,
       exportChartAsPng,
@@ -135,6 +153,7 @@ export function ChartProvider({ children }: { children: ReactNode }) {
       showR,
       multipleDatasets,
       hasNumericData,
+      isFullscreen,
       exportChartAsPng,
       toggleFullscreen,
     ],

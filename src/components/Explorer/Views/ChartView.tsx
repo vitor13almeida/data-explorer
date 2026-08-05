@@ -10,7 +10,7 @@ import ChartPagination from "../Chart/ChartPagination";
 export default function ChartView() {
   const { t: te } = useTranslation("explorer");
   const { data } = useResourceContext();
-  const { hasNumericData, chartContainerRef } = useChartContext();
+  const { hasNumericData } = useChartContext();
 
   const hasData = (data?.data ?? []).length > 0;
 
@@ -31,10 +31,7 @@ export default function ChartView() {
   }
 
   return (
-    <div
-      ref={chartContainerRef}
-      className="flex flex-col gap-24 bg-white fullscreen:p-24 fullscreen:overflow-auto"
-    >
+    <div className="flex flex-col gap-24 bg-white fullscreen:p-24 fullscreen:overflow-auto">
       <ChartSelectors />
       <ChartRenderer />
       <ChartPagination />

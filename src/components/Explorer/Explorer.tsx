@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import TableView from "./Views/TableView";
 import Button from "../Shared/Button/Button";
 import ButtonGroup from "../Shared/Button/ButtonGroup";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import FiltersToogle from "./Filters/FiltersToogle";
 import Filters from "./Filters/Filters";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
@@ -15,7 +15,6 @@ import { exportToCsv } from "@/utils/exportToCsv";
 import StructureView from "./Views/StructureView";
 import MetricsView from "./Views/MetricsView";
 import ChartView from "./Views/ChartView";
-import LoadingWrapper from "../Shared/Loading/LoadingWrapper";
 
 const VIEW_TYPES = ["table", "structure", "metrics", "chart"] as const;
 
@@ -84,41 +83,39 @@ function ExplorerActions({ selectedView }: { selectedView: ViewType }) {
   );
 }
 
+function ExplorerView({ selectedView }: { selectedView: ViewType }) {
+  switch (selectedView) {
+    case "table":
+      return (
+        <>
+          <DataNumbers />
+          <TableView />
+        </>
+      );
+    case "structure":
+      return <StructureView />;
+    case "metrics":
+      return <MetricsView />;
+    case "chart":
+      return (
+        <>
+          <DataNumbers />
+          <ChartView />
+        </>
+      );
+    default:
+      return null;
+  }
+}
+
 export default function Explorer() {
   const { t: te } = useTranslation("explorer");
 
-  const isMobile = useMediaQuery("(min-width: 768px)");
+  const isMobile = useMediaQuery("(min-width: 768px)", {
+    initializeWithValue: false,
+  });
 
   const [selectedView, setSelectedView] = useState<ViewType>("table");
-
-  const view = useMemo(() => {
-    switch (selectedView) {
-      case "table":
-        return (
-          <>
-            <DataNumbers />
-            <LoadingWrapper>
-              <TableView />
-            </LoadingWrapper>
-          </>
-        );
-      case "structure":
-        return <StructureView />;
-      case "metrics":
-        return <MetricsView />;
-      case "chart":
-        return (
-          <>
-            <DataNumbers />
-            <LoadingWrapper>
-              <ChartView />
-            </LoadingWrapper>
-          </>
-        );
-      default:
-        return null;
-    }
-  }, [selectedView]);
 
   return (
     <div className="w-full flex flex-col gap-32">
@@ -137,7 +134,9 @@ export default function Explorer() {
       <div className="w-full">
         <Filters />
       </div>
-      <div className="w-full flex flex-col gap-16">{view}</div>
+      <div className="w-full flex flex-col gap-16">
+        <ExplorerView selectedView={selectedView} />
+      </div>
     </div>
   );
 }
