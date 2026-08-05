@@ -2,6 +2,7 @@
   "title": "Explorador de dados",
   "description": "Uma ferramenta que oferece a exploração de dados abertos para facilitar a sua análise e reutilização.",
   "close": "Fechar",
+  "loading": "A carregar dados...",
   "errors": {
     "notFound": {
       "description": "A página que procura não existe ou foi removida.",
@@ -18,6 +19,15 @@
       "title": "Recurso não encontrado",
       "description": "O recurso que procura não existe ou foi removido.",
       "goBack": "Voltar"
+    },
+    "api": {
+      "notFound": "Recurso não encontrado",
+      "unexpected": "Erro inesperado da API",
+      "requestFailed": "Erro na API: {{status}}",
+      "connectionFailed": "Falha de conexão com a API",
+      "serverError": "Erro interno no servidor",
+      "fetchDataFailed": "Falha no pedido de dados do recurso:",
+      "fetchStructureFailed": "Falha no pedido da estrutura do recurso:"
     }
   }
 }

@@ -7,19 +7,25 @@ import { ToastProvider } from "@ama-pt/agora-design-system";
 import { ReactNode } from "react";
 
 export type ExplorerProvidersI = {
+  locale: string;
   resourceId: string;
   structure: DatasetProfileResponse;
   children: ReactNode;
 };
 
 export default function ExplorerProviders({
+  locale,
   resourceId,
   structure,
   children,
 }: ExplorerProvidersI) {
   return (
     <ToastProvider position={"bottom-right"}>
-      <ResourceProvider resourceId={resourceId} structure={structure}>
+      <ResourceProvider
+        locale={locale}
+        resourceId={resourceId}
+        structure={structure}
+      >
         <ChartProvider>{children}</ChartProvider>
       </ResourceProvider>
     </ToastProvider>

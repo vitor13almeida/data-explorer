@@ -1,5 +1,6 @@
 "use server";
 
+import initTranslations from "@/app/i18n";
 import {
   ApiValidationErrorResponse,
   FilterOperatorType,
@@ -10,6 +11,14 @@ import {
 import { TABULAR_API_URL } from "../../../../../next.config";
 import { prepareUrlSearchParams } from "@/utils/urlParams";
 import { INITIAL_PAGE, PAGE_SIZES } from "@/services/consts/explorer";
+
+async function getTranslations(locale: string) {
+  const { t } = await initTranslations({
+    locale,
+    namespaces: ["common"],
+  });
+  return t;
+}
 
 async function readResponseBody(response: Response) {
   const text = await response.text();
@@ -26,6 +35,7 @@ async function readResponseBody(response: Response) {
 }
 
 export async function getData(
+  locale: string,
   resourceId: string,
   page: number = INITIAL_PAGE,
   page_size: number = PAGE_SIZES[0],
@@ -36,6 +46,8 @@ export async function getData(
   filters: Record<string, any>,
   columns: string[] = [],
 ): Promise<ResourceDataResponse> {
+  const t = await getTranslations(locale);
+
   try {
     const queryParams = prepareUrlSearchParams(
       page,
@@ -63,7 +75,7 @@ export async function getData(
     if (response.status === 404) {
       return {
         status: 404,
-        error: "Resource not found",
+        error: t("errors.api.notFound"),
         errors: [],
       };
     }
@@ -87,21 +99,21 @@ export async function getData(
 
         return {
           status: response.status,
-          error: detailMessage || "Erro inesperado da API",
+          error: detailMessage || t("errors.api.unexpected"),
           errors: errorObject.errors,
         };
       }
 
       return {
         status: response.status,
-        error: `API Error: ${response.statusText}`,
+        error: t("errors.api.requestFailed", { status: response.statusText }),
         errors: [],
       };
     }
 
     return { status: 200, data: responseBody } as const;
   } catch (error: any) {
-    console.error("Falha no fetch de dados do recurso:", error);
+    console.error(t("errors.api.fetchDataFailed"), error);
 
     const isNetworkError =
       error instanceof TypeError || error.message.includes("fetch");
@@ -109,16 +121,19 @@ export async function getData(
     return {
       status: 500,
       error: isNetworkError
-        ? "Falha de conexão com a API"
-        : error.message || "Erro interno no servidor.",
+        ? t("errors.api.connectionFailed")
+        : error.message || t("errors.api.serverError"),
       errors: [],
     };
   }
 }
 
 export async function getStructure(
+  locale: string,
   resourceId: string,
 ): Promise<ResourceStructureResponse> {
+  const t = await getTranslations(locale);
+
   try {
     const apiUrl = `http://${TABULAR_API_URL}/api/resources/${resourceId}/profile/`;
 
@@ -135,7 +150,7 @@ export async function getStructure(
     if (response.status === 404) {
       return {
         status: 404,
-        error: "Resource not found",
+        error: t("errors.api.notFound"),
         errors: [],
       };
     }
@@ -162,21 +177,21 @@ export async function getStructure(
 
         return {
           status: response.status,
-          error: detailMessage || "Erro inesperado da API",
+          error: detailMessage || t("errors.api.unexpected"),
           errors: errorObject.errors,
         };
       }
 
       return {
         status: response.status,
-        error: `API Error: ${response.statusText}`,
+        error: t("errors.api.requestFailed", { status: response.statusText }),
         errors: [],
       };
     }
 
     return { status: 200, data: responseBody } as const;
   } catch (error: any) {
-    console.error("Falha no fetch de dados do recurso:", error);
+    console.error(t("errors.api.fetchStructureFailed"), error);
 
     const isNetworkError =
       error instanceof TypeError || error.message.includes("fetch");
@@ -184,8 +199,8 @@ export async function getStructure(
     return {
       status: 500,
       error: isNetworkError
-        ? "Falha de conexão com a API"
-        : error.message || "Erro interno no servidor.",
+        ? t("errors.api.connectionFailed")
+        : error.message || t("errors.api.serverError"),
       errors: [],
     };
   }
