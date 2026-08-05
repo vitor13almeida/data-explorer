@@ -104,7 +104,10 @@
       "int": "Deve ser um número inteiro",
       "float": "Deve ser um número decimal",
       "date": "Formato esperado: YYYY-MM-DD",
-      "bool": "Deve ser 'true' ou 'false'"
+      "bool": "Deve ser 'true' ou 'false'",
+      "year": "Deve ser um ano com 4 dígitos",
+      "yearRange": "O ano deve estar entre 1900 e 2100",
+      "latlon": "Formato esperado: latitude,longitude"
     },
     "visibleColumns": {
       "title": "Colunas visíveis",

@@ -6,7 +6,6 @@ import { ChangeEvent, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import FilterOperator from "./FilterOperator";
 import { useFilterValidation } from "@/hooks/useFilterValidation";
-import { getDataType } from "@/services/utils/data";
 import {
   TriStateInput,
   TriStateInputValue,
@@ -14,6 +13,37 @@ import {
 import FilterVisibility from "./FilterVisibility";
 
 export type FilterI = { header: string };
+
+function getInputType(
+  format: string,
+  pythonType: string,
+): { type: string; placeholder: string } {
+  switch (format) {
+    case "year":
+      return { type: "year", placeholder: "YYYY" };
+    case "date":
+      return { type: "date", placeholder: "YYYY-MM-DD" };
+    case "url":
+      return { type: "string", placeholder: "https://..." };
+    case "latlon_wgs":
+      return { type: "latlon", placeholder: "lat,lon" };
+    case "bool":
+      return { type: "bool", placeholder: "" };
+  }
+
+  switch (pythonType) {
+    case "int":
+      return { type: "int", placeholder: "0" };
+    case "float":
+      return { type: "float", placeholder: "0.00" };
+    case "date":
+      return { type: "date", placeholder: "YYYY-MM-DD" };
+    case "bool":
+      return { type: "bool", placeholder: "" };
+    default:
+      return { type: "string", placeholder: "" };
+  }
+}
 
 export default function Filter({ header }: FilterI) {
   const { t: te } = useTranslation("explorer");
@@ -26,6 +56,7 @@ export default function Filter({ header }: FilterI) {
     structure,
     setInvalidFilters,
   } = useResourceContext();
+
   const { errors, isValid } = useFilterValidation(
     filters,
     filtersOperator,
@@ -57,58 +88,59 @@ export default function Filter({ header }: FilterI) {
     setInvalidFilters(!isValid);
   }, [isValid]);
 
-  const dataType = getDataType(header, structure);
+  const column = structure?.profile.columns?.[header];
+  const format = column?.format ?? "string";
+  const pythonType = column?.python_type ?? "string";
+  const { type, placeholder } = getInputType(format, pythonType);
 
   const getInput = () => {
-    let input = null;
-    switch (dataType) {
-      case "bool":
-        input = (
-          <TriStateInput
-            label={header}
-            name={header}
-            value={filters[header] ?? null}
-            onChange={(value) => handleChangeBoolFilter(header, value)}
-          />
-        );
-        break;
-      default:
-        input = (
-          <InputText
-            label={header}
-            name={header}
-            value={filters[header] ?? ""}
-            onChange={handleChangeFilter}
-            hasHelperText
-            hasError={!!errors[header]}
-            errorFeedbackText={errors[header]}
-          />
-        );
-        break;
+    if (type === "bool") {
+      return (
+        <TriStateInput
+          label={header}
+          name={header}
+          value={filters[header] ?? null}
+          onChange={(value) => handleChangeBoolFilter(header, value)}
+        />
+      );
     }
+
     return (
-      <div className="flex flex-col gap-8">
-        {input}
-        {structure && (
-          <>
-            <div className="flex flex-row gap-8 items-center text-neutral-700">
-              <FilterOperator header={header} />
-              <span>
-                {te("filters.operatorType", {
-                  operator: te(`filters.operators.${filtersOperator[header]}`),
-                })}
-              </span>
-            </div>
-            <FilterVisibility header={header} />
-          </>
-        )}
-      </div>
+      <InputText
+        label={header}
+        name={header}
+        value={filters[header] ?? ""}
+        onChange={handleChangeFilter}
+        placeholder={placeholder}
+        hasHelperText
+        hasError={!!errors[header]}
+        errorFeedbackText={errors[header]}
+      />
     );
   };
 
   return (
     <div className="flex flex-row gap-2">
-      <div className="grow">{getInput()}</div>
+      <div className="grow">
+        <div className="flex flex-col gap-8">
+          {getInput()}
+          {structure && (
+            <>
+              <div className="flex flex-row gap-8 items-center text-neutral-700">
+                <FilterOperator header={header} />
+                <span>
+                  {te("filters.operatorType", {
+                    operator: te(
+                      `filters.operators.${filtersOperator[header]}`,
+                    ),
+                  })}
+                </span>
+              </div>
+              <FilterVisibility header={header} />
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

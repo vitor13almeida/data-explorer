@@ -4,8 +4,12 @@ import { DatasetProfileResponse, FilterOperatorType } from "@/services/types";
 import { TFunction } from "i18next";
 import { toBoolean } from "@/services/utils/data";
 
+const MIN_YEAR = 1900;
+const MAX_YEAR = 2100;
+
 function buildFieldSchema(
-  columnType: string,
+  pythonType: string,
+  format: string,
   operator: FilterOperatorType,
   t: TFunction<"explorer", undefined>,
 ): z.ZodTypeAny {
@@ -13,7 +17,58 @@ function buildFieldSchema(
     return z.any();
   }
 
-  switch (columnType) {
+  // format-specific validation takes priority
+  switch (format) {
+    case "year":
+      return z
+        .string()
+        .optional()
+        .refine(
+          (val) => !val || /^\d{4}$/.test(val),
+          t("errors.validator.year"),
+        )
+        .refine((val) => {
+          if (!val) return true;
+          const n = Number(val);
+          return n >= MIN_YEAR && n <= MAX_YEAR;
+        }, t("errors.validator.yearRange"));
+
+    /*case "latlon_wgs":
+      return z
+        .string()
+        .optional()
+        .refine(
+          (val) => !val || /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/.test(val),
+          t("errors.validator.latlon"),
+        );*/
+
+    case "date":
+      return z
+        .string()
+        .optional()
+        .refine(
+          (val) => !val || /^\d{4}-\d{2}-\d{2}$/.test(val),
+          t("errors.validator.date"),
+        );
+
+    case "bool":
+      return z
+        .union([z.boolean(), z.string(), z.null()])
+        .optional()
+        .refine(
+          (val) =>
+            val === null ||
+            val === undefined ||
+            [true, false, "true", "false", "null", ""].includes(val as any),
+          "",
+        )
+        .transform((val) =>
+          toBoolean(val as boolean | string | null | undefined),
+        );
+  }
+
+  // fallback to python_type
+  switch (pythonType) {
     case "int":
       return z
         .string()
@@ -50,7 +105,6 @@ function buildFieldSchema(
             val === null ||
             val === undefined ||
             [true, false, "true", "false", "null", ""].includes(val as any),
-
           "",
         )
         .transform((val) =>
@@ -73,9 +127,10 @@ function buildSchema(
 
   structure.profile.header.forEach((key) => {
     const operator = filtersOperator[key] ?? "contains";
-    const columnType =
-      structure.profile.columns?.[key]?.python_type ?? "string";
-    shape[key] = buildFieldSchema(columnType, operator, t);
+    const column = structure.profile.columns?.[key];
+    const pythonType = column?.python_type ?? "string";
+    const format = column?.format ?? "string";
+    shape[key] = buildFieldSchema(pythonType, format, operator, t);
   });
 
   return z.object(shape);
