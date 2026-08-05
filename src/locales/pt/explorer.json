@@ -8,7 +8,8 @@
       "buttonDropdownAriaLabel": "Escolha o número de itens por página",
       "dropdownListAriaLabel": "Número de itens por página",
       "prevButtonAriaLabel": "Página anterior",
-      "nextButtonAriaLabel": "Página seguinte"
+      "nextButtonAriaLabel": "Página seguinte",
+      "noResults": "Não foram encontrados resultados."
     },
     "structure": {
       "title": "Estrutura",
