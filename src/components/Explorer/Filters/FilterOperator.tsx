@@ -12,7 +12,7 @@ import {
   DrawerElement,
   DropdownOptionProps,
 } from "@ama-pt/agora-design-system";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export type FilterOperatorI = {
@@ -28,28 +28,29 @@ export default function FilterOperator({ header }: FilterOperatorI) {
   const dataType = getDataType(header, structure);
 
   const ref = useRef<DrawerElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const options = useMemo(() => {
     const opts = getOperatorOptions(dataType);
-    return opts.map((o) => {
-      return (
-        <DropdownOption
-          value={o}
-          key={o}
-          selected={o === filtersOperator[header]}
-        >
-          {te(`filters.operators.${o}`)}
-        </DropdownOption>
-      );
-    });
+    return opts.map((o) => (
+      <DropdownOption
+        value={o}
+        key={o}
+        selected={o === filtersOperator[header]}
+      >
+        {te(`filters.operators.${o}`)}
+      </DropdownOption>
+    ));
   }, [dataType, filtersOperator, header]);
 
   const handleOpenDrawer = () => {
+    setIsOpen(true);
     ref.current?.open();
   };
 
   const handleCloseDrawer = () => {
     ref.current?.close();
+    setIsOpen(false);
   };
 
   const handleChange = (options: DropdownOptionProps[]) => {
@@ -69,9 +70,9 @@ export default function FilterOperator({ header }: FilterOperatorI) {
       <Button
         hasIcon
         iconOnly
-        trailingIcon={"agora-line-settings"}
-        trailingIconHover={"agora-line-settings"}
-        appearance={"link"}
+        trailingIcon="agora-line-settings"
+        trailingIconHover="agora-line-settings"
+        appearance="link"
         aria-label={te("filters.operatorSelect")}
         onClick={handleOpenDrawer}
         className="operator-drawer-trigger"
@@ -79,14 +80,16 @@ export default function FilterOperator({ header }: FilterOperatorI) {
       <Drawer ref={ref} position="right">
         <div className="flex flex-col gap-32 w-full h-full p-16">
           <h3 className="text-neutral-900 text-l-bold">{header}</h3>
-          <InputSelect
-            label={te("filters.operator")}
-            onChange={handleChange}
-            hideSectionNames
-            className="w-full h-256"
-          >
-            <DropdownSection name={"operador"}>{options}</DropdownSection>
-          </InputSelect>
+          {isOpen && (
+            <InputSelect
+              label={te("filters.operator")}
+              onChange={handleChange}
+              hideSectionNames
+              className="w-full h-256"
+            >
+              <DropdownSection name="operador">{options}</DropdownSection>
+            </InputSelect>
+          )}
           <Button onClick={handleCloseDrawer}>{t("close")}</Button>
         </div>
       </Drawer>
