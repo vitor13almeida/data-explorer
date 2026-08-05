@@ -15,6 +15,7 @@ import { exportToCsv } from "@/utils/exportToCsv";
 import StructureView from "./Views/StructureView";
 import MetricsView from "./Views/MetricsView";
 import ChartView from "./Views/ChartView";
+import LoadingWrapper from "../Shared/Loading/LoadingWrapper";
 
 const VIEW_TYPES = ["table", "structure", "metrics", "chart"] as const;
 
@@ -96,7 +97,9 @@ export default function Explorer() {
         return (
           <>
             <DataNumbers />
-            <TableView />
+            <LoadingWrapper>
+              <TableView />
+            </LoadingWrapper>
           </>
         );
       case "structure":
@@ -107,7 +110,9 @@ export default function Explorer() {
         return (
           <>
             <DataNumbers />
-            <ChartView />
+            <LoadingWrapper>
+              <ChartView />
+            </LoadingWrapper>
           </>
         );
       default:

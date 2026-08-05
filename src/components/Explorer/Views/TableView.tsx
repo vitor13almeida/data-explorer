@@ -6,10 +6,10 @@ import { useTranslation } from "react-i18next";
 import { SortOrder } from "@ama-pt/agora-design-system";
 
 export default function TableView() {
+  const { t } = useTranslation("common");
   const { t: te } = useTranslation("explorer");
 
   const {
-    isLoadingData,
     data,
     appliedHeadersVisibility,
     totalFiltered,
@@ -87,14 +87,6 @@ export default function TableView() {
     setColSortOrders(sortInitial);
     initializedRef.current = true;
   }, [cols]);
-
-  if (isLoadingData) {
-    return (
-      <div>
-        <p>Loading data...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="max-h-[800px] overflow-y-auto">

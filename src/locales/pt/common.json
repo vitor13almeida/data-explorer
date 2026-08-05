@@ -2,6 +2,7 @@
   "title": "Explorador de dados",
   "description": "Uma ferramenta que oferece a exploração de dados abertos para facilitar a sua análise e reutilização.",
   "close": "Fechar",
+  "loading": "A carregar dados...",
   "errors": {
     "notFound": {
       "description": "A página que procura não existe ou foi removida.",
