@@ -19,7 +19,7 @@ export default function LoadingWrapper({ children }: LoadingWrapperI) {
       {children}
 
       {isLoadingData && (
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-12 rounded-lg bg-primary-200/65">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-12 rounded-lg bg-primary-100/50">
           <Loader size={64} className="animate-spin text-primary-600" />
           <span className="text-l-medium text-neutral-700">{t("loading")}</span>
         </div>
