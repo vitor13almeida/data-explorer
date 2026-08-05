@@ -1,6 +1,6 @@
 export const INITIAL_PAGE = 1;
 
-export const PAGE_SIZES = [10, 20, 50];
+export const PAGE_SIZES = [10, 50, 200];
 
 export const FilterOperatorCommon = [
   "exact",
