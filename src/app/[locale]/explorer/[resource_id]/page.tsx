@@ -37,7 +37,10 @@ export default async function ExplorerPage({
 
   if (!resource_id.trim()) notFound();
 
-  const response: ResourceStructureResponse = await getStructure(resource_id);
+  const response: ResourceStructureResponse = await getStructure(
+    locale,
+    resource_id,
+  );
 
   if (response.status === 404) {
     notFound();
@@ -48,7 +51,11 @@ export default async function ExplorerPage({
   }
 
   return (
-    <ExplorerProviders resourceId={resource_id} structure={response.data}>
+    <ExplorerProviders
+      locale={locale}
+      resourceId={resource_id}
+      structure={response.data}
+    >
       <ExplorerPageContent />
     </ExplorerProviders>
   );

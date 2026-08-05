@@ -78,12 +78,14 @@ export const ResourceContext = createContext<ResourceContextType | undefined>(
 );
 
 export type ResourceProviderI = {
+  locale: string;
   resourceId: string;
   structure: DatasetProfileResponse;
   children: ReactNode;
 };
 
 export function ResourceProvider({
+  locale,
   resourceId,
   structure,
   children,
@@ -153,6 +155,7 @@ export function ResourceProvider({
       setErrorData(null);
       try {
         const response: ResourceDataResponse = await getData(
+          locale,
           resourceId,
           page,
           pageSize,
@@ -200,6 +203,7 @@ export function ResourceProvider({
       }
     });
   }, [
+    locale,
     startDataTransition,
     resourceId,
     page,

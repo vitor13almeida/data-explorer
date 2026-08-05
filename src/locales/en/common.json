@@ -19,6 +19,15 @@
       "title": "Resource not found",
       "description": "The resource you're looking for doesn't exist or has been removed.",
       "goBack": "Go back"
+    },
+    "api": {
+      "notFound": "Resource not found",
+      "unexpected": "Unexpected API error",
+      "requestFailed": "API error: {{status}}",
+      "connectionFailed": "API connection failed",
+      "serverError": "Internal server error",
+      "fetchDataFailed": "Failed to fetch resource data:",
+      "fetchStructureFailed": "Failed to fetch resource structure:"
     }
   }
 }
