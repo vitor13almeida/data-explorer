@@ -16,7 +16,7 @@ export default function ChartView() {
 
   if (!hasData) {
     return (
-      <p className="text-m-regular text-neutral-500">
+      <p className="flex items-center justify-center py-64 rounded-lg border border-neutral-200 bg-white text-m-regular text-neutral-500">
         {te("views.chart.noData")}
       </p>
     );
@@ -24,7 +24,7 @@ export default function ChartView() {
 
   if (!hasNumericData) {
     return (
-      <p className="text-m-regular text-neutral-500">
+      <p className="flex items-center justify-center py-64 rounded-lg border border-neutral-200 bg-white text-m-regular text-neutral-500">
         {te("views.chart.noNumericData")}
       </p>
     );

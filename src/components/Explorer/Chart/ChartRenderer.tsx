@@ -135,7 +135,17 @@ export default function ChartRenderer() {
     [rows, xAxisKey, yAxisKeys, rAxisKey],
   );
 
-  if (rows.length === 0 || yAxisKeys.length === 0) return null;
+  if (rows.length === 0 || yAxisKeys.length === 0) {
+    return (
+      <p className="flex items-center justify-center py-64 rounded-lg border border-neutral-200 bg-white text-m-regular text-neutral-500">
+        {te(
+          yAxisKeys.length === 0
+            ? "views.chart.noAxisSelected"
+            : "views.chart.noData",
+        )}
+      </p>
+    );
+  }
 
   let chartToRender = null;
 
@@ -145,6 +155,7 @@ export default function ChartRenderer() {
     const Component = CHART_COMPONENTS[chart];
     chartToRender = <Component ref={handleRef} data={standardData} />;
   }
+
   return (
     <div
       ref={chartContainerRef}

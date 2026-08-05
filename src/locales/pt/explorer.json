@@ -55,6 +55,7 @@
       "axisPlaceholder": "Selecione uma coluna",
       "chartType": "Tipo de gráfico",
       "chartTypePlaceholder": "Selecione um tipo",
+      "noAxisSelected": "Selecione pelo menos uma coluna para o eixo Y.",
       "noData": "Não existem dados disponíveis.",
       "noNumericData": "Não existem dados numéricos disponíveis.",
       "types": {
