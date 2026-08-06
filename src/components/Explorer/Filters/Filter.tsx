@@ -17,7 +17,7 @@ export type FilterI = { header: string };
 function getInputType(
   format: string,
   pythonType: string,
-): { type: string; placeholder: string } {
+): { type: string; placeholder: string; maxLength?: number } {
   switch (format) {
     case "year":
       return { type: "year", placeholder: "YYYY" };
@@ -25,10 +25,12 @@ function getInputType(
       return { type: "date", placeholder: "YYYY-MM-DD" };
     case "url":
       return { type: "string", placeholder: "https://..." };
-    case "latlon_wgs":
-      return { type: "latlon", placeholder: "lat,lon" };
     case "bool":
       return { type: "bool", placeholder: "" };
+    case "latlon_wgs":
+      return { type: "latlon", placeholder: "lat,lon" };
+    case "iso_country_code_alpha2":
+      return { type: "string", placeholder: "PT", maxLength: 2 };
   }
 
   switch (pythonType) {
@@ -91,7 +93,7 @@ export default function Filter({ header }: FilterI) {
   const column = structure?.profile.columns?.[header];
   const format = column?.format ?? "string";
   const pythonType = column?.python_type ?? "string";
-  const { type, placeholder } = getInputType(format, pythonType);
+  const { type, placeholder, maxLength } = getInputType(format, pythonType);
 
   const getInput = () => {
     if (type === "bool") {
@@ -115,6 +117,7 @@ export default function Filter({ header }: FilterI) {
         hasHelperText
         hasError={!!errors[header]}
         errorFeedbackText={errors[header]}
+        maxLength={maxLength}
       />
     );
   };

@@ -108,7 +108,8 @@
       "bool": "Deve ser 'true' ou 'false'",
       "year": "Deve ser um ano com 4 dígitos",
       "yearRange": "O ano deve estar entre 1900 e 2100",
-      "latlon": "Formato esperado: latitude,longitude"
+      "latlon": "Formato esperado: latitude,longitude",
+      "countryCode": "Máximo de 2 caracteres"
     },
     "visibleColumns": {
       "title": "Colunas visíveis",

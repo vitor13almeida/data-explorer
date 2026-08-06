@@ -33,15 +33,6 @@ function buildFieldSchema(
           return n >= MIN_YEAR && n <= MAX_YEAR;
         }, t("errors.validator.yearRange"));
 
-    /*case "latlon_wgs":
-      return z
-        .string()
-        .optional()
-        .refine(
-          (val) => !val || /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/.test(val),
-          t("errors.validator.latlon"),
-        );*/
-
     case "date":
       return z
         .string()
@@ -64,6 +55,24 @@ function buildFieldSchema(
         )
         .transform((val) =>
           toBoolean(val as boolean | string | null | undefined),
+        );
+
+    /*case "latlon_wgs":
+      return z
+        .string()
+        .optional()
+        .refine(
+          (val) => !val || /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/.test(val),
+          t("errors.validator.latlon"),
+        );*/
+
+    case "iso_country_code_alpha2":
+      return z
+        .string()
+        .optional()
+        .refine(
+          (val) => !val || val.length <= 2,
+          t("errors.validator.countryCode"),
         );
   }
 
