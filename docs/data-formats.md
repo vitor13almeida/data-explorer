@@ -8,11 +8,11 @@ Referência dos valores de `python_type` e `format` encontrados nos perfis de da
 | ----------- | ------------------------- | ------------------------------------ | --------------------- | ----------------------- |
 | `string`    | `string`                  | Texto livre                          | —                     | Denominaca, Tipo        |
 | `string`    | `url`                     | Texto livre                          | `https://...`         | Website                 |
+| `string`    | `email`                   | Texto livre                          | `user@example.com`    | email                   |
 | `string`    | `latlon_wgs`              | Texto livre                          | `lat,lon`             | Localização Geográfica  |
 | `string`    | `latitude_wgs`            | Texto livre                          | `lat`                 | Localização Geográfica  |
 | `string`    | `longitude_wgs`           | Texto livre                          | `lon`                 | Localização Geográfica  |
 | `string`    | `pays`                    | Texto livre                          | —                     | NUTS0_desig             |
-| `string`    | `email`                   | Texto livre                          | `user@example.com`    | email                   |
 | `string`    | `iso_country_code_alpha2` | Máximo 2 caracteres                  | `PT`                  | NUTS0_codigo            |
 | `int`       | `int`                     | Número inteiro (`^-?\d+$`)           | `0`                   | OBJECTID, codigo_rua    |
 | `int`       | `year`                    | 4 dígitos, range 1900-2100           | `YYYY`                | ano                     |
@@ -21,17 +21,25 @@ Referência dos valores de `python_type` e `format` encontrados nos perfis de da
 | `datetime`  | `datetime_naive`          | Formato `YYYY-MM-DDTHH:MM:SS`        | `YYYY-MM-DDTHH:MM:SS` | criacaodtt              |
 | `bool`      | `bool`                    | `true` / `false` / `null`            | TriStateInput         | extensao                |
 
+## Validação condicional por operador
+
+Alguns formatos alteram a validação conforme o operador de filtro selecionado:
+
+| format           | Operador | Validação                                                        |
+| ---------------- | -------- | ---------------------------------------------------------------- |
+| `datetime_naive` | `exact`  | Formato completo obrigatório: `YYYY-MM-DDTHH:MM:SS`              |
+| `datetime_naive` | outros   | Aceita `YYYY-MM-DD`, `YYYY-MM-DDTHH:MM` ou `YYYY-MM-DDTHH:MM:SS` |
+
 ## Formatos sem validação específica
 
-Estes formatos aparecem no campo `format` mas são tratados como o `python_type` base, sem validação adicional:
+Estes formatos aparecem no campo `format` mas são tratados como texto livre, sem validação adicional:
 
-| format          | python_type base | Motivo                                           |
-| --------------- | ---------------- | ------------------------------------------------ |
-| `url`           | `string`         | Filtro usa operador "contém", aceita texto livre |
-| `latlon_wgs`    | `string`         | Filtro usa operador "contém", aceita texto livre |
-| `latitude_wgs`  | `string`         | Filtro usa operador "contém", aceita texto livre |
-| `longitude_wgs` | `string`         | Filtro usa operador "contém", aceita texto livre |
-| `pays`          | `string`         | Nome de país, aceita texto livre                 |
+| format       | python_type base | Motivo                                           |
+| ------------ | ---------------- | ------------------------------------------------ |
+| `url`        | `string`         | Filtro usa operador "contém", aceita texto livre |
+| `email`      | `string`         | Filtro usa operador "contém", aceita texto livre |
+| `latlon_wgs` | `string`         | Filtro usa operador "contém", aceita texto livre |
+| `pays`       | `string`         | Nome de país, aceita texto livre                 |
 
 ## Formatos encontrados apenas em columns_fields e columns_labels
 
@@ -57,3 +65,4 @@ Quando um novo valor de `format` ou `python_type` aparecer na API:
 3. Se sim, adicionar o regex e a chave i18n da mensagem de erro
 4. Avaliar se precisa de placeholder no `Filter.tsx` (função `getInputType`)
 5. Avaliar se precisa de tipo de input diferente (ex: date picker, toggle)
+6. Avaliar se precisa de operadores específicos no `getOperatorOptions` em `data.ts`

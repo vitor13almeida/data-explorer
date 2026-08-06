@@ -74,7 +74,7 @@ function buildFieldSchema(
           toBoolean(val as boolean | string | null | undefined),
         );
 
-    /** NOTE: latlon_wgs, latitude_wgs and longitude_wgs are handled as strings */
+    /** NOTE: latlon_wgs is handled as strings */
     /*case "latlon_wgs":
       return z
         .string()
@@ -82,24 +82,6 @@ function buildFieldSchema(
         .refine(
           (val) => !val || /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/.test(val),
           t("errors.validator.latlon"),
-        );
-
-    case "latitude_wgs":
-      return z
-        .string()
-        .optional()
-        .refine(
-          (val) => !val || /^-?\d+(\.\d+)?$/.test(val),
-          t("errors.validator.lat"),
-        );
-
-    case "longitude_wgs":
-      return z
-        .string()
-        .optional()
-        .refine(
-          (val) => !val || /^-?\d+(\.\d+)?$/.test(val),
-          t("errors.validator.lon"),
         );*/
 
     case "iso_country_code_alpha2":
