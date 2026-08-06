@@ -35,6 +35,8 @@ function getInputType(
       return { type: "string", placeholder: "PT" };
     case "bool":
       return { type: "bool", placeholder: "" };
+    case "email":
+      return { type: "string", placeholder: "user@example.com" };
   }
 
   switch (pythonType) {
