@@ -12,6 +12,7 @@ Referência dos valores de `python_type` e `format` encontrados nos perfis de da
 | `string`    | `latitude_wgs`            | Texto livre                          | `lat`                 | Localização Geográfica  |
 | `string`    | `longitude_wgs`           | Texto livre                          | `lon`                 | Localização Geográfica  |
 | `string`    | `pays`                    | Texto livre                          | —                     | NUTS0_desig             |
+| `string`    | `email`                   | Texto livre                          | `user@example.com`    | email                   |
 | `string`    | `iso_country_code_alpha2` | Máximo 2 caracteres                  | `PT`                  | NUTS0_codigo            |
 | `int`       | `int`                     | Número inteiro (`^-?\d+$`)           | `0`                   | OBJECTID, codigo_rua    |
 | `int`       | `year`                    | 4 dígitos, range 1900-2100           | `YYYY`                | ano                     |
