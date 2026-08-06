@@ -17,20 +17,24 @@ export type FilterI = { header: string };
 function getInputType(
   format: string,
   pythonType: string,
-): { type: string; placeholder: string; maxLength?: number } {
+): { type: string; placeholder: string } {
   switch (format) {
     case "year":
       return { type: "year", placeholder: "YYYY" };
     case "date":
       return { type: "date", placeholder: "YYYY-MM-DD" };
+    case "datetime_naive":
+      return { type: "datetime", placeholder: "YYYY-MM-DDTHH:MM:SS" };
     case "url":
       return { type: "string", placeholder: "https://..." };
+    case "latlon_wgs":
+      return { type: "string", placeholder: "lat,lon" };
+    case "pays":
+      return { type: "string", placeholder: "" };
+    case "iso_country_code_alpha2":
+      return { type: "string", placeholder: "PT" };
     case "bool":
       return { type: "bool", placeholder: "" };
-    case "latlon_wgs":
-      return { type: "latlon", placeholder: "lat,lon" };
-    case "iso_country_code_alpha2":
-      return { type: "string", placeholder: "PT", maxLength: 2 };
   }
 
   switch (pythonType) {
@@ -40,6 +44,8 @@ function getInputType(
       return { type: "float", placeholder: "0.00" };
     case "date":
       return { type: "date", placeholder: "YYYY-MM-DD" };
+    case "datetime":
+      return { type: "datetime", placeholder: "YYYY-MM-DDTHH:MM:SS" };
     case "bool":
       return { type: "bool", placeholder: "" };
     default:
@@ -93,7 +99,7 @@ export default function Filter({ header }: FilterI) {
   const column = structure?.profile.columns?.[header];
   const format = column?.format ?? "string";
   const pythonType = column?.python_type ?? "string";
-  const { type, placeholder, maxLength } = getInputType(format, pythonType);
+  const { type, placeholder } = getInputType(format, pythonType);
 
   const getInput = () => {
     if (type === "bool") {
@@ -117,7 +123,6 @@ export default function Filter({ header }: FilterI) {
         hasHelperText
         hasError={!!errors[header]}
         errorFeedbackText={errors[header]}
-        maxLength={maxLength}
       />
     );
   };

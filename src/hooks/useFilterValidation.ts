@@ -42,6 +42,16 @@ function buildFieldSchema(
           t("errors.validator.date"),
         );
 
+    case "datetime_naive":
+      return z
+        .string()
+        .optional()
+        .refine(
+          (val) =>
+            !val || /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?)?$/.test(val),
+          t("errors.validator.datetime"),
+        );
+
     case "bool":
       return z
         .union([z.boolean(), z.string(), z.null()])
@@ -57,6 +67,7 @@ function buildFieldSchema(
           toBoolean(val as boolean | string | null | undefined),
         );
 
+    /** NOTE: latlon_wgs, latitude_wgs and longitude_wgs are handled as strings */
     /*case "latlon_wgs":
       return z
         .string()
@@ -64,6 +75,24 @@ function buildFieldSchema(
         .refine(
           (val) => !val || /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/.test(val),
           t("errors.validator.latlon"),
+        );
+
+    case "latitude_wgs":
+      return z
+        .string()
+        .optional()
+        .refine(
+          (val) => !val || /^-?\d+(\.\d+)?$/.test(val),
+          t("errors.validator.lat"),
+        );
+
+    case "longitude_wgs":
+      return z
+        .string()
+        .optional()
+        .refine(
+          (val) => !val || /^-?\d+(\.\d+)?$/.test(val),
+          t("errors.validator.lon"),
         );*/
 
     case "iso_country_code_alpha2":
@@ -103,6 +132,16 @@ function buildFieldSchema(
         .refine(
           (val) => !val || /^\d{4}-\d{2}-\d{2}$/.test(val),
           t("errors.validator.date"),
+        );
+
+    case "datetime":
+      return z
+        .string()
+        .optional()
+        .refine(
+          (val) =>
+            !val || /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?)?$/.test(val),
+          t("errors.validator.datetime"),
         );
 
     case "bool":

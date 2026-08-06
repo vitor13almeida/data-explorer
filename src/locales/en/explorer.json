@@ -105,10 +105,13 @@
       "int": "Must be an integer",
       "float": "Must be a decimal number",
       "date": "Expected format: YYYY-MM-DD",
+      "datetime": "Expected format: YYYY-MM-DDTHH:MM:SS",
       "bool": "Must be 'true' or 'false'",
       "year": "Must be a 4-digit year",
       "yearRange": "Year must be between 1900 and 2100",
       "latlon": "Expected format: latitude,longitude",
+      "lat": "Expected format: latitude",
+      "lon": "Expected format: longitude",
       "countryCode": "Maximum 2 characters"
     },
     "visibleColumns": {

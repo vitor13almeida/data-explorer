@@ -4,25 +4,33 @@ Referência dos valores de `python_type` e `format` encontrados nos perfis de da
 
 ## Combinações encontradas
 
-| python_type | format       | Validação aplicada                   | Placeholder   | Exemplo                 |
-| ----------- | ------------ | ------------------------------------ | ------------- | ----------------------- |
-| `string`    | `string`     | Texto livre                          | —             | Denominaca, Tipo        |
-| `string`    | `url`        | Texto livre                          | `https://...` | Website                 |
-| `string`    | `latlon_wgs` | Texto livre                          | `lat,lon`     | Localização Geográfica  |
-| `int`       | `int`        | Número inteiro (`^-?\d+$`)           | `0`           | OBJECTID, codigo_rua    |
-| `int`       | `year`       | 4 dígitos, range 1900-2100           | `YYYY`        | ano                     |
-| `float`     | `float`      | Número decimal (`^-?\d+([.,]\d+)?$`) | `0.00`        | ShapeSTLength, Peso     |
-| `date`      | `date`       | Formato `YYYY-MM-DD`                 | `YYYY-MM-DD`  | data_actualizacao, Data |
-| `bool`      | `bool`       | `true` / `false` / `null`            | TriStateInput | extensao                |
+| python_type | format                    | Validação aplicada                   | Placeholder           | Exemplo                 |
+| ----------- | ------------------------- | ------------------------------------ | --------------------- | ----------------------- |
+| `string`    | `string`                  | Texto livre                          | —                     | Denominaca, Tipo        |
+| `string`    | `url`                     | Texto livre                          | `https://...`         | Website                 |
+| `string`    | `latlon_wgs`              | Texto livre                          | `lat,lon`             | Localização Geográfica  |
+| `string`    | `latitude_wgs`            | Texto livre                          | `lat`                 | Localização Geográfica  |
+| `string`    | `longitude_wgs`           | Texto livre                          | `lon`                 | Localização Geográfica  |
+| `string`    | `pays`                    | Texto livre                          | —                     | NUTS0_desig             |
+| `string`    | `iso_country_code_alpha2` | Máximo 2 caracteres                  | `PT`                  | NUTS0_codigo            |
+| `int`       | `int`                     | Número inteiro (`^-?\d+$`)           | `0`                   | OBJECTID, codigo_rua    |
+| `int`       | `year`                    | 4 dígitos, range 1900-2100           | `YYYY`                | ano                     |
+| `float`     | `float`                   | Número decimal (`^-?\d+([.,]\d+)?$`) | `0.00`                | ShapeSTLength, Peso     |
+| `date`      | `date`                    | Formato `YYYY-MM-DD`                 | `YYYY-MM-DD`          | data_actualizacao, Data |
+| `datetime`  | `datetime_naive`          | Formato `YYYY-MM-DDTHH:MM:SS`        | `YYYY-MM-DDTHH:MM:SS` | criacaodtt              |
+| `bool`      | `bool`                    | `true` / `false` / `null`            | TriStateInput         | extensao                |
 
 ## Formatos sem validação específica
 
 Estes formatos aparecem no campo `format` mas são tratados como o `python_type` base, sem validação adicional:
 
-| format       | python_type base | Motivo                                           |
-| ------------ | ---------------- | ------------------------------------------------ |
-| `url`        | `string`         | Filtro usa operador "contém", aceita texto livre |
-| `latlon_wgs` | `string`         | Filtro usa operador "contém", aceita texto livre |
+| format          | python_type base | Motivo                                           |
+| --------------- | ---------------- | ------------------------------------------------ |
+| `url`           | `string`         | Filtro usa operador "contém", aceita texto livre |
+| `latlon_wgs`    | `string`         | Filtro usa operador "contém", aceita texto livre |
+| `latitude_wgs`  | `string`         | Filtro usa operador "contém", aceita texto livre |
+| `longitude_wgs` | `string`         | Filtro usa operador "contém", aceita texto livre |
+| `pays`          | `string`         | Nome de país, aceita texto livre                 |
 
 ## Formatos encontrados apenas em columns_fields e columns_labels
 
