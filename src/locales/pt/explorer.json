@@ -106,6 +106,7 @@
       "float": "Deve ser um número decimal",
       "date": "Formato esperado: YYYY-MM-DD",
       "datetime": "Formato esperado: YYYY-MM-DDTHH:MM:SS",
+      "datetimeExact": "Formato obrigatório: YYYY-MM-DDTHH:MM:SS",
       "bool": "Deve ser 'true' ou 'false'",
       "year": "Deve ser um ano com 4 dígitos",
       "yearRange": "O ano deve estar entre 1900 e 2100",
