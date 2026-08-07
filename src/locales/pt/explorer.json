@@ -86,6 +86,7 @@
     "filter": "Filtrar",
     "clear": "Limpar",
     "exportCsv": "Exportar CSV",
+    "exportJson": "Exportar JSON",
     "exportChart": "Exportar gráfico",
     "fullscreen": "Ecrã inteiro",
     "exitFullscreen": "Sair de ecrã inteiro"

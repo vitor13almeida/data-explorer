@@ -1,7 +1,7 @@
 "use client";
 
 import Button from "@/components/Shared/Button/Button";
-import Drawer from "@/components/Shared/Drawer/Button";
+import Drawer from "@/components/Shared/Drawer/Drawer";
 import DropdownOption from "@/components/Shared/Dropdown/DropdownOption";
 import DropdownSection from "@/components/Shared/Dropdown/DropdownSection";
 import InputSelect from "@/components/Shared/Input/InputSelect";

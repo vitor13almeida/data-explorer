@@ -5,85 +5,19 @@ import TableView from "./Views/TableView";
 import Button from "../Shared/Button/Button";
 import ButtonGroup from "../Shared/Button/ButtonGroup";
 import { useState } from "react";
-import FiltersToogle from "./Filters/FiltersToogle";
 import Filters from "./Filters/Filters";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import DataNumbers from "./DataNumbers";
-import { useResourceContext } from "@/hooks/useResourceContext";
-import { useChartContext } from "@/hooks/useChartContext";
-import { exportToCsv } from "@/utils/exportToCsv";
 import StructureView from "./Views/StructureView";
 import MetricsView from "./Views/MetricsView";
 import ChartView from "./Views/ChartView";
+import { ViewType } from "@/services/types";
+import { VIEW_TYPES } from "@/services/consts/explorer";
+import ExplorerActions from "./Actions/ExplorerActions";
 
-const VIEW_TYPES = ["table", "structure", "metrics", "chart"] as const;
+type ExplorerViewI = { selectedView: ViewType };
 
-type ViewType = (typeof VIEW_TYPES)[number];
-
-function ChartActions() {
-  const { t: te } = useTranslation("explorer");
-  const { isLoadingData, data } = useResourceContext();
-  const { exportChartAsPng, toggleFullscreen } = useChartContext();
-
-  const hasData = !isLoadingData && data && data.data.length > 0;
-
-  return (
-    <>
-      <Button
-        iconOnly
-        hasIcon
-        leadingIcon="agora-line-bar-chart"
-        leadingIconHover="agora-line-bar-chart"
-        title={te("actions.exportChart")}
-        appearance="outline"
-        disabled={!hasData}
-        onClick={exportChartAsPng}
-      />
-      <Button
-        iconOnly
-        hasIcon
-        leadingIcon="agora-line-maximize"
-        leadingIconHover="agora-line-maximize"
-        title={te("actions.fullscreen")}
-        appearance="outline"
-        disabled={!hasData}
-        onClick={toggleFullscreen}
-      />
-    </>
-  );
-}
-
-function ExplorerActions({ selectedView }: { selectedView: ViewType }) {
-  const { t: te } = useTranslation("explorer");
-  const { isLoadingData, data } = useResourceContext();
-
-  const hasData = !isLoadingData && data && data.data.length > 0;
-
-  const handleClickExportCsv = () => {
-    if (hasData) {
-      exportToCsv(data.data);
-    }
-  };
-
-  return (
-    <div className="flex flex-row gap-8 flex-wrap shrink">
-      <FiltersToogle />
-      <Button
-        iconOnly
-        hasIcon
-        leadingIcon="agora-line-document"
-        leadingIconHover="agora-line-document"
-        title={te("actions.exportCsv")}
-        appearance="outline"
-        disabled={!hasData}
-        onClick={handleClickExportCsv}
-      />
-      {selectedView === "chart" && <ChartActions />}
-    </div>
-  );
-}
-
-function ExplorerView({ selectedView }: { selectedView: ViewType }) {
+function ExplorerView({ selectedView }: ExplorerViewI) {
   switch (selectedView) {
     case "table":
       return (

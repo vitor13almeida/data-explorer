@@ -1,3 +1,5 @@
+export const VIEW_TYPES = ["table", "structure", "metrics", "chart"] as const;
+
 export const INITIAL_PAGE = 1;
 
 export const PAGE_SIZES = [10, 50, 200];
