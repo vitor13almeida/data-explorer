@@ -9,13 +9,13 @@ const SCORE_THRESHOLD = 0.5;
 const OUTLIER_THRESHOLD = 3;
 const DUPLICATES_THRESHOLD = 0.1;
 
-type AlertI = {
+export type AlertI = {
   type: "warning" | "danger";
   message: string;
   columns?: string[];
 };
 
-function useDataAlerts(
+export function useDataAlerts(
   te: (key: string, options?: Record<string, any>) => string,
 ) {
   const { structure } = useResourceContext();
@@ -95,7 +95,7 @@ function useDataAlerts(
   }, [structure, te]);
 }
 
-function DataAlerts({ alerts }: { alerts: AlertI[] }) {
+export function DataAlerts({ alerts }: { alerts: AlertI[] }) {
   if (alerts.length === 0) return null;
 
   return (
