@@ -29,13 +29,13 @@ A estrutura é carregada no servidor porque é obrigatória para renderizar a p�
 
 É o provider central. Gere todo o estado da exploração:
 
-- **Dados e loading** — `data`, `isLoadingData`, `errorData`
-- **Estrutura** — `structure` (recebida como prop do server)
-- **Paginação** — `page` (base 1), `pageSize`
-- **Ordenação** — `sortColumn`, `sortDirection`
-- **Filtros** — `filters` (estado da UI), `appliedFilters` (ref com os valores enviados à API)
-- **Operadores** — `filtersOperator`, `appliedFiltersOperator` (mesma lógica)
-- **Colunas visíveis** — `headersVisibility`, `appliedHeadersVisibility`
+- **Dados e loading** - `data`, `isLoadingData`, `errorData`
+- **Estrutura** - `structure` (recebida como prop do server)
+- **Paginação** - `page` (base 1), `pageSize`
+- **Ordenação** - `sortColumn`, `sortDirection`
+- **Filtros** - `filters` (estado da UI), `appliedFilters` (ref com os valores enviados à API)
+- **Operadores** - `filtersOperator`, `appliedFiltersOperator` (mesma lógica)
+- **Colunas visíveis** - `headersVisibility`, `appliedHeadersVisibility`
 
 A distinção entre estado e refs aplicados é importante: o estado da UI muda enquanto o utilizador edita, mas o pedido à API só usa os valores dos refs, que são atualizados quando o utilizador clica em "Aplicar filtros". Isto evita pedidos desnecessários durante a edição.
 
@@ -47,11 +47,11 @@ Recebe o `locale` como prop para o passar às server actions, que precisam dele 
 
 Gere o estado específico do gráfico, separado do ResourceProvider para não poluir o contexto global:
 
-- **Eixos** — `xAxisKey`, `yAxisKeys` (array para múltiplos datasets), `rAxisKey`
-- **Tipo** — `chart` (Line, Bar, Radar, etc.)
-- **Multi-dataset** — `multipleDatasets` (desativado para Doughnut, Pie, Polar Area)
-- **Exportação** — `chartRef` para capturar o canvas e exportar como PNG com fundo branco
-- **Fullscreen** — `chartContainerRef` e `toggleFullscreen` via Fullscreen API nativa
+- **Eixos** - `xAxisKey`, `yAxisKeys` (array para múltiplos datasets), `rAxisKey`
+- **Tipo** - `chart` (Line, Bar, Radar, etc.)
+- **Multi-dataset** - `multipleDatasets` (desativado para Doughnut, Pie, Polar Area)
+- **Exportação** - `chartRef` para capturar o canvas e exportar como PNG com fundo branco
+- **Fullscreen** - `chartContainerRef` e `toggleFullscreen` via Fullscreen API nativa
 
 ### TranslationProvider
 
@@ -99,10 +99,10 @@ A referência de formatos conhecidos está documentada em `docs/data-formats.md`
 
 O componente `Explorer` usa um `ExplorerView` que renderiza a vista ativa:
 
-- **Tabela** — `TableView` com `TableHeader`, `TableBody`, `TableRowNoResults`
-- **Estrutura** — `StructureView` com cards de stats e lista de campos com score de confiança
-- **Métricas** — `MetricsView` com alertas de qualidade, sumário global e cards por coluna
-- **Gráfico** — `ChartView` com `ChartSelectors`, `ChartRenderer`, `ChartPagination`
+- **Tabela** - `TableView` com `TableHeader`, `TableBody`, `TableRowNoResults`
+- **Estrutura** - `StructureView` com cards de stats e lista de campos com score de confiança
+- **Métricas** - `MetricsView` com alertas de qualidade, sumário global e cards por coluna
+- **Gráfico** - `ChartView` com `ChartSelectors`, `ChartRenderer`, `ChartPagination`
 
 As ações disponíveis (exportar CSV, exportar gráfico, fullscreen) mudam conforme a vista ativa.
 
@@ -124,8 +124,8 @@ Cada nível apanha erros do seu segmento e dos filhos. O 404 raiz redireciona pa
 
 O projeto usa `react-i18next` no cliente e `initTranslations` no servidor. A configuração está em `src/config/i18nConfig.ts`. Os namespaces são:
 
-- **common** — textos partilhados (botões, erros genéricos, labels comuns)
-- **explorer** — textos específicos do explorador (vistas, filtros, métricas, gráficos, erros da API)
+- **common** - textos partilhados (botões, erros genéricos, labels comuns)
+- **explorer** - textos específicos do explorador (vistas, filtros, métricas, gráficos, erros da API)
 
 As server actions recebem o `locale` como argumento e inicializam a sua própria instância de i18n porque a função `t` do cliente não é serializável e não pode ser passada como argumento.
 
@@ -133,7 +133,19 @@ As server actions recebem o `locale` como argumento e inicializam a sua própria
 
 A API usa paginação base 1 (`INITIAL_PAGE = 1`). A tabela do Agora Design System usa base 0. A conversão é feita no `TableView`:
 
-- `currentPage: page - 1` — ao passar para o componente (base 1 → base 0)
-- `setPage(tablePage + 1)` — ao receber o callback (base 0 → base 1)
+- `currentPage: page - 1` - ao passar para o componente (base 1 → base 0)
+- `setPage(tablePage + 1)` - ao receber o callback (base 0 → base 1)
 
 O `ChartPagination` trabalha directamente em base 1.
+
+## Documentação
+
+- [README](../../README.md) - descrição geral do projeto
+- [Arquitetura](architecture.md) - fluxo de dados, providers, server actions, validação e gestão de erros
+- [Tipos e formatos de dados](data-formats.md) - referência dos formatos devolvidos pela Tabular API e como são validados
+
+## ENglish Version
+
+- [README](../EN/README) - general project overview
+- [Arquitetura](../EN/architecture.md) - data flow, providers, server actions, validation, and error handling
+- [Tipos e formatos de dados](../EN/data-formats.md) - reference for formats returned by the Tabular API and how they are validated

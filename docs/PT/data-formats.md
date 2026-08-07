@@ -6,13 +6,13 @@ Referência dos valores de `python_type` e `format` encontrados nos perfis de da
 
 | python_type | format                    | Validação aplicada                   | Placeholder           | Exemplo                 |
 | ----------- | ------------------------- | ------------------------------------ | --------------------- | ----------------------- |
-| `string`    | `string`                  | Texto livre                          | —                     | Denominaca, Tipo        |
+| `string`    | `string`                  | Texto livre                          | -                     | Denominaca, Tipo        |
 | `string`    | `url`                     | Texto livre                          | `https://...`         | Website                 |
 | `string`    | `email`                   | Texto livre                          | `user@example.com`    | email                   |
 | `string`    | `latlon_wgs`              | Texto livre                          | `lat,lon`             | Localização Geográfica  |
 | `string`    | `latitude_wgs`            | Texto livre                          | `lat`                 | Localização Geográfica  |
 | `string`    | `longitude_wgs`           | Texto livre                          | `lon`                 | Localização Geográfica  |
-| `string`    | `pays`                    | Texto livre                          | —                     | NUTS0_desig             |
+| `string`    | `pays`                    | Texto livre                          | -                     | NUTS0_desig             |
 | `string`    | `iso_country_code_alpha2` | Máximo 2 caracteres                  | `PT`                  | NUTS0_codigo            |
 | `int`       | `int`                     | Número inteiro (`^-?\d+$`)           | `0`                   | OBJECTID, codigo_rua    |
 | `int`       | `year`                    | 4 dígitos, range 1900-2100           | `YYYY`                | ano                     |
@@ -66,3 +66,15 @@ Quando um novo valor de `format` ou `python_type` aparecer na API:
 4. Avaliar se precisa de placeholder no `Filter.tsx` (função `getInputType`)
 5. Avaliar se precisa de tipo de input diferente (ex: date picker, toggle)
 6. Avaliar se precisa de operadores específicos no `getOperatorOptions` em `data.ts`
+
+## Documentação
+
+- [README](../../README.md) - descrição geral do projeto
+- [Arquitetura](architecture.md) - fluxo de dados, providers, server actions, validação e gestão de erros
+- [Tipos e formatos de dados](data-formats.md) - referência dos formatos devolvidos pela Tabular API e como são validados
+
+## ENglish Version
+
+- [README](../EN/README) - general project overview
+- [Arquitetura](../EN/architecture.md) - data flow, providers, server actions, validation, and error handling
+- [Tipos e formatos de dados](../EN/data-formats.md) - reference for formats returned by the Tabular API and how they are validated

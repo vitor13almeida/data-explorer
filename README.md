@@ -72,5 +72,12 @@ O fluxo de dados segue este caminho:
 
 ## Documentação
 
-- [Arquitetura](docs/architecture.md) — fluxo de dados, providers, server actions, validação e gestão de erros
-- [Tipos e formatos de dados](docs/data-formats.md) — referência dos formatos devolvidos pela Tabular API e como são validados
+- [README](docs/EN/README.md) - descrição geral do projeto
+- [Arquitetura](docs/PT/architecture.md) - fluxo de dados, providers, server actions, validação e gestão de erros
+- [Tipos e formatos de dados](docs/PT/data-formats.md) - referência dos formatos devolvidos pela Tabular API e como são validados
+
+## ENglish Version
+
+- [README](docs/EN/README) - general project overview
+- [Arquitetura](docs/EN/architecture.md) - data flow, providers, server actions, validation, and error handling
+- [Tipos e formatos de dados](docs/EN/data-formats.md) - reference for formats returned by the Tabular API and how they are validated
