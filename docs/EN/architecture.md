@@ -15,10 +15,11 @@ Browser → page.tsx (server) → getStructure (server action) → Tabular API
                             ├── TranslationProvider
                             ├── ResourceProvider
                             │   ├── reads search params from URL
-                            │   ├── initializes filters and state
+                            │   ├── initializes filters, active view, and state
                             │   └── calls getData (server action) → Tabular API
                             └── ChartProvider
-                                └── axis state and chart type
+                                ├── axis state and chart type
+                                └── syncs with URL via setExtraUrlParams
 ```
 
 The structure is fetched on the server because it is required to render the page. If it fails with a 404, it renders the resource not found page. If it fails with another error, it passes the error message to the error boundary. The data is fetched on the client side because it depends on filters, pagination, and sorting controlled by the user.
@@ -31,6 +32,7 @@ The core provider. Manages all state related to dataset exploration:
 
 - **Data and loading** - `data`, `isLoadingData`, `errorData`
 - **Structure** - `structure` (received as a prop from the server)
+- **Active view** - `view` (table, structure, metrics, or chart)
 - **Pagination** - `page` (1-indexed), `pageSize`
 - **Sorting** - `sortColumn`, `sortDirection`
 - **Filters** - `filters` (UI state), `appliedFilters` (ref containing values sent to the API)
@@ -39,9 +41,17 @@ The core provider. Manages all state related to dataset exploration:
 
 The separation between UI state and applied refs is key: the UI state updates live while the user edits, but API requests only use the ref values, which update when the user clicks "Apply filters". This avoids unnecessary requests during editing.
 
-The URL updates automatically when `page`, `pageSize`, `sortColumn`, or `sortDirection` change, as well as when filters are applied.
+The URL updates automatically when `page`, `pageSize`, `sortColumn`, `sortDirection`, or `view` change, as well as when filters are applied.
 
 It receives `locale` as a prop to pass it to server actions, which require it to return translated error messages.
+
+#### Extra URL parameters
+
+The ResourceProvider is the sole owner of URL writes. Other providers that need to persist state in the URL do so through `setExtraUrlParams`, a stable-identity function exposed via context. This function receives a key-value object and stores it in an internal ref. When the URL is rebuilt, these parameters are included alongside those from the ResourceProvider itself.
+
+The mechanism uses intermediate refs (`setUrlParamsRef`, `isReadyRef`) to ensure that `setExtraUrlParams` does not depend on the lifecycle of `setUrlParams` and does not cause unnecessary re-renders.
+
+During the initial URL read, chart parameters are recognized and stored in the ref before any writes occur, preventing them from being cleared from the URL while the ChartProvider has not yet mounted.
 
 ### ChartProvider
 
@@ -52,6 +62,10 @@ Manages chart-specific state, kept separate from `ResourceProvider` to avoid clu
 - **Multi-dataset** - `multipleDatasets` (disabled for Doughnut, Pie, and Polar Area)
 - **Export** - `chartRef` to capture the canvas and export it as a PNG with a white background
 - **Fullscreen** - `chartContainerRef` and `toggleFullscreen` via native Fullscreen API
+
+Initial state is read from URL search params. The chart type defaults to `Line` when absent from the URL. Axes start unselected and are validated when data loads - if an axis from the URL does not exist in the dataset, it is cleared rather than automatically replaced.
+
+When the chart type, axes, or radius axis change, the ChartProvider syncs state with the URL by calling `setExtraUrlParams` from the ResourceProvider. The radius axis is only included when the chart type uses it (bubble).
 
 ### TranslationProvider
 
@@ -65,7 +79,7 @@ Components inside `src/components/Shared/` are thin wrappers around the Agora De
 - Consistent imports across the project
 - Simplified replacement of the design system in the future
 
-They contain no business logic.
+They contain no business logic, with one exception: `InputSelect` maintains an internal state synchronized with the `value` prop via `useEffect` to work around an Agora Design System bug that triggers `setState` during render when the value changes.
 
 ## Server Actions
 
@@ -97,14 +111,14 @@ The reference for supported formats is documented in `docs/data-formats.md`.
 
 ## Views
 
-The `Explorer` component uses `ExplorerView` to render the active view:
+The `Explorer` component uses `ExplorerView` to render the active view. The selected view is managed by the ResourceProvider and persisted in the URL through the `view` parameter:
 
 - **Table** - `TableView` with `TableHeader`, `TableBody`, `TableRowNoResults`
 - **Structure** - `StructureView` with stats cards and field lists with confidence scores
 - **Metrics** - `MetricsView` with data quality alerts, global summary, and per-column cards
 - **Chart** - `ChartView` with `ChartSelectors`, `ChartRenderer`, `ChartPagination`
 
-Available actions (CSV export, chart export, fullscreen) update dynamically depending on the active view.
+Available actions (CSV export, JSON export, chart export, fullscreen) update dynamically depending on the active view.
 
 ## Error Handling
 

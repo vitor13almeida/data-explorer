@@ -32,7 +32,7 @@ A nível global, apresenta o número de duplicados, a codificação do ficheiro 
 
 Permite visualizar os dados num de oito tipos de gráfico: linha, barras, radar, anel, área polar, bolhas, circular e dispersão. O utilizador escolhe as colunas para os eixos e, nos tipos de gráfico que o suportam, pode selecionar múltiplas colunas no eixo Y para sobrepor datasets no mesmo gráfico, cada um com uma cor distinta da paleta. Nos gráficos proporcionais (anel, circular e área polar) a seleção é limitada a uma coluna.
 
-Inclui paginação própria, exportação do gráfico como imagem PNG e modo de ecrã inteiro para apresentações ou análise detalhada.
+Inclui paginação própria, exportação do gráfico como imagem PNG e modo de ecrã inteiro para apresentações ou análise detalhada. A configuração do gráfico (tipo, eixos selecionados) é persistida no URL, permitindo partilhar uma visualização específica.
 
 ## Funcionalidades
 
@@ -41,12 +41,12 @@ Inclui paginação própria, exportação do gráfico como imagem PNG e modo de 
 - Ordenação por qualquer coluna, refletida no URL
 - Paginação com controlo do número de itens por página
 - Visibilidade de colunas configurável
-- Exportação dos dados visíveis para ficheiro CSV
+- Exportação dos dados visíveis para ficheiro CSV ou JSON
 - Exportação do gráfico como imagem PNG
 - Comparação de múltiplas colunas no mesmo gráfico
 - Modo de ecrã inteiro para gráficos
 - Alertas automáticos de qualidade dos dados
-- Estado completo da consulta persistido no URL (filtros, ordenação, página, colunas visíveis)
+- Estado completo da consulta persistido no URL (vista ativa, filtros, ordenação, página, colunas visíveis, configuração do gráfico)
 - Interface bilingue em português e inglês
 - Páginas de erro dedicadas para recursos não encontrados e erros genéricos
 - Design responsivo que se adapta a dispositivos móveis e desktop

@@ -15,10 +15,11 @@ Browser → page.tsx (server) → getStructure (server action) → Tabular API
                             ├── TranslationProvider
                             ├── ResourceProvider
                             │   ├── lê search params do URL
-                            │   ├── inicializa filtros e estado
+                            │   ├── inicializa filtros, vista ativa e estado
                             │   └── chama getData (server action) → Tabular API
                             └── ChartProvider
-                                └── estado dos eixos e tipo de gráfico
+                                ├── estado dos eixos e tipo de gráfico
+                                └── sincroniza com o URL via setExtraUrlParams
 ```
 
 A estrutura é carregada no servidor porque é obrigatória para renderizar a página. Se falhar com 404, mostra a página de recurso não encontrado. Se falhar com outro erro, lança a mensagem para o error boundary. Os dados são carregados no cliente porque dependem de filtros, paginação e ordenação que o utilizador controla.
@@ -31,6 +32,7 @@ A estrutura é carregada no servidor porque é obrigatória para renderizar a p�
 
 - **Dados e loading** - `data`, `isLoadingData`, `errorData`
 - **Estrutura** - `structure` (recebida como prop do server)
+- **Vista ativa** - `view` (tabela, estrutura, métricas ou gráfico)
 - **Paginação** - `page` (base 1), `pageSize`
 - **Ordenação** - `sortColumn`, `sortDirection`
 - **Filtros** - `filters` (estado da UI), `appliedFilters` (ref com os valores enviados à API)
@@ -39,9 +41,17 @@ A estrutura é carregada no servidor porque é obrigatória para renderizar a p�
 
 A distinção entre estado e refs aplicados é importante: o estado da UI muda enquanto o utilizador edita, mas o pedido à API só usa os valores dos refs, que são atualizados quando o utilizador clica em "Aplicar filtros". Isto evita pedidos desnecessários durante a edição.
 
-O URL é atualizado automaticamente quando `page`, `pageSize`, `sortColumn` ou `sortDirection` mudam, e quando os filtros são aplicados.
+O URL é atualizado automaticamente quando `page`, `pageSize`, `sortColumn`, `sortDirection` ou `view` mudam, e quando os filtros são aplicados.
 
 Recebe o `locale` como prop para o passar às server actions, que precisam dele para devolver mensagens de erro traduzidas.
+
+#### Parâmetros extra no URL
+
+O ResourceProvider é o único responsável por escrever no URL. Outros providers que precisem de persistir estado no URL fazem-no através de `setExtraUrlParams`, uma função com identidade estável exposta no contexto. Esta função recebe um objecto chave-valor e guarda-o num ref interno. Quando o URL é reconstruído, estes parâmetros são incluídos juntamente com os do próprio ResourceProvider.
+
+O mecanismo usa refs intermediários (`setUrlParamsRef`, `isReadyRef`) para garantir que o `setExtraUrlParams` não depende do ciclo de vida do `setUrlParams` nem causa re-renders desnecessários.
+
+Na leitura inicial do URL, os parâmetros do gráfico são reconhecidos e guardados no ref antes de qualquer escrita, evitando que sejam apagados do URL enquanto o ChartProvider ainda não montou.
 
 ### ChartProvider
 
@@ -52,6 +62,10 @@ Gere o estado específico do gráfico, separado do ResourceProvider para não po
 - **Multi-dataset** - `multipleDatasets` (desativado para Doughnut, Pie, Polar Area)
 - **Exportação** - `chartRef` para capturar o canvas e exportar como PNG com fundo branco
 - **Fullscreen** - `chartContainerRef` e `toggleFullscreen` via Fullscreen API nativa
+
+O estado inicial é lido dos search params do URL. O tipo de gráfico assume `Line` como valor por defeito quando não existe no URL. Os eixos começam sem seleção e são validados quando os dados carregam - se um eixo vindo do URL não existir no dataset, é limpo em vez de substituído automaticamente.
+
+Quando o tipo de gráfico, os eixos ou o eixo de raio mudam, o ChartProvider sincroniza o estado com o URL chamando `setExtraUrlParams` do ResourceProvider. O eixo de raio só é incluído quando o tipo de gráfico o utiliza (bolhas).
 
 ### TranslationProvider
 
@@ -65,7 +79,7 @@ Os componentes em `src/components/Shared/` são wrappers finos sobre o Agora Des
 - Manter os imports consistentes no projeto
 - Facilitar a substituição do design system no futuro
 
-Não contêm lógica de negócio.
+Não contêm lógica de negócio, com uma exceção: o `InputSelect` mantém um estado interno sincronizado com a prop `value` via `useEffect` para contornar um bug do Agora Design System que causa `setState` durante o render quando o valor muda.
 
 ## Server Actions
 
@@ -97,14 +111,14 @@ A referência de formatos conhecidos está documentada em `docs/data-formats.md`
 
 ## Vistas
 
-O componente `Explorer` usa um `ExplorerView` que renderiza a vista ativa:
+O componente `Explorer` usa um `ExplorerView` que renderiza a vista ativa. A vista selecionada é gerida pelo ResourceProvider e persistida no URL através do parâmetro `view`:
 
 - **Tabela** - `TableView` com `TableHeader`, `TableBody`, `TableRowNoResults`
 - **Estrutura** - `StructureView` com cards de stats e lista de campos com score de confiança
 - **Métricas** - `MetricsView` com alertas de qualidade, sumário global e cards por coluna
 - **Gráfico** - `ChartView` com `ChartSelectors`, `ChartRenderer`, `ChartPagination`
 
-As ações disponíveis (exportar CSV, exportar gráfico, fullscreen) mudam conforme a vista ativa.
+As ações disponíveis (exportar CSV, exportar JSON, exportar gráfico, fullscreen) mudam conforme a vista ativa.
 
 ## Gestão de erros
 

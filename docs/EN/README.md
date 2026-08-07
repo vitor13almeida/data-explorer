@@ -32,7 +32,7 @@ At the global level, it displays duplicate counts, file encoding, and the delimi
 
 Allows data visualization across one of eight chart types: line, bar, radar, doughnut, polar area, bubble, pie, and scatter. Users select columns for the axes and, for supported chart types, can select multiple Y-axis columns to overlay datasets on the same chart, each assigned a distinct palette color. For proportional charts (doughnut, pie, and polar area), selection is limited to a single column.
 
-Includes dedicated pagination, chart export as PNG images, and a full-screen mode for presentations or detailed analysis.
+Includes dedicated pagination, chart export as PNG images, and a full-screen mode for presentations or detailed analysis. The chart configuration (type, selected axes) is persisted in the URL, allowing a specific visualization to be shared.
 
 ## Features
 
@@ -41,12 +41,12 @@ Includes dedicated pagination, chart export as PNG images, and a full-screen mod
 - Sorting by any column, fully reflected in the URL
 - Pagination with customizable items per page
 - Configurable column visibility
-- Visible data export to CSV files
+- Visible data export to CSV or JSON files
 - Chart export as PNG image
 - Multi-column comparison on the same chart
 - Full-screen mode for charts
 - Automatic data quality alerts
-- Complete query state persisted in the URL (filters, sorting, page, visible columns)
+- Complete query state persisted in the URL (active view, filters, sorting, page, visible columns, chart configuration)
 - Bilingual interface in Portuguese and English
 - Dedicated error pages for non-existent resources and generic errors
 - Responsive design adapting seamlessly to mobile and desktop devices
