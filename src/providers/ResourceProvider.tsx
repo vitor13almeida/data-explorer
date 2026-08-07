@@ -5,12 +5,18 @@ import {
   FilterOperatorAll,
   INITIAL_PAGE,
   PAGE_SIZES,
+  VIEW_TYPES,
 } from "@/services/consts/explorer";
+import {
+  CHART_URL_PARAM_KEYS,
+  VIEW_URL_PARAM,
+} from "@/services/consts/urlParams";
 import {
   DatasetProfileResponse,
   FilterOperatorType,
   PaginatedDataResponse,
   ResourceDataResponse,
+  ViewType,
 } from "@/services/types";
 import { getInitialOperator } from "@/services/utils/data";
 import { prepareUrlSearchParams } from "@/utils/urlParams";
@@ -53,6 +59,10 @@ export type ResourceContextType = {
   setPage: Dispatch<number>;
   pageSize: number;
   setPageSize: Dispatch<number>;
+
+  view: ViewType;
+  setView: Dispatch<ViewType>;
+  setExtraUrlParams: (params: Record<string, string>) => void;
 
   sortColumn: string | null;
   setSortColumn: Dispatch<string | null>;
@@ -107,6 +117,8 @@ export function ResourceProvider({
   const [page, setPage] = useState<number>(INITIAL_PAGE);
   const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[0]);
 
+  const [view, setView] = useState<ViewType>(VIEW_TYPES[0]);
+
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(
     null,
@@ -125,6 +137,10 @@ export function ResourceProvider({
   const appliedFilters = useRef<Record<string, any>>({});
   const appliedFiltersOperator = useRef<Record<string, any>>({});
   const appliedHeadersVisibility = useRef<Record<string, boolean>>({});
+
+  const extraUrlParams = useRef<Record<string, string>>({});
+  const setUrlParamsRef = useRef<() => void>(() => {});
+  const isReadyRef = useRef<boolean>(false);
 
   const headers: string[] = structure?.profile.header ?? [];
   const nHeaders: number = Object.values(headers).length;
@@ -226,6 +242,8 @@ export function ResourceProvider({
       appliedFiltersOperator.current,
       appliedFilters.current ?? {},
       columnsForFilters,
+      view,
+      extraUrlParams.current,
     );
     window.history.replaceState(
       null,
@@ -239,7 +257,25 @@ export function ResourceProvider({
     sortDirection,
     headers,
     getColumnsForFilters,
+    view,
   ]);
+
+  useEffect(() => {
+    setUrlParamsRef.current = setUrlParams;
+  }, [setUrlParams]);
+
+  const setExtraUrlParams = useCallback((params: Record<string, string>) => {
+    const hasChanges = Object.keys(params).some(
+      (key) => params[key] !== extraUrlParams.current[key],
+    );
+    if (!hasChanges) return;
+
+    extraUrlParams.current = { ...extraUrlParams.current, ...params };
+
+    if (isReadyRef.current) {
+      setUrlParamsRef.current();
+    }
+  }, []);
 
   const removeFilter = useCallback(
     (filter: string) => {
@@ -312,12 +348,27 @@ export function ResourceProvider({
         const key = param[0];
         const value = param[1];
 
+        if (CHART_URL_PARAM_KEYS.includes(key)) {
+          if (value) {
+            extraUrlParams.current = {
+              ...extraUrlParams.current,
+              [key]: value,
+            };
+          }
+          return;
+        }
+
         switch (key) {
           case "page":
             setPage(value ? Number(value) || INITIAL_PAGE : INITIAL_PAGE);
             break;
           case "page_size":
             setPageSize(value ? Number(value) || PAGE_SIZES[0] : PAGE_SIZES[0]);
+            break;
+          case VIEW_URL_PARAM:
+            if (VIEW_TYPES.includes(value as ViewType)) {
+              setView(value as ViewType);
+            }
             break;
           case "columns": {
             const colsParams = value.split(",");
@@ -361,6 +412,7 @@ export function ResourceProvider({
     setHeadersVisibility(showCol);
     appliedHeadersVisibility.current = { ...showCol };
 
+    isReadyRef.current = true;
     setIsReady(true);
   }, []);
 
@@ -368,7 +420,7 @@ export function ResourceProvider({
     if (!isReady) return;
 
     void setUrlParams();
-  }, [page, pageSize, sortColumn, sortDirection, isReady]);
+  }, [page, pageSize, sortColumn, sortDirection, view, isReady]);
 
   useEffect(() => {
     if (!resourceId || !isReady) return;
@@ -454,6 +506,10 @@ export function ResourceProvider({
       pageSize,
       setPageSize,
 
+      view,
+      setView,
+      setExtraUrlParams,
+
       sortColumn,
       setSortColumn,
       sortDirection,
@@ -487,6 +543,8 @@ export function ResourceProvider({
       nFiltersApplied,
       page,
       pageSize,
+      view,
+      setExtraUrlParams,
       sortColumn,
       sortDirection,
       showFilters,

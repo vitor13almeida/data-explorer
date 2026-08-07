@@ -11,10 +11,17 @@ import {
   useRef,
   useState,
 } from "react";
+import { useSearchParams } from "next/navigation";
 import { useResourceContext } from "@/hooks/useResourceContext";
 import { Chart as ChartJS } from "chart.js";
 import { CHART_TYPES_WITH_R, ChartType } from "@/services/types/charts";
-import { CHART_TYPES_SINGLE_DATASET } from "@/services/consts/chart";
+import {
+  CHART_TYPES,
+  CHART_TYPES_SINGLE_DATASET,
+} from "@/services/consts/chart";
+import { CHART_URL_PARAMS } from "@/services/consts/urlParams";
+
+const DEFAULT_CHART: ChartType = "Line";
 
 export type ChartContextType = {
   keys: string[];
@@ -46,7 +53,8 @@ export const ChartContext = createContext<ChartContextType | undefined>(
 );
 
 export function ChartProvider({ children }: { children: ReactNode }) {
-  const { data: resourceData } = useResourceContext();
+  const searchParams = useSearchParams();
+  const { data: resourceData, setExtraUrlParams } = useResourceContext();
 
   const rows = resourceData?.data ?? [];
 
@@ -60,10 +68,22 @@ export function ChartProvider({ children }: { children: ReactNode }) {
     [keys, rows],
   );
 
-  const [xAxisKey, setXAxisKey] = useState("");
-  const [yAxisKeys, setYAxisKeys] = useState<string[]>([]);
-  const [rAxisKey, setRAxisKey] = useState("");
-  const [chart, setChart] = useState<ChartType>("Line");
+  const [xAxisKey, setXAxisKey] = useState<string>(
+    () => searchParams.get(CHART_URL_PARAMS.x) ?? "",
+  );
+  const [yAxisKeys, setYAxisKeys] = useState<string[]>(() => {
+    const param = searchParams.get(CHART_URL_PARAMS.y);
+    return param ? param.split(",").filter(Boolean) : [];
+  });
+  const [rAxisKey, setRAxisKey] = useState<string>(
+    () => searchParams.get(CHART_URL_PARAMS.r) ?? "",
+  );
+  const [chart, setChart] = useState<ChartType>(() => {
+    const param = searchParams.get(CHART_URL_PARAMS.type);
+    return param && CHART_TYPES.includes(param as ChartType)
+      ? (param as ChartType)
+      : DEFAULT_CHART;
+  });
 
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
@@ -111,16 +131,45 @@ export function ChartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (keys.length > 0 && !xAxisKey) setXAxisKey(keys[0]);
-    if (numericKeys.length > 0 && yAxisKeys.length === 0)
-      setYAxisKeys([numericKeys[0]]);
-  }, [keys, numericKeys]);
+    if (keys.length === 0 || !xAxisKey) return;
+
+    if (!keys.includes(xAxisKey)) {
+      setXAxisKey("");
+    }
+  }, [keys]);
+
+  useEffect(() => {
+    if (numericKeys.length === 0 || yAxisKeys.length === 0) return;
+
+    const validKeys = yAxisKeys.filter((key) => numericKeys.includes(key));
+
+    if (validKeys.length !== yAxisKeys.length) {
+      setYAxisKeys(validKeys);
+    }
+  }, [numericKeys]);
+
+  useEffect(() => {
+    if (numericKeys.length === 0 || !rAxisKey) return;
+
+    if (!numericKeys.includes(rAxisKey)) {
+      setRAxisKey("");
+    }
+  }, [numericKeys]);
 
   useEffect(() => {
     if (!multipleDatasets && yAxisKeys.length > 1) {
       setYAxisKeys([yAxisKeys[0]]);
     }
   }, [multipleDatasets]);
+
+  useEffect(() => {
+    setExtraUrlParams({
+      [CHART_URL_PARAMS.type]: chart,
+      [CHART_URL_PARAMS.x]: xAxisKey,
+      [CHART_URL_PARAMS.y]: yAxisKeys.join(","),
+      [CHART_URL_PARAMS.r]: showR ? rAxisKey : "",
+    });
+  }, [chart, xAxisKey, yAxisKeys, rAxisKey, showR, setExtraUrlParams]);
 
   const value = useMemo(
     () => ({
