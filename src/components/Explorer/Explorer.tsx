@@ -76,9 +76,6 @@ export default function Explorer() {
         </div>
         <ExplorerActions selectedView={view} />
       </div>
-      <div className="w-full">
-        <Filters />
-      </div>
       <div className="w-full flex flex-col gap-16">
         <ExplorerView selectedView={view} />
       </div>

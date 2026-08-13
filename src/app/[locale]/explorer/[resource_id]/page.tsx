@@ -2,7 +2,6 @@ import initTranslations from "@/app/i18n";
 import ExplorerPageContent from "@/components/Explorer/ExplorerPageContent";
 import ExplorerProviders from "@/components/Explorer/ExplorerProviders";
 import {
-  DatasetProfileResponse,
   ResourceStructureResponse,
 } from "@/services/types";
 import { Metadata } from "next";
