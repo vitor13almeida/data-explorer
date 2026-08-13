@@ -83,7 +83,7 @@
     "next": "Next page"
   },
   "actions": {
-    "filter": "Filter",
+    "filter": "Filter Results",
     "clear": "Clear",
     "exportCsv": "Export CSV",
     "exportJson": "Export JSON",

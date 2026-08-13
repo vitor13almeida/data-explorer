@@ -15,13 +15,14 @@ export default function FiltersToogle() {
 
   return (
     <Button
-      iconOnly={true}
+      appearance={"link"}
       hasIcon={true}
-      leadingIcon="agora-line-filter"
-      leadingIconHover="agora-line-filter"
+      trailingIcon="agora-line-settings"
+      trailingIconHover="agora-line-settings"
       title={te("actions.filter")}
       onClick={() => handleToogle()}
-      appearance={showFilters ? "solid" : "outline"}
-    />
+    >
+      {te("actions.filter")}
+    </Button>
   );
 }

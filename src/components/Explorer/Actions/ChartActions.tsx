@@ -15,7 +15,6 @@ export default function ChartActions() {
   return (
     <>
       <Button
-        iconOnly
         hasIcon
         leadingIcon="agora-line-bar-chart"
         leadingIconHover="agora-line-bar-chart"
@@ -23,7 +22,9 @@ export default function ChartActions() {
         appearance="outline"
         disabled={!hasData}
         onClick={exportChartAsPng}
-      />
+      >
+        {te("actions.exportChart")}
+      </Button>
       <Button
         iconOnly
         hasIcon

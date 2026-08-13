@@ -83,7 +83,7 @@
     "appliedFilters": "Filtros aplicados"
   },
   "actions": {
-    "filter": "Filtrar",
+    "filter": "Filtrar Resultados",
     "clear": "Limpar",
     "exportCsv": "Exportar CSV",
     "exportJson": "Exportar JSON",

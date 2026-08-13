@@ -2,8 +2,6 @@
 
 import { useTranslation } from "react-i18next";
 import TableView from "./Views/TableView";
-import Button from "../Shared/Button/Button";
-import ButtonGroup from "../Shared/Button/ButtonGroup";
 import Filters from "./Filters/Filters";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import DataNumbers from "./DataNumbers";
@@ -11,9 +9,11 @@ import StructureView from "./Views/StructureView";
 import MetricsView from "./Views/MetricsView";
 import ChartView from "./Views/ChartView";
 import { ViewType } from "@/services/types";
-import { VIEW_TYPES } from "@/services/consts/explorer";
+import { VIEW_TYPES, VIEW_TYPES_ICONS } from "@/services/consts/explorer";
 import ExplorerActions from "./Actions/ExplorerActions";
 import { useResourceContext } from "@/hooks/useResourceContext";
+import ToggleGroup from "../Shared/Toggle/ToggleGroup";
+import Toggle from "../Shared/Toggle/Toggle";
 
 type ExplorerViewI = { selectedView: ViewType };
 
@@ -53,15 +53,26 @@ export default function Explorer() {
 
   return (
     <div className="w-full flex flex-col gap-32">
-      <div className="flex flex-col md:flex-row gap-32 md:gap-64 w-full items-center">
-        <div className="grow w-full md:w-auto">
-          <ButtonGroup orientation={isMobile ? "vertical" : "horizontal"}>
+      <div className="flex flex-col lg:flex-row gap-32 w-full items-center justify-between">
+        <div className="w-full lg:w-auto">
+          <ToggleGroup
+            orientation={isMobile ? "vertical" : "horizontal"}
+            value={[view]}
+          >
             {VIEW_TYPES.map((viewType) => (
-              <Button key={viewType} onClick={() => setView(viewType)}>
+              <Toggle
+                key={viewType}
+                value={viewType}
+                multiple={false}
+                onClick={() => setView(viewType)}
+                hasIcon
+                leadingIcon={VIEW_TYPES_ICONS[viewType]}
+                leadingIconHover={VIEW_TYPES_ICONS[viewType]}
+              >
                 {te(`views.${viewType}.title`)}
-              </Button>
+              </Toggle>
             ))}
-          </ButtonGroup>
+          </ToggleGroup>
         </div>
         <ExplorerActions selectedView={view} />
       </div>

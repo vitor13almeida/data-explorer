@@ -8,6 +8,8 @@ import { useTranslation } from "react-i18next";
 import FiltersToogle from "../Filters/FiltersToogle";
 import Button from "@/components/Shared/Button/Button";
 import ChartActions from "./ChartActions";
+import ButtonGroup from "@/components/Shared/Button/ButtonGroup";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 export type ExplorerActionsI = {
   selectedView: ViewType;
@@ -16,6 +18,10 @@ export type ExplorerActionsI = {
 export default function ExplorerActions({ selectedView }: ExplorerActionsI) {
   const { t: te } = useTranslation("explorer");
   const { isLoadingData, data } = useResourceContext();
+
+  const isMobile = useMediaQuery("(min-width: 768px)", {
+    initializeWithValue: false,
+  });
 
   const hasData = !isLoadingData && data && data.data.length > 0;
 
@@ -32,29 +38,36 @@ export default function ExplorerActions({ selectedView }: ExplorerActionsI) {
   };
 
   return (
-    <div className="flex flex-row gap-8 flex-wrap shrink">
+    <div className="flex flex-col lg:flex-row gap-8 items-start lg:items-center lg:justify-end w-full lg:w-auto">
       <FiltersToogle />
-      <Button
-        iconOnly
-        hasIcon
-        leadingIcon="agora-line-document"
-        leadingIconHover="agora-line-document"
-        title={te("actions.exportCsv")}
-        appearance="outline"
-        disabled={!hasData}
-        onClick={handleClickExportCsv}
-      />
-      <Button
-        iconOnly
-        hasIcon
-        leadingIcon="agora-line-package"
-        leadingIconHover="agora-line-package"
-        title={te("actions.exportJson")}
-        appearance="outline"
-        disabled={!hasData}
-        onClick={handleClickExportJson}
-      />
-      {selectedView === "chart" && <ChartActions />}
+
+      <div className="w-full lg:w-auto">
+        <ButtonGroup orientation={isMobile ? "vertical" : "horizontal"}>
+          <Button
+            hasIcon
+            leadingIcon="agora-line-document"
+            leadingIconHover="agora-line-document"
+            title={te("actions.exportCsv")}
+            appearance="outline"
+            disabled={!hasData}
+            onClick={handleClickExportCsv}
+          >
+            {te("actions.exportCsv")}
+          </Button>
+          <Button
+            hasIcon
+            leadingIcon="agora-line-package"
+            leadingIconHover="agora-line-package"
+            title={te("actions.exportJson")}
+            appearance="outline"
+            disabled={!hasData}
+            onClick={handleClickExportJson}
+          >
+            {te("actions.exportJson")}
+          </Button>
+          {selectedView === "chart" ? <ChartActions /> : <></>}
+        </ButtonGroup>
+      </div>
     </div>
   );
 }
