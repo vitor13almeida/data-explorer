@@ -13,7 +13,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Next.js needs NEXT_PUBLIC_* vars at build time — values come from docker-compose build.args
-ARG TABULAR_API_URL=
+ARG TABULAR_API_URL=http://host.docker.internal:8005
 
 RUN npm run build
 
