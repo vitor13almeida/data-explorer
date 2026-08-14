@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 export const TABULAR_API_URL =
-  process.env.TabularApiUrl || "http://127.0.0.1:8005";
+  process.env.TABULAR_API_URL || "http://127.0.0.1:8005";
 
 const nextConfig: NextConfig = {
   // Standalone output for Docker deployment

@@ -10,13 +10,13 @@ import ChartPagination from "../Chart/ChartPagination";
 export default function ChartView() {
   const { t: te } = useTranslation("explorer");
   const { data } = useResourceContext();
-  const { hasNumericData, chartContainerRef } = useChartContext();
+  const { hasNumericData } = useChartContext();
 
   const hasData = (data?.data ?? []).length > 0;
 
   if (!hasData) {
     return (
-      <p className="text-m-regular text-neutral-500">
+      <p className="flex items-center justify-center py-64 rounded-lg border border-neutral-200 bg-white text-m-regular text-neutral-500">
         {te("views.chart.noData")}
       </p>
     );
@@ -24,17 +24,14 @@ export default function ChartView() {
 
   if (!hasNumericData) {
     return (
-      <p className="text-m-regular text-neutral-500">
+      <p className="flex items-center justify-center py-64 rounded-lg border border-neutral-200 bg-white text-m-regular text-neutral-500">
         {te("views.chart.noNumericData")}
       </p>
     );
   }
 
   return (
-    <div
-      ref={chartContainerRef}
-      className="flex flex-col gap-24 bg-white fullscreen:p-24 fullscreen:overflow-auto"
-    >
+    <div className="flex flex-col gap-24 bg-white fullscreen:p-24 fullscreen:overflow-auto">
       <ChartSelectors />
       <ChartRenderer />
       <ChartPagination />

@@ -1,3 +1,7 @@
+import { VIEW_TYPES } from "../consts/explorer";
+
+export type ViewType = (typeof VIEW_TYPES)[number];
+
 export interface TopValue {
   count: number;
   value: string;

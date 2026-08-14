@@ -1,27 +1,37 @@
 "use client";
 
 import Button from "@/components/Shared/Button/Button";
-import { useResourceContext } from "@/hooks/useResourceContext";
+import {
+  PopupConfiguration,
+  usePopupContext,
+} from "@ama-pt/agora-design-system";
 import { useTranslation } from "react-i18next";
+import Filters from "./Filters";
 
 export default function FiltersToogle() {
+  const { t } = useTranslation("common");
   const { t: te } = useTranslation("explorer");
 
-  const { showFilters, setShowFilters } = useResourceContext();
+  const { show } = usePopupContext();
 
-  const handleToogle = () => {
-    setShowFilters(!showFilters);
+  const handleShowFilters = () => {
+    show(<Filters />, {
+      title: te("actions.filter"),
+      closeAriaLabel: t("close"),
+      dimensions: "l",
+    } as PopupConfiguration);
   };
 
   return (
     <Button
-      iconOnly={true}
+      appearance={"link"}
       hasIcon={true}
-      leadingIcon="agora-line-filter"
-      leadingIconHover="agora-line-filter"
+      trailingIcon="agora-line-settings"
+      trailingIconHover="agora-line-settings"
       title={te("actions.filter")}
-      onClick={() => handleToogle()}
-      appearance={showFilters ? "solid" : "outline"}
-    />
+      onClick={() => handleShowFilters()}
+    >
+      {te("actions.filter")}
+    </Button>
   );
 }

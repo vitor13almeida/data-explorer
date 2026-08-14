@@ -2,142 +2,83 @@
 
 import { useTranslation } from "react-i18next";
 import TableView from "./Views/TableView";
-import Button from "../Shared/Button/Button";
-import ButtonGroup from "../Shared/Button/ButtonGroup";
-import { useMemo, useState } from "react";
-import FiltersToogle from "./Filters/FiltersToogle";
 import Filters from "./Filters/Filters";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import DataNumbers from "./DataNumbers";
-import { useResourceContext } from "@/hooks/useResourceContext";
-import { useChartContext } from "@/hooks/useChartContext";
-import { exportToCsv } from "@/utils/exportToCsv";
 import StructureView from "./Views/StructureView";
 import MetricsView from "./Views/MetricsView";
 import ChartView from "./Views/ChartView";
-import LoadingWrapper from "../Shared/Loading/LoadingWrapper";
+import { ViewType } from "@/services/types";
+import { VIEW_TYPES, VIEW_TYPES_ICONS } from "@/services/consts/explorer";
+import ExplorerActions from "./Actions/ExplorerActions";
+import { useResourceContext } from "@/hooks/useResourceContext";
+import ToggleGroup from "../Shared/Toggle/ToggleGroup";
+import Toggle from "../Shared/Toggle/Toggle";
 
-const VIEW_TYPES = ["table", "structure", "metrics", "chart"] as const;
+type ExplorerViewI = { selectedView: ViewType };
 
-type ViewType = (typeof VIEW_TYPES)[number];
-
-function ChartActions() {
-  const { t: te } = useTranslation("explorer");
-  const { isLoadingData, data } = useResourceContext();
-  const { exportChartAsPng, toggleFullscreen } = useChartContext();
-
-  const hasData = !isLoadingData && data && data.data.length > 0;
-
-  return (
-    <>
-      <Button
-        iconOnly
-        hasIcon
-        leadingIcon="agora-line-bar-chart"
-        leadingIconHover="agora-line-bar-chart"
-        title={te("actions.exportChart")}
-        appearance="outline"
-        disabled={!hasData}
-        onClick={exportChartAsPng}
-      />
-      <Button
-        iconOnly
-        hasIcon
-        leadingIcon="agora-line-maximize"
-        leadingIconHover="agora-line-maximize"
-        title={te("actions.fullscreen")}
-        appearance="outline"
-        disabled={!hasData}
-        onClick={toggleFullscreen}
-      />
-    </>
-  );
-}
-
-function ExplorerActions({ selectedView }: { selectedView: ViewType }) {
-  const { t: te } = useTranslation("explorer");
-  const { isLoadingData, data } = useResourceContext();
-
-  const hasData = !isLoadingData && data && data.data.length > 0;
-
-  const handleClickExportCsv = () => {
-    if (hasData) {
-      exportToCsv(data.data);
-    }
-  };
-
-  return (
-    <div className="flex flex-row gap-8 flex-wrap shrink">
-      <FiltersToogle />
-      <Button
-        iconOnly
-        hasIcon
-        leadingIcon="agora-line-document"
-        leadingIconHover="agora-line-document"
-        title={te("actions.exportCsv")}
-        appearance="outline"
-        disabled={!hasData}
-        onClick={handleClickExportCsv}
-      />
-      {selectedView === "chart" && <ChartActions />}
-    </div>
-  );
+function ExplorerView({ selectedView }: ExplorerViewI) {
+  switch (selectedView) {
+    case "table":
+      return (
+        <>
+          <DataNumbers />
+          <TableView />
+        </>
+      );
+    case "structure":
+      return <StructureView />;
+    case "metrics":
+      return <MetricsView />;
+    case "chart":
+      return (
+        <>
+          <DataNumbers />
+          <ChartView />
+        </>
+      );
+    default:
+      return null;
+  }
 }
 
 export default function Explorer() {
   const { t: te } = useTranslation("explorer");
 
-  const isMobile = useMediaQuery("(min-width: 768px)");
+  const isMobile = useMediaQuery("(min-width: 768px)", {
+    initializeWithValue: false,
+  });
 
-  const [selectedView, setSelectedView] = useState<ViewType>("table");
-
-  const view = useMemo(() => {
-    switch (selectedView) {
-      case "table":
-        return (
-          <>
-            <DataNumbers />
-            <LoadingWrapper>
-              <TableView />
-            </LoadingWrapper>
-          </>
-        );
-      case "structure":
-        return <StructureView />;
-      case "metrics":
-        return <MetricsView />;
-      case "chart":
-        return (
-          <>
-            <DataNumbers />
-            <LoadingWrapper>
-              <ChartView />
-            </LoadingWrapper>
-          </>
-        );
-      default:
-        return null;
-    }
-  }, [selectedView]);
+  const { view, setView } = useResourceContext();
 
   return (
     <div className="w-full flex flex-col gap-32">
-      <div className="flex flex-col md:flex-row gap-32 md:gap-64 w-full items-center">
-        <div className="grow w-full md:w-auto">
-          <ButtonGroup orientation={isMobile ? "vertical" : "horizontal"}>
-            {VIEW_TYPES.map((view) => (
-              <Button key={view} onClick={() => setSelectedView(view)}>
-                {te(`views.${view}.title`)}
-              </Button>
+      <div className="flex flex-col lg:flex-row gap-32 w-full items-center justify-between">
+        <div className="w-full lg:w-auto">
+          <ToggleGroup
+            orientation={isMobile ? "vertical" : "horizontal"}
+            value={[view]}
+          >
+            {VIEW_TYPES.map((viewType) => (
+              <Toggle
+                key={viewType}
+                value={viewType}
+                multiple={false}
+                onClick={() => setView(viewType)}
+                hasIcon
+                leadingIcon={VIEW_TYPES_ICONS[viewType]}
+                leadingIconHover={VIEW_TYPES_ICONS[viewType]}
+              >
+                {te(`views.${viewType}.title`)}
+              </Toggle>
             ))}
-          </ButtonGroup>
+          </ToggleGroup>
         </div>
-        <ExplorerActions selectedView={selectedView} />
+        <ExplorerActions selectedView={view} />
       </div>
-      <div className="w-full">
-        <Filters />
+      <div className="w-full flex flex-col gap-16">
+        <ExplorerView selectedView={view} />
       </div>
-      <div className="w-full flex flex-col gap-16">{view}</div>
     </div>
   );
 }

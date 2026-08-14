@@ -5,6 +5,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* headless accordion */
+
 .accordion-headless .agora-accordion .accordion-header {
   display: none !important;
 }
@@ -20,16 +22,65 @@ button.operator-drawer-trigger {
   padding: 0 !important;
 }
 
+/* tristate input */
+
 .tri-state-switch .agora-btn-link-primary svg,
 .tri-state-switch .agora-btn-outline-primary svg,
 .tri-state-switch .agora-btn-solid-primary svg {
   fill: none !important;
 }
 
+/* button group can use 100% width */
+
+.agora-toggle-group,
 .agora-button-group {
   width: 100% !important;
 }
 
+/* hide label in chart inpuut to not break the layout */
+
 .chart-page-size-selector .agora-input-select .agora-input-select-label {
   display: none !important;
+}
+
+/* bigger dialog area */
+
+.agora-dialog .z-dialog {
+  padding: 0 !important;
+  margin: 128px auto !important;
+  width: calc(100% - 256px) !important;
+  height: calc(100% - 256px) !important;
+}
+
+.agora-popup-dialog,
+.agora-popup-dialog-body {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 2560px !important;
+  max-height: 2560px !important;
+}
+
+.agora-popup-dialog {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.agora-popup-dialog-body {
+  overflow: auto !important;
+}
+
+@media (max-width: 1024px) {
+  .agora-dialog .z-dialog {
+    margin: 64px !important;
+    width: calc(100% - 128px) !important;
+    height: calc(100% - 128px) !important;
+  }
+}
+
+@media (max-width: 425px) {
+  .agora-dialog .z-dialog {
+    margin: 32px !important;
+    width: calc(100% - 64px) !important;
+    height: calc(100% - 64px) !important;
+  }
 }

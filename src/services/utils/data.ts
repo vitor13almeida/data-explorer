@@ -5,26 +5,54 @@ import {
   FilterOperatorNumber,
   FilterOperatorText,
 } from "../consts/explorer";
-import { DatasetProfileResponse } from "../types";
+import { DatasetProfileResponse, FilterOperatorType } from "../types";
+
+export type DataType = {
+  format: string;
+  pythonType: string;
+};
 
 export function getDataType(
   header: string,
   structure: DatasetProfileResponse | null,
-) {
-  return structure?.profile.columns[header].python_type ?? "string";
+): DataType {
+  const column = structure?.profile.columns?.[header];
+  return {
+    format: column?.format ?? "string",
+    pythonType: column?.python_type ?? "string",
+  };
 }
 
-export function getOperatorOptions(dataType: string) {
-  switch (dataType) {
-    case "string":
+export function getOperatorOptions(dataType: DataType) {
+  // format-specific operators take priority
+  switch (dataType.format) {
+    case "year":
+    case "date":
+    case "datetime_naive":
+      return [...FilterOperatorDate];
+    case "bool":
+      return [...FilterOperatorBool];
+    case "iso_country_code_alpha2":
+    case "url":
+    case "latlon_wgs":
+    case "latitude_wgs":
+    case "longitude_wgs":
+    case "pays":
       return [...FilterOperatorText];
+  }
+
+  // fallback to python_type
+  switch (dataType.pythonType) {
     case "int":
     case "float":
       return [...FilterOperatorNumber];
     case "date":
+    case "datetime":
       return [...FilterOperatorDate];
     case "bool":
       return [...FilterOperatorBool];
+    case "string":
+      return [...FilterOperatorText];
     default:
       return [...FilterOperatorCommon];
   }
@@ -33,11 +61,10 @@ export function getOperatorOptions(dataType: string) {
 export function getInitialOperator(
   header: string,
   structure: DatasetProfileResponse | null,
-) {
-  return (
-    getOperatorOptions(getDataType(header, structure))?.at(0) ??
-    FilterOperatorCommon[0]
-  );
+): FilterOperatorType {
+  const dataType = getDataType(header, structure);
+  return (getOperatorOptions(dataType)?.at(0) ??
+    FilterOperatorCommon[0]) as FilterOperatorType;
 }
 
 export function toBoolean(

@@ -1,5 +1,6 @@
 import { INITIAL_PAGE, PAGE_SIZES } from "@/services/consts/explorer";
-import { FilterOperatorType } from "@/services/types";
+import { VIEW_URL_PARAM } from "@/services/consts/urlParams";
+import { FilterOperatorType, ViewType } from "@/services/types";
 
 export function prepareUrlSearchParams(
   page: number = INITIAL_PAGE,
@@ -10,11 +11,17 @@ export function prepareUrlSearchParams(
   filtersOperator: Record<string, FilterOperatorType> = {},
   filters: Record<string, any>,
   columns: string[] = [],
+  view: ViewType | null = null,
+  extraParams: Record<string, string> = {},
 ): URLSearchParams {
   let params: Record<string, any> = {
     page: page.toString(),
     page_size: page_size.toString(),
   };
+
+  if (view) {
+    params = { ...params, [VIEW_URL_PARAM]: view };
+  }
 
   if (sortCol) {
     params = { ...params, [`${sortCol}__sort`]: sortOrder };
@@ -44,6 +51,12 @@ export function prepareUrlSearchParams(
   if (columns.length > 0) {
     params = { ...params, columns: columns.join(",") };
   }
+
+  Object.entries(extraParams).forEach(([key, value]) => {
+    if (value !== "" && value !== undefined && value !== null) {
+      params = { ...params, [key]: value };
+    }
+  });
 
   const queryParams = new URLSearchParams(params);
 

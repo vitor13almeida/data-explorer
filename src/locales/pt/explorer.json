@@ -8,7 +8,8 @@
       "buttonDropdownAriaLabel": "Escolha o número de itens por página",
       "dropdownListAriaLabel": "Número de itens por página",
       "prevButtonAriaLabel": "Página anterior",
-      "nextButtonAriaLabel": "Página seguinte"
+      "nextButtonAriaLabel": "Página seguinte",
+      "noResults": "Não foram encontrados resultados."
     },
     "structure": {
       "title": "Estrutura",
@@ -54,6 +55,7 @@
       "axisPlaceholder": "Selecione uma coluna",
       "chartType": "Tipo de gráfico",
       "chartTypePlaceholder": "Selecione um tipo",
+      "noAxisSelected": "Selecione pelo menos uma coluna para o eixo Y.",
       "noData": "Não existem dados disponíveis.",
       "noNumericData": "Não existem dados numéricos disponíveis.",
       "types": {
@@ -81,11 +83,13 @@
     "appliedFilters": "Filtros aplicados"
   },
   "actions": {
-    "filter": "Filtrar",
+    "filter": "Filtrar Resultados",
     "clear": "Limpar",
     "exportCsv": "Exportar CSV",
+    "exportJson": "Exportar JSON",
     "exportChart": "Exportar gráfico",
-    "fullscreen": "Ecrã inteiro"
+    "fullscreen": "Ecrã inteiro",
+    "exitFullscreen": "Sair de ecrã inteiro"
   },
   "errors": {
     "data": {
@@ -102,7 +106,14 @@
       "int": "Deve ser um número inteiro",
       "float": "Deve ser um número decimal",
       "date": "Formato esperado: YYYY-MM-DD",
-      "bool": "Deve ser 'true' ou 'false'"
+      "datetime": "Formato esperado: YYYY-MM-DDTHH:MM:SS",
+      "datetimeExact": "Formato obrigatório: YYYY-MM-DDTHH:MM:SS",
+      "bool": "Deve ser 'true' ou 'false'",
+      "year": "Deve ser um ano com 4 dígitos",
+      "yearRange": "O ano deve estar entre 1900 e 2100",
+      "lat": "Formato esperado: latitude",
+      "lon": "Formato esperado: longitude",
+      "countryCode": "Máximo de 2 caracteres"
     },
     "visibleColumns": {
       "title": "Colunas visíveis",

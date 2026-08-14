@@ -4,9 +4,10 @@ import { useResourceContext } from "@/hooks/useResourceContext";
 import { INITIAL_PAGE, PAGE_SIZES } from "@/services/consts/explorer";
 import { useTranslation } from "react-i18next";
 import { SortOrder } from "@ama-pt/agora-design-system";
+import TableHeader from "../Table/TableHeader";
+import TableBody from "../Table/TableBody";
 
 export default function TableView() {
-  const { t } = useTranslation("common");
   const { t: te } = useTranslation("explorer");
 
   const {
@@ -27,17 +28,18 @@ export default function TableView() {
     (h) => appliedHeadersVisibility[h] === true,
   );
 
-  const sortNone: SortOrder[] = cols.map((h) =>
-    h === sortColumn
-      ? sortDirection === "asc"
-        ? "ascending"
-        : "descending"
-      : "none",
-  );
+  const buildSortOrders = (): SortOrder[] =>
+    cols.map((h) =>
+      h === sortColumn
+        ? sortDirection === "asc"
+          ? "ascending"
+          : "descending"
+        : "none",
+    );
 
-  const [currentSortDescription, setCurrentSortDescription] =
-    useState<string>("");
-  const [colSortOrders, setColSortOrders] = useState<SortOrder[]>(sortNone);
+  const [currentSortDescription, setCurrentSortDescription] = useState("");
+  const [colSortOrders, setColSortOrders] =
+    useState<SortOrder[]>(buildSortOrders());
 
   const rows = data?.data ?? [];
 
@@ -57,9 +59,8 @@ export default function TableView() {
       `Applying sort order ${order} via column ${cols[colIdx]}`,
     );
 
-    const newSortOrders = sortNone as SortOrder[];
+    const newSortOrders = buildSortOrders();
     newSortOrders[colIdx] = order;
-
     setColSortOrders(newSortOrders);
 
     if (order === "none") {
@@ -76,15 +77,7 @@ export default function TableView() {
   useEffect(() => {
     if (initializedRef.current || cols.length === 0) return;
 
-    const sortInitial: SortOrder[] = cols.map((h) =>
-      h === sortColumn
-        ? sortDirection === "asc"
-          ? "ascending"
-          : "descending"
-        : "none",
-    );
-
-    setColSortOrders(sortInitial);
+    setColSortOrders(buildSortOrders());
     initializedRef.current = true;
   }, [cols]);
 
@@ -106,35 +99,13 @@ export default function TableView() {
           onPageSizeChange: handleChangePageSize,
         }}
       >
-        <Table.Header>
-          <Table.Row>
-            {cols.map((col, index) => (
-              <Table.HeaderCell
-                key={col}
-                onSortChange={(order: SortOrder) => handleSort(index, order)}
-                sortOrder={colSortOrders[index]}
-                sortType={"numeric"}
-              >
-                {col}
-              </Table.HeaderCell>
-            ))}
-          </Table.Row>
-        </Table.Header>
+        <TableHeader
+          cols={cols}
+          colSortOrders={colSortOrders}
+          onSort={handleSort}
+        />
 
-        <Table.Body>
-          {rows.map((line, lineIndex) => (
-            <Table.Row key={`line-${lineIndex}`}>
-              {cols.map((col, colIndex) => (
-                <Table.Cell
-                  key={`line-${lineIndex}-col-${colIndex}`}
-                  headerLabel={col}
-                >
-                  {String(line[col] ?? "")}
-                </Table.Cell>
-              ))}
-            </Table.Row>
-          ))}
-        </Table.Body>
+        <TableBody cols={cols} rows={rows} />
       </Table.Root>
     </div>
   );

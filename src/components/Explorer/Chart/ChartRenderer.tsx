@@ -35,6 +35,9 @@ import { useChartContext } from "@/hooks/useChartContext";
 import { useResourceContext } from "@/hooks/useResourceContext";
 import { ChartType } from "@/services/types/charts";
 import { getChartColor } from "@/services/utils/charts";
+import { twMerge } from "tailwind-merge";
+import { useTranslation } from "react-i18next";
+import Button from "@/components/Shared/Button/Button";
 
 ChartJS.register(
   CategoryScale,
@@ -70,8 +73,20 @@ const CHART_COMPONENTS: Record<
 };
 
 export default function ChartRenderer() {
-  const { xAxisKey, yAxisKeys, rAxisKey, chart, chartRef } = useChartContext();
   const { data: resourceData } = useResourceContext();
+  const {
+    xAxisKey,
+    yAxisKeys,
+    rAxisKey,
+    chart,
+    chartRef,
+    chartContainerRef,
+    isFullscreen,
+    toggleFullscreen,
+    exportChartAsPng,
+  } = useChartContext();
+
+  const { t: te } = useTranslation("explorer");
 
   const rows = useMemo(
     () => (resourceData?.data ?? []).map(({ __id, ...rest }) => rest),
@@ -120,12 +135,58 @@ export default function ChartRenderer() {
     [rows, xAxisKey, yAxisKeys, rAxisKey],
   );
 
-  if (rows.length === 0 || yAxisKeys.length === 0) return null;
-
-  if (chart === "Bubble") {
-    return <Bubble ref={handleRef} data={bubbleData} />;
+  if (rows.length === 0 || yAxisKeys.length === 0) {
+    return (
+      <p className="flex items-center justify-center py-64 rounded-lg border border-neutral-200 bg-white text-m-regular text-neutral-500">
+        {te(
+          yAxisKeys.length === 0
+            ? "views.chart.noAxisSelected"
+            : "views.chart.noData",
+        )}
+      </p>
+    );
   }
 
-  const Component = CHART_COMPONENTS[chart];
-  return <Component ref={handleRef} data={standardData} />;
+  let chartToRender = null;
+
+  if (chart === "Bubble") {
+    chartToRender = <Bubble ref={handleRef} data={bubbleData} />;
+  } else {
+    const Component = CHART_COMPONENTS[chart];
+    chartToRender = <Component ref={handleRef} data={standardData} />;
+  }
+
+  return (
+    <div
+      ref={chartContainerRef}
+      className={twMerge(
+        "w-full h-full bg-white flex flex-col gap-16",
+        isFullscreen ? "p-32" : "p-0",
+      )}
+    >
+      {isFullscreen && (
+        <div className="flex flex-row gap-8 justify-end">
+          <Button
+            iconOnly
+            hasIcon
+            leadingIcon="agora-line-bar-chart"
+            leadingIconHover="agora-line-bar-chart"
+            title={te("actions.exportChart")}
+            appearance="outline"
+            onClick={exportChartAsPng}
+          />
+          <Button
+            iconOnly
+            hasIcon
+            leadingIcon="agora-line-minimize"
+            leadingIconHover="agora-line-minimize"
+            title={te("actions.exitFullscreen")}
+            appearance="outline"
+            onClick={toggleFullscreen}
+          />
+        </div>
+      )}
+      {chartToRender}
+    </div>
+  );
 }

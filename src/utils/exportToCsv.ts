@@ -2,7 +2,7 @@ import { DataRow } from "@/services/types";
 
 export function exportToCsv(
   rows: DataRow[],
-  filename: string = "export.csv",
+  filename: string = "data.csv",
 ): void {
   if (rows.length === 0) return;
 

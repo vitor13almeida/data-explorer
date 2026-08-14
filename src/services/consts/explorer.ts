@@ -1,6 +1,15 @@
+export const VIEW_TYPES = ["table", "structure", "metrics", "chart"] as const;
+
+export const VIEW_TYPES_ICONS = {
+  table: "agora-line-grade",
+  structure: "agora-line-list",
+  metrics: "agora-line-bar-chart",
+  chart: "agora-line-pie-chart",
+};
+
 export const INITIAL_PAGE = 1;
 
-export const PAGE_SIZES = [10, 20, 50];
+export const PAGE_SIZES = [10, 50, 200];
 
 export const FilterOperatorCommon = [
   "exact",
