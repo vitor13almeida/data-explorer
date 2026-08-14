@@ -1,0 +1,40 @@
+services:
+  # One-shot init: ensures the bind-mounted host dirs (auto-created by Docker
+  # as root when missing) are writable by the app user before the app starts.
+  # ./logs collects the app log; ./.next/cache holds the Next.js fetch/ISR and
+  # image-optimizer caches — left root-owned it produces constant
+  # "Failed to update prerender cache ... EACCES" log spam and no disk caching
+  # at all. Runs on every `up`, then exits.
+  init-dirs:
+    container_name: udata-frontend-init-dirs
+    image: busybox:stable
+    command: sh -c "chown -R ${NEXTJS_UID:-10001}:${NEXTJS_GID:-10001} /logs /cache && chmod 2775 /logs /cache"
+    volumes:
+      - ./logs:/logs
+      - ./.next/cache:/cache
+
+  app:
+    container_name: udata-frontend-app
+    depends_on:
+      init-dirs:
+        condition: service_completed_successfully
+    build:
+      context: .
+      args:
+        NEXTJS_UID: ${NEXTJS_UID:-10001}
+        NEXTJS_GID: ${NEXTJS_GID:-10001}
+        TABULAR_API_URL: ${TABULAR_API_URL}
+    # Pipe stdout/stderr to a bind-mounted log file while keeping `docker logs` working
+    command: sh -c "node server.js 2>&1 | tee -a /logs/app.log"
+    init: true
+    ports:
+      - "3030:3030"
+    volumes:
+      - ./logs:/logs
+    environment:
+      BACKEND_URL: http://host.docker.internal:7000
+      BACKEND_HOST: localhost:7000
+      API_URL_INTERNAL: ${API_URL_INTERNAL}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
