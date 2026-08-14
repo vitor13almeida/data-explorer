@@ -32,9 +32,7 @@ services:
     volumes:
       - ./logs:/logs
     environment:
-      BACKEND_URL: http://host.docker.internal:7000
-      BACKEND_HOST: localhost:7000
-      API_URL_INTERNAL: ${API_URL_INTERNAL}
+      TABULAR_API_URL: ${TABULAR_API_URL}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
