@@ -1,10 +1,5 @@
 services:
-  # One-shot init: ensures the bind-mounted host dirs (auto-created by Docker
-  # as root when missing) are writable by the app user before the app starts.
-  # ./logs collects the app log; ./.next/cache holds the Next.js fetch/ISR and
-  # image-optimizer caches — left root-owned it produces constant
-  # "Failed to update prerender cache ... EACCES" log spam and no disk caching
-  # at all. Runs on every `up`, then exits.
+  # One-shot init: grants permissions on shared folders
   init-dirs:
     container_name: udata-frontend-init-dirs
     image: busybox:stable
@@ -12,9 +7,11 @@ services:
     volumes:
       - ./logs:/logs
       - ./.next/cache:/cache
+    networks:
+      - api_tabular_network
 
   app:
-    container_name: udata-frontend-app
+    container_name: data-explorer-app
     depends_on:
       init-dirs:
         condition: service_completed_successfully
@@ -23,8 +20,7 @@ services:
       args:
         NEXTJS_UID: ${NEXTJS_UID:-10001}
         NEXTJS_GID: ${NEXTJS_GID:-10001}
-        TABULAR_API_URL: ${TABULAR_API_URL}
-    # Pipe stdout/stderr to a bind-mounted log file while keeping `docker logs` working
+        TABULAR_API_URL: api-tabular-pt-tabular-api-1:8005
     command: sh -c "node server.js 2>&1 | tee -a /logs/app.log"
     init: true
     ports:
@@ -32,7 +28,16 @@ services:
     volumes:
       - ./logs:/logs
     environment:
-      TABULAR_API_URL: ${TABULAR_API_URL}
+      # link to Tabular API
+      TABULAR_API_URL: api-tabular-pt-tabular-api-1:8005
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
+    networks:
+      - api_tabular_network
+
+# the network where the API is running
+networks:
+  api_tabular_network:
+    external: true
+    name: api-tabular-pt_default
