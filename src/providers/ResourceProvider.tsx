@@ -293,11 +293,10 @@ export function ResourceProvider({
         [key]: String(filters[key]).trim(),
       };
     });
+
     setFilters(trimmedFilters);
     appliedFilters.current = { ...trimmedFilters };
-
     appliedFiltersOperator.current = { ...filtersOperator };
-
     appliedHeadersVisibility.current = { ...headersVisibility };
 
     setPage(INITIAL_PAGE);
@@ -337,7 +336,7 @@ export function ResourceProvider({
 
     headers.forEach((h) => {
       const value = getInitialOperator(h, structure);
-      filtersToSet = { ...filtersToSet, [h]: value };
+      operatorsToSet = { ...operatorsToSet, [h]: value };
       showCol = { ...showCol, [h]: true };
     });
 
@@ -384,6 +383,8 @@ export function ResourceProvider({
               setSortColumn(key.replace("__sort", ""));
               setSortDirection(value === "desc" ? "desc" : "asc");
             } else {
+              console.log("for cycle", "\nkey", key, "\nvalue", value);
+
               const operator = FilterOperatorAll.find((candidate) =>
                 key.endsWith(`__${candidate}`),
               );
@@ -412,6 +413,16 @@ export function ResourceProvider({
     setHeadersVisibility(showCol);
     appliedHeadersVisibility.current = { ...showCol };
 
+    console.log(
+      "---> TO SET --->",
+      "\nfiltersToSet",
+      filtersToSet,
+      "\noperatorsToSet",
+      operatorsToSet,
+      "\nshowCol",
+      showCol,
+    );
+
     isReadyRef.current = true;
     setIsReady(true);
   }, []);
@@ -437,6 +448,8 @@ export function ResourceProvider({
   ]);
 
   useEffect(() => {
+    if (!isReady) return;
+
     if (structure === null) return;
 
     const nextOperators: Record<string, FilterOperatorType> = {
@@ -461,7 +474,7 @@ export function ResourceProvider({
       setFilters(nextFilters);
       appliedFilters.current = { ...appliedFilters.current, ...nextFilters };
     }
-  }, [headers, structure]);
+  }, [isReady, headers, structure]);
 
   useEffect(() => {
     if (isReady) {
