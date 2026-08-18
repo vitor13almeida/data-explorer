@@ -147,13 +147,26 @@ export default function ChartRenderer() {
     );
   }
 
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+      },
+    },
+  };
+
   let chartToRender = null;
 
   if (chart === "Bubble") {
-    chartToRender = <Bubble ref={handleRef} data={bubbleData} />;
+    chartToRender = (
+      <Bubble ref={handleRef} data={bubbleData} options={options} />
+    );
   } else {
     const Component = CHART_COMPONENTS[chart];
-    chartToRender = <Component ref={handleRef} data={standardData} />;
+    chartToRender = (
+      <Component ref={handleRef} data={standardData} options={options} />
+    );
   }
 
   return (
