@@ -1,4 +1,4 @@
-import { Icon as FeatherIcon } from "react-feather";
+import { Icon as FeatherIcon } from "lucide-react";
 
 const ICON_SIZE = 20;
 

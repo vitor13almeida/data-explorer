@@ -2,7 +2,7 @@
 
 import StatCard, { StatCardI } from "@/components/Shared/Card/StatsCard";
 import { useResourceContext } from "@/hooks/useResourceContext";
-import { Database, Hash, FileText, Layers, Tag } from "react-feather";
+import { Database, Hash, FileText, Layers, Tag } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const ICON_SIZE = 20;

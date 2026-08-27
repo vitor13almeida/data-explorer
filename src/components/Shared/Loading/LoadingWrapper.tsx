@@ -2,7 +2,7 @@
 
 import { useResourceContext } from "@/hooks/useResourceContext";
 import { ReactNode } from "react";
-import { Loader } from "react-feather";
+import { Loader } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const ICON_SIZE = 64;

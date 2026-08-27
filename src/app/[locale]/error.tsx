@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Shared/Button/Button";
-import { AlertTriangle } from "react-feather";
+import { AlertTriangle } from "lucide-react";
 
 export default function ErrorPage({
   error,

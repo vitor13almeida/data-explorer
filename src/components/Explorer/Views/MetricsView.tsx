@@ -2,7 +2,7 @@
 
 import StatCard, { StatCardI } from "@/components/Shared/Card/StatsCard";
 import { useResourceContext } from "@/hooks/useResourceContext";
-import { Copy, Code, Layers } from "react-feather";
+import { Copy, Code, Layers } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { DataAlerts, useDataAlerts } from "../Metrics/DataAlerts";
 import ColumnCard from "../Metrics/ColumnCard";

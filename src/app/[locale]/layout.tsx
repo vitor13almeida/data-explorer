@@ -5,6 +5,8 @@ import TranslationsProvider from "@/providers/TranslationProvider";
 import { ReactNode } from "react";
 import initTranslations from "../i18n";
 import "./globals.css";
+import Header from "@/components/Shared/Header/Header";
+import Footer from "@/components/Shared/Footer.tsx/Footer";
 
 const notoSans = Noto_Sans({
   variable: "--font-noto-sans",
@@ -16,7 +18,7 @@ const notoSansMono = Noto_Sans_Mono({
   subsets: ["latin"],
 });
 
-const namespaces = ["common", "explorer"];
+const namespaces = ["common", "explorer", "footer"];
 
 export async function generateMetadata({
   params,
@@ -69,9 +71,9 @@ export default async function RootLayout({
           resources={resources}
         >
           <div className="flex min-h-screen w-full flex-col">
-            {/* <Header /> */}
+            <Header />
             <div>{children}</div>
-            {/* <Footer /> */}
+            <Footer />
           </div>
         </TranslationsProvider>
       </body>

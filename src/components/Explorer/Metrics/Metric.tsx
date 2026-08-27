@@ -1,4 +1,4 @@
-import { BarChart2 } from "react-feather";
+import { BarChart2 } from "lucide-react";
 
 export type MetricI = {
   label: string;

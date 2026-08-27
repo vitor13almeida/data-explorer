@@ -29,5 +29,12 @@
       "fetchDataFailed": "Falha no pedido de dados do recurso:",
       "fetchStructureFailed": "Falha no pedido da estrutura do recurso:"
     }
+  },
+  "header": {
+    "selectLanguage": "Selecionar idioma",
+    "ecosystem": {
+      "btn": "Ecossistema",
+      "description": "Plataformas da Agência para a Reforma Tecnológica do Estado (ARTE)"
+    }
   }
 }
