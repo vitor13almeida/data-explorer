@@ -1,4 +1,4 @@
-import { ColumnDefinition, TopValue } from "./common";
+import { ColumnDefinition, TopValue } from "./shared";
 
 export interface BaseColumnProfile {
   tops: TopValue[];

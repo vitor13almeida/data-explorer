@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnProfile, NumericColumnProfile } from "@/services/types";
-import { BarChart2, TrendingUp, TrendingDown, Activity } from "react-feather";
+import { BarChart2, TrendingUp, TrendingDown, Activity } from "lucide-react";
 import Metric from "./Metric";
 import TopsList from "./TopsList";
 import UniqueValuesList from "./UniqueValuesList";

@@ -29,5 +29,12 @@
       "fetchDataFailed": "Failed to fetch resource data:",
       "fetchStructureFailed": "Failed to fetch resource structure:"
     }
+  },
+  "header": {
+    "selectLanguage": "Select language",
+    "ecosystem": {
+      "btn": "Ecosystem",
+      "description": "Platforms of the Agency for the Technological Reform of the State (ARTE)"
+    }
   }
 }

@@ -13,7 +13,7 @@ interface InitTranslationsParams {
 export default async function initTranslations(
   { locale, namespaces, i18nInstance, resources }: InitTranslationsParams = {
     locale: i18nConfig.defaultLocale,
-    namespaces: ["common"],
+    namespaces: ["common", "explorer", "footer"],
     i18nInstance: undefined,
     resources: undefined,
   },
@@ -44,6 +44,13 @@ export default async function initTranslations(
     fallbackNS: namespaces[0],
     ns: namespaces,
     preload: resources ? [] : i18nConfig.locales,
+  });
+
+  instance.services.formatter?.add("number", (value: number, lng, options) => {
+    const parts = new Intl.NumberFormat(lng, options).formatToParts(value);
+    return parts
+      .map((part) => (part.type === "group" ? " " : part.value))
+      .join("");
   });
 
   return {

@@ -1,6 +1,6 @@
 import { HTMLAttributes } from "react";
 import { twMerge } from "tailwind-merge";
-import { XCircle, CheckCircle } from "react-feather";
+import { XCircle, CheckCircle } from "lucide-react";
 import Button from "../Button/Button";
 import { toBoolean } from "@/services/utils/data";
 
