@@ -36,5 +36,7 @@
       "btn": "Ecosystem",
       "description": "Platforms of the Agency for the Technological Reform of the State (ARTE)"
     }
-  }
+  },
+  "home": "Home",
+  "explorer": "Data Explorer"
 }

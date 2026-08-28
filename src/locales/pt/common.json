@@ -36,5 +36,7 @@
       "btn": "Ecossistema",
       "description": "Plataformas da Agência para a Reforma Tecnológica do Estado (ARTE)"
     }
-  }
+  },
+  "home": "Início",
+  "explorer": "Explorador de dados"
 }

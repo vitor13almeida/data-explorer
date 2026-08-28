@@ -1,6 +1,6 @@
 {
-  "title": "Dados",
-  "description": "Explore todos os dados, em diferentes formatos e visualizações",
+  "title": "Explorador de dados",
+  "description": "Explore os dados de diferentes formas, escolha o modo de visualização mais adequado e filtre os resultados em detalhe. Pode também exportar os dados nos formatos disponíveis.",
   "views": {
     "table": {
       "title": "Dados",

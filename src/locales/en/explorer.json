@@ -1,6 +1,6 @@
 {
-  "title": "Data",
-  "description": "Explore all data, in different formats and views",
+  "title": "Data explorer",
+  "description": "Explore the data in different ways, choose the most suitable display mode, and filter the results in detail. You can also export the data in the available formats.",
   "views": {
     "table": {
       "title": "Data",
