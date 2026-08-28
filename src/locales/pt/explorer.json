@@ -3,7 +3,7 @@
   "description": "Explore os dados de diferentes formas, escolha o modo de visualização mais adequado e filtre os resultados em detalhe. Pode também exportar os dados nos formatos disponíveis.",
   "views": {
     "table": {
-      "title": "Dados",
+      "title": "Tabela",
       "itemsPerPageLabel": "Itens por página: ",
       "buttonDropdownAriaLabel": "Escolha o número de itens por página",
       "dropdownListAriaLabel": "Número de itens por página",
@@ -88,7 +88,7 @@
     "exportCsv": "Exportar CSV",
     "exportJson": "Exportar JSON",
     "exportChart": "Exportar gráfico",
-    "fullscreen": "Ecrã inteiro",
+    "fullscreen": "Ver em ecrã inteiro",
     "exitFullscreen": "Sair de ecrã inteiro"
   },
   "errors": {

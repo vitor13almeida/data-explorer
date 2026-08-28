@@ -3,7 +3,7 @@
   "description": "Explore the data in different ways, choose the most suitable display mode, and filter the results in detail. You can also export the data in the available formats.",
   "views": {
     "table": {
-      "title": "Data",
+      "title": "Table",
       "itemsPerPageLabel": "Items per page: ",
       "buttonDropdownAriaLabel": "Choose the number of items per page",
       "dropdownListAriaLabel": "Number of items per page",
@@ -88,7 +88,7 @@
     "exportCsv": "Export CSV",
     "exportJson": "Export JSON",
     "exportChart": "Export chart",
-    "fullscreen": "Fullscreen",
+    "fullscreen": "Enter fullscreen",
     "exitFullscreen": "Exit fullscreen"
   },
   "errors": {
