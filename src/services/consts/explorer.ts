@@ -1,10 +1,10 @@
-export const VIEW_TYPES = ["table", "structure", "metrics", "chart"] as const;
+export const VIEW_TYPES = ["table", "chart", "structure", "metrics"] as const;
 
 export const VIEW_TYPES_ICONS = {
   table: "agora-line-grade",
+  chart: "agora-line-pie-chart",
   structure: "agora-line-list",
   metrics: "agora-line-bar-chart",
-  chart: "agora-line-pie-chart",
 };
 
 export const INITIAL_PAGE = 1;

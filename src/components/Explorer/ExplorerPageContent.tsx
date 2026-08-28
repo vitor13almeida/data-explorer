@@ -3,22 +3,27 @@
 import { useResourceContext } from "@/hooks/useResourceContext";
 import { useTranslation } from "react-i18next";
 import Explorer from "./Explorer";
+import { Hero } from "../Shared/Hero";
+import { usePathname } from "next/navigation";
 
 const DEBUG_JSONS = false;
 
 export default function ExplorerPageContent() {
-  const { t: tr } = useTranslation("explorer");
+  const path = usePathname();
+  const { t: te } = useTranslation("explorer");
   const { isLoadingData, data, errorData, structure } = useResourceContext();
 
   return (
-    <main className="flex w-full flex-col items-center p-32 gap-64">
-      <section className="flex flex-col gap-32 text-center w-full">
-        <h1 className="text-3xl-bold text-black">{tr("title")}</h1>
-        <p className="text-l-regular text-neutral-800">{tr("description")}</p>
-      </section>
+    <main className="flex w-full flex-col items-center gap-64 pb-96">
+      <Hero.Root>
+        <Hero.Breadcrumb path={path} limit={2} />
+        <Hero.Content>
+          <Hero.Title>{te("title")}</Hero.Title>
+          <Hero.Description description={te("description")} />
+        </Hero.Content>
+      </Hero.Root>
 
-      <section className="flex flex-col gap-32 w-full">
-        <h2 className="text-2xl-bold text-black">Explorer</h2>
+      <section className="flex flex-col gap-32 w-full container">
         <Explorer />
       </section>
 
