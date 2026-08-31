@@ -23,20 +23,20 @@ export default function StructureView() {
 
   const stats: StatCardI[] = [
     {
-      icon: Hash,
       label: te("views.structure.totalItems"),
       value: profile.total_lines.toLocaleString("pt-PT"),
     },
     {
-      icon: Layers,
       label: te("views.structure.totalColumns"),
       value: columns.length.toString(),
     },
     {
-      icon: Tag,
       label: te("views.structure.categoricalColumns"),
       value: profile.categorical.length.toString(),
     },
+  ];
+
+  const ids = [
     {
       icon: FileText,
       label: te("views.structure.resourceId"),
@@ -50,8 +50,8 @@ export default function StructureView() {
   ];
 
   return (
-    <div className="flex flex-col gap-24">
-      <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-16">
+    <div className="flex flex-col gap-32">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-32 pb-32">
         {stats.map((stat) => (
           <StatCard key={stat.label} {...stat} />
         ))}
