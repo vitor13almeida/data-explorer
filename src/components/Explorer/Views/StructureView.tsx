@@ -9,9 +9,9 @@ import { DatasetProfile } from "@/services/types";
 import { useTranslation } from "react-i18next";
 
 function getScoreStyle(score: number): string {
-  if (score >= 0.8) return "bg-success-50 text-success-700";
-  if (score >= 0.5) return "bg-warning-50 text-warning-700";
-  return "bg-danger-50 text-danger-700";
+  if (score >= 0.8) return "bg-success-600 text-white";
+  if (score >= 0.5) return "bg-warning-600 text-white";
+  return "bg-danger-600 text-white";
 }
 
 interface ConvertedColumn {
@@ -98,14 +98,10 @@ export default function StructureView() {
                 {f.name}
               </Table.Cell>
               <Table.Cell headerLabel={te("views.structure.fields.type")}>
-                <span className="inline-flex items-center rounded-16 bg-neutral-100 px-8 py-2 text-m-regular text-neutral-600">
-                  {f.type}
-                </span>
+                {f.type}
               </Table.Cell>
               <Table.Cell headerLabel={te("views.structure.fields.format")}>
-                <span className="inline-flex items-center rounded-16 bg-primary-50 px-8 py-2 text-m-medium text-primary-700">
-                  {f.format}
-                </span>
+                {f.format}
               </Table.Cell>
               <Table.Cell headerLabel={te("views.structure.fields.score")}>
                 <span
