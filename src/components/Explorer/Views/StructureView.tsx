@@ -1,16 +1,33 @@
 "use client";
 
+import FileCard, { FileCardI } from "@/components/Shared/Card/FileCard";
 import StatCard, { StatCardI } from "@/components/Shared/Card/StatsCard";
+import { Table } from "@/components/Shared/Table";
 import { useResourceContext } from "@/hooks/useResourceContext";
-import { Database, Hash, FileText, Layers, Tag } from "lucide-react";
+import { fields } from "@/services/consts/structure";
+import { DatasetProfile } from "@/services/types";
 import { useTranslation } from "react-i18next";
-
-const ICON_SIZE = 20;
 
 function getScoreStyle(score: number): string {
   if (score >= 0.8) return "bg-success-50 text-success-700";
   if (score >= 0.5) return "bg-warning-50 text-warning-700";
   return "bg-danger-50 text-danger-700";
+}
+
+interface ConvertedColumn {
+  name: string;
+  type: string;
+  format: string;
+  score: number;
+}
+
+function convertColumns(columns: DatasetProfile["columns"]): ConvertedColumn[] {
+  return Object.entries(columns).map(([name, def]) => ({
+    name: name,
+    type: def.python_type,
+    format: def.format,
+    score: def.score,
+  }));
 }
 
 export default function StructureView() {
@@ -19,7 +36,7 @@ export default function StructureView() {
   const { resourceId, structure } = useResourceContext();
 
   const { profile, dataset_id } = structure;
-  const columns = Object.entries(profile.columns);
+  const fieldsData = convertColumns(profile.columns);
 
   const stats: StatCardI[] = [
     {
@@ -28,7 +45,7 @@ export default function StructureView() {
     },
     {
       label: te("views.structure.totalColumns"),
-      value: columns.length.toString(),
+      value: Object.keys(profile.columns).length.toString(),
     },
     {
       label: te("views.structure.categoricalColumns"),
@@ -36,14 +53,14 @@ export default function StructureView() {
     },
   ];
 
-  const ids = [
+  const ids: FileCardI[] = [
     {
-      icon: FileText,
+      icon: "agora-line-document",
       label: te("views.structure.resourceId"),
       value: resourceId,
     },
     {
-      icon: Database,
+      icon: "agora-line-coins",
       label: te("views.structure.datasetId"),
       value: dataset_id,
     },
@@ -57,50 +74,50 @@ export default function StructureView() {
         ))}
       </div>
 
-      <div className="rounded-lg border border-neutral-200 bg-white overflow-hidden">
-        <div className="flex items-center gap-8 px-16 py-12 border-b border-neutral-200 bg-neutral-50">
-          <Layers size={ICON_SIZE} className="text-neutral-500" />
-          <span className="text-m-medium text-neutral-700">
-            {te("views.structure.fields")} ({columns.length})
-          </span>
-        </div>
-
-        <div className="divide-y divide-neutral-100">
-          {columns.map(([name, definition]) => (
-            <div
-              key={name}
-              className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-0 px-16 py-12"
-            >
-              <span
-                className="text-m-medium text-neutral-900 sm:w-1/3 truncate"
-                title={name}
-              >
-                {name}
-              </span>
-              <div className="flex items-center gap-8 sm:w-2/3">
-                <span
-                  className="inline-flex items-center rounded-16 bg-primary-50 px-8 py-2 text-m-medium text-primary-700"
-                  title={te("views.structure.formatTooltip")}
-                >
-                  {definition.format}
-                </span>
-                <span
-                  className="inline-flex items-center rounded-16 bg-neutral-100 px-8 py-2 text-m-regular text-neutral-600"
-                  title={te("views.structure.typeTooltip")}
-                >
-                  {definition.python_type}
-                </span>
-                <span
-                  className={`inline-flex items-center rounded-16 px-8 py-2 text-m-regular ${getScoreStyle(definition.score)}`}
-                  title={te("views.structure.scoreTooltip")}
-                >
-                  {(definition.score * 100).toFixed(0)}%
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-32">
+        {ids.map((id) => (
+          <FileCard key={id.label} {...id} />
+        ))}
       </div>
+
+      <Table.Root>
+        <Table.Header>
+          <Table.Row>
+            {fields.map((f) => (
+              <Table.HeaderCell key={f}>
+                {te(`views.structure.fields.${f}`)}
+              </Table.HeaderCell>
+            ))}
+          </Table.Row>
+        </Table.Header>
+
+        <Table.Body>
+          {fieldsData.map((f) => (
+            <Table.Row key={`line-${f.name}`}>
+              <Table.Cell headerLabel={te("views.structure.fields.name")}>
+                {f.name}
+              </Table.Cell>
+              <Table.Cell headerLabel={te("views.structure.fields.type")}>
+                <span className="inline-flex items-center rounded-16 bg-neutral-100 px-8 py-2 text-m-regular text-neutral-600">
+                  {f.type}
+                </span>
+              </Table.Cell>
+              <Table.Cell headerLabel={te("views.structure.fields.format")}>
+                <span className="inline-flex items-center rounded-16 bg-primary-50 px-8 py-2 text-m-medium text-primary-700">
+                  {f.format}
+                </span>
+              </Table.Cell>
+              <Table.Cell headerLabel={te("views.structure.fields.score")}>
+                <span
+                  className={`inline-flex items-center rounded-16 px-8 py-2 text-m-regular ${getScoreStyle(f.score)}`}
+                >
+                  {(f.score * 100).toFixed(0)}%
+                </span>
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table.Root>
     </div>
   );
 }
