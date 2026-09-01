@@ -3,7 +3,6 @@
 import { useTranslation } from "react-i18next";
 import TableView from "./Views/TableView";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import DataNumbers from "./DataNumbers";
 import StructureView from "./Views/StructureView";
 import MetricsView from "./Views/MetricsView";
 import ChartView from "./Views/ChartView";

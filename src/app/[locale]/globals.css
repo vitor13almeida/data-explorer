@@ -136,3 +136,9 @@ li.ecosystem-panel-menu
   width: 100%;
   background-color: var(--color-primary-600);
 }
+
+/* ADS card general */
+
+div.card-general {
+  width: 100% !important;
+}

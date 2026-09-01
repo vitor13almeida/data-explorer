@@ -13,16 +13,18 @@
     },
     "structure": {
       "title": "Estrutura",
-      "totalItems": "Total de registos",
-      "resourceId": "ID do recurso",
-      "datasetId": "ID do conjunto de dados",
-      "fields": "Campos",
-      "totalColumns": "Total de colunas",
-      "categoricalColumns": "Colunas categóricas",
+      "totalItems": "Número total de registos",
+      "totalColumns": "Número total de campos",
+      "categoricalColumns": "Número de campos categóricos",
       "uniqueValues": "Valores únicos",
-      "formatTooltip": "Formato dos dados",
-      "typeTooltip": "Tipo de dados",
-      "scoreTooltip": "Confiança na deteção do tipo"
+      "resourceId": "Identificador do recurso",
+      "datasetId": "Identificador do conjunto de dados",
+      "fields": {
+        "name": "Campo",
+        "python_type": "Tipologia",
+        "format": "Formato",
+        "score": "Confiança na deteção do tipo"
+      }
     },
     "metrics": {
       "title": "Métricas",
