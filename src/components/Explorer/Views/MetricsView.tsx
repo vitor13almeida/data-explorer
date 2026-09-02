@@ -64,10 +64,10 @@ export default function MetricsView() {
   }
 
   return (
-    <div className="flex flex-col gap-24">
+    <div className="flex flex-col gap-32">
       <DataAlerts alerts={alerts} />
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-16">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-32">
         {summaryItems.map((item) => (
           <FileCard key={item.label} {...item} />
         ))}
