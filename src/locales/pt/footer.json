@@ -1,0 +1,24 @@
+{
+  "social": "Redes sociais",
+  "socialLabel": "Redes sociais ARTE:",
+  "external": "Links externos",
+  "partners": "Parceiros do portal",
+  "related": "Relacionado com o portal",
+  "footer": "Rodapé do portal",
+  "brands": {
+    "rp": "República Portuguesa",
+    "arte": "ARTE"
+  },
+  "description": "Explorador de dados públicos portugueses",
+  "logos": {
+    "rp": "República Portuguesa",
+    "nextGenEU": "NextGenerationEU"
+  },
+  "relatedLinks": {
+    "rp": "República Portuguesa",
+    "cp": "Compete 2020",
+    "pt": "Portugal 2020",
+    "ce": "Comissão Europeia"
+  },
+  "copyright": "© 2026 República Portuguesa. Todos os direitos reservados."
+}

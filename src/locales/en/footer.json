@@ -1,0 +1,24 @@
+{
+  "social": "Social media",
+  "socialLabel": "ARTE social media:",
+  "external": "External links",
+  "partners": "Portal partners",
+  "related": "Related to the portal",
+  "footer": "Portal footer",
+  "brands": {
+    "rp": "Portuguese Republic",
+    "arte": "ARTE"
+  },
+  "description": "Portuguese public data explorer",
+  "logos": {
+    "rp": "Portuguese Republic",
+    "nextGenEU": "NextGenerationEU"
+  },
+  "relatedLinks": {
+    "rp": "Portuguese Republic",
+    "cp": "Compete 2020",
+    "pt": "Portugal 2020",
+    "ce": "European Commission"
+  },
+  "copyright": "© 2026 Portuguese Republic. All rights reserved."
+}

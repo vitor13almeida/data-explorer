@@ -84,3 +84,61 @@ button.operator-drawer-trigger {
     height: calc(100% - 64px) !important;
   }
 }
+
+/* header */
+
+div:has(> div.institutional-phrase-container) {
+  display: block !important;
+}
+
+div.general-bar > div.flex {
+  align-self: center;
+}
+
+/* ecosystem panel */
+li.ecosystem-panel-menu {
+  gap: 8px;
+}
+
+@media (max-width: 767px) {
+  header.sticky .panels-menu .search-panel-menu .children-wrapper,
+  header.sticky .panels-menu .unauthenticated-panel-menu .children-wrapper {
+    display: none;
+  }
+}
+
+.ecosystem-panel-container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+}
+
+.ecosystem-custom-panel {
+  background-color: rgb(241, 243, 248);
+  box-shadow: 0px 16px 16px 0px #00000029;
+  border-top: 4px solid var(--Neutral-200, #e1e4ea);
+}
+
+li.ecosystem-panel-menu .panel-menu-link-wrapper {
+  position: relative;
+  align-self: stretch;
+}
+
+li.ecosystem-panel-menu
+  .panel-menu-link-wrapper:has(a[aria-expanded="true"])::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  height: 4px;
+  width: 100%;
+  background-color: var(--color-primary-600);
+}
+
+/* ADS card general */
+
+div.card-general {
+  width: 100% !important;
+}

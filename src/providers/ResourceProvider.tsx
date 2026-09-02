@@ -26,6 +26,7 @@ import {
   createContext,
   Dispatch,
   ReactNode,
+  RefObject,
   useCallback,
   useEffect,
   useMemo,
@@ -81,6 +82,10 @@ export type ResourceContextType = {
 
   invalidFilters: boolean;
   setInvalidFilters: Dispatch<boolean>;
+
+  isFullscreen: boolean;
+  explorerContainerRef: RefObject<HTMLDivElement | null>;
+  toggleFullscreen: () => void;
 };
 
 export const ResourceContext = createContext<ResourceContextType | undefined>(
@@ -132,6 +137,8 @@ export function ResourceProvider({
 
   const [invalidFilters, setInvalidFilters] = useState<boolean>(false);
 
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
   const [isLoadingData, startDataTransition] = useTransition();
 
   const appliedFilters = useRef<Record<string, any>>({});
@@ -141,6 +148,8 @@ export function ResourceProvider({
   const extraUrlParams = useRef<Record<string, string>>({});
   const setUrlParamsRef = useRef<() => void>(() => {});
   const isReadyRef = useRef<boolean>(false);
+
+  const explorerContainerRef = useRef<HTMLDivElement | null>(null);
 
   const headers: string[] = structure?.profile.header ?? [];
   const nHeaders: number = Object.values(headers).length;
@@ -329,6 +338,28 @@ export function ResourceProvider({
     void loadData();
   }, [headers, setUrlParams, loadData, structure]);
 
+  const toggleFullscreen = useCallback(() => {
+    const element = explorerContainerRef.current;
+    if (!element) return;
+
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      element.requestFullscreen();
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
   useEffect(() => {
     let filtersToSet: Record<string, string> = {};
     let operatorsToSet: Record<string, FilterOperatorType> = {};
@@ -383,8 +414,6 @@ export function ResourceProvider({
               setSortColumn(key.replace("__sort", ""));
               setSortDirection(value === "desc" ? "desc" : "asc");
             } else {
-              console.log("for cycle", "\nkey", key, "\nvalue", value);
-
               const operator = FilterOperatorAll.find((candidate) =>
                 key.endsWith(`__${candidate}`),
               );
@@ -412,16 +441,6 @@ export function ResourceProvider({
     appliedFiltersOperator.current = { ...operatorsToSet };
     setHeadersVisibility(showCol);
     appliedHeadersVisibility.current = { ...showCol };
-
-    console.log(
-      "---> TO SET --->",
-      "\nfiltersToSet",
-      filtersToSet,
-      "\noperatorsToSet",
-      operatorsToSet,
-      "\nshowCol",
-      showCol,
-    );
 
     isReadyRef.current = true;
     setIsReady(true);
@@ -540,6 +559,10 @@ export function ResourceProvider({
 
       invalidFilters,
       setInvalidFilters,
+
+      isFullscreen,
+      explorerContainerRef,
+      toggleFullscreen,
     }),
     [
       resourceId,
@@ -564,6 +587,8 @@ export function ResourceProvider({
       filters,
       filtersOperator,
       invalidFilters,
+      isFullscreen,
+      toggleFullscreen,
     ],
   );
 

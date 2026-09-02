@@ -41,11 +41,9 @@ export type ChartContextType = {
 
   hasNumericData: boolean;
 
-  isFullscreen: boolean;
+
   chartRef: RefObject<ChartJS | null>;
-  chartContainerRef: RefObject<HTMLDivElement | null>;
   exportChartAsPng: () => void;
-  toggleFullscreen: () => void;
 };
 
 export const ChartContext = createContext<ChartContextType | undefined>(
@@ -85,10 +83,7 @@ export function ChartProvider({ children }: { children: ReactNode }) {
       : DEFAULT_CHART;
   });
 
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
-
   const chartRef = useRef<ChartJS | null>(null);
-  const chartContainerRef = useRef<HTMLDivElement | null>(null);
 
   const showR = CHART_TYPES_WITH_R.includes(chart);
   const multipleDatasets = !CHART_TYPES_SINGLE_DATASET.includes(chart);
@@ -115,19 +110,6 @@ export function ChartProvider({ children }: { children: ReactNode }) {
     link.href = url;
     link.download = "chart.png";
     link.click();
-  }, []);
-
-  const toggleFullscreen = useCallback(() => {
-    const element = chartContainerRef.current;
-    if (!element) return;
-
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-      setIsFullscreen(false);
-    } else {
-      element.requestFullscreen();
-      setIsFullscreen(true);
-    }
   }, []);
 
   useEffect(() => {
@@ -186,11 +168,8 @@ export function ChartProvider({ children }: { children: ReactNode }) {
       showR,
       multipleDatasets,
       hasNumericData,
-      isFullscreen,
       chartRef,
-      chartContainerRef,
       exportChartAsPng,
-      toggleFullscreen,
     }),
     [
       keys,
@@ -202,9 +181,7 @@ export function ChartProvider({ children }: { children: ReactNode }) {
       showR,
       multipleDatasets,
       hasNumericData,
-      isFullscreen,
       exportChartAsPng,
-      toggleFullscreen,
     ],
   );
 

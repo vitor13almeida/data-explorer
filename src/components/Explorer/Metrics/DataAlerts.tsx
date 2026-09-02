@@ -2,7 +2,7 @@
 
 import { useResourceContext } from "@/hooks/useResourceContext";
 import { useMemo } from "react";
-import { AlertTriangle } from "react-feather";
+import { AlertTriangle } from "lucide-react";
 
 const MISSING_THRESHOLD = 0.2;
 const SCORE_THRESHOLD = 0.5;

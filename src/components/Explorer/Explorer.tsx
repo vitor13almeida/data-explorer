@@ -2,9 +2,7 @@
 
 import { useTranslation } from "react-i18next";
 import TableView from "./Views/TableView";
-import Filters from "./Filters/Filters";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import DataNumbers from "./DataNumbers";
 import StructureView from "./Views/StructureView";
 import MetricsView from "./Views/MetricsView";
 import ChartView from "./Views/ChartView";
@@ -14,6 +12,8 @@ import ExplorerActions from "./Actions/ExplorerActions";
 import { useResourceContext } from "@/hooks/useResourceContext";
 import ToggleGroup from "../Shared/Toggle/ToggleGroup";
 import Toggle from "../Shared/Toggle/Toggle";
+import { twJoin } from "tailwind-merge";
+import Button from "../Shared/Button/Button";
 
 type ExplorerViewI = { selectedView: ViewType };
 
@@ -22,7 +22,7 @@ function ExplorerView({ selectedView }: ExplorerViewI) {
     case "table":
       return (
         <>
-          <DataNumbers />
+          {/*<DataNumbers />*/}
           <TableView />
         </>
       );
@@ -33,7 +33,7 @@ function ExplorerView({ selectedView }: ExplorerViewI) {
     case "chart":
       return (
         <>
-          <DataNumbers />
+          {/*<DataNumbers />*/}
           <ChartView />
         </>
       );
@@ -49,34 +49,64 @@ export default function Explorer() {
     initializeWithValue: false,
   });
 
-  const { view, setView } = useResourceContext();
+  const {
+    isLoadingData,
+    data,
+    view,
+    setView,
+    explorerContainerRef,
+    isFullscreen,
+    toggleFullscreen,
+  } = useResourceContext();
+
+  const hasData = !isLoadingData && !!data && data.data.length > 0;
 
   return (
-    <div className="w-full flex flex-col gap-32">
-      <div className="flex flex-col lg:flex-row gap-32 w-full items-center justify-between">
-        <div className="w-full lg:w-auto">
-          <ToggleGroup
-            orientation={isMobile ? "vertical" : "horizontal"}
-            value={[view]}
+    <div className={"w-full flex flex-col gap-32"}>
+      <ToggleGroup
+        orientation={isMobile ? "vertical" : "horizontal"}
+        value={[view]}
+        fullWidth
+      >
+        {VIEW_TYPES.map((viewType) => (
+          <Toggle
+            key={viewType}
+            value={viewType}
+            multiple={false}
+            onClick={() => setView(viewType)}
+            hasIcon
+            leadingIcon={VIEW_TYPES_ICONS[viewType]}
+            leadingIconHover={VIEW_TYPES_ICONS[viewType]}
           >
-            {VIEW_TYPES.map((viewType) => (
-              <Toggle
-                key={viewType}
-                value={viewType}
-                multiple={false}
-                onClick={() => setView(viewType)}
-                hasIcon
-                leadingIcon={VIEW_TYPES_ICONS[viewType]}
-                leadingIconHover={VIEW_TYPES_ICONS[viewType]}
-              >
-                {te(`views.${viewType}.title`)}
-              </Toggle>
-            ))}
-          </ToggleGroup>
-        </div>
-        <ExplorerActions selectedView={view} />
-      </div>
-      <div className="w-full flex flex-col gap-16">
+            {te(`views.${viewType}.title`)}
+          </Toggle>
+        ))}
+      </ToggleGroup>
+
+      <ExplorerActions selectedView={view} />
+
+      <div
+        ref={explorerContainerRef}
+        className={twJoin(
+          "w-full flex flex-col gap-16",
+          isFullscreen ? "bg-white p-32" : "p-0",
+        )}
+      >
+        {isFullscreen && (
+          <Button
+            hasIcon
+            trailingIcon={"agora-line-minimize"}
+            trailingIconHover={"agora-line-minimize"}
+            title={te("actions.exitFullscreen")}
+            appearance="link"
+            variant="neutral"
+            disabled={!hasData}
+            onClick={toggleFullscreen}
+          >
+            {te("actions.exitFullscreen")}
+          </Button>
+        )}
+
         <ExplorerView selectedView={view} />
       </div>
     </div>

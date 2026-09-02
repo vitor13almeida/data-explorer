@@ -7,11 +7,12 @@ import { exportToJson } from "@/utils/exportToJson";
 import { useTranslation } from "react-i18next";
 import FiltersToogle from "../Filters/FiltersToogle";
 import Button from "@/components/Shared/Button/Button";
-import ChartActions from "./ChartActions";
-import ButtonGroup from "@/components/Shared/Button/ButtonGroup";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { ReactElement } from "react";
-import { ButtonProps } from "@ama-pt/agora-design-system";
+import { useChartContext } from "@/hooks/useChartContext";
+import { useCallback, useMemo } from "react";
+
+export function Divider() {
+  return <div className="w-[1px] h-full bg-neutral-700" />;
+}
 
 export type ExplorerActionsI = {
   selectedView: ViewType;
@@ -19,63 +20,114 @@ export type ExplorerActionsI = {
 
 export default function ExplorerActions({ selectedView }: ExplorerActionsI) {
   const { t: te } = useTranslation("explorer");
-  const { isLoadingData, data } = useResourceContext();
+  const { isLoadingData, data, isFullscreen, toggleFullscreen } =
+    useResourceContext();
+  const { exportChartAsPng } = useChartContext();
 
-  const isMobile = useMediaQuery("(min-width: 768px)", {
-    initializeWithValue: false,
-  });
+  const hasData = !isLoadingData && !!data && data.data.length > 0;
 
-  const hasData = !isLoadingData && data && data.data.length > 0;
-
-  const handleClickExportCsv = () => {
+  const handleClickExportCsv = useCallback(() => {
     if (hasData) {
       exportToCsv(data.data);
     }
-  };
+  }, [hasData, data]);
 
-  const handleClickExportJson = () => {
+  const handleClickExportJson = useCallback(() => {
     if (hasData) {
       exportToJson(data.data);
     }
-  };
+  }, [hasData, data]);
 
-  const actionButtons = [
-    <Button
-      hasIcon
-      leadingIcon="agora-line-document"
-      leadingIconHover="agora-line-document"
-      title={te("actions.exportCsv")}
-      appearance="outline"
-      disabled={!hasData}
-      onClick={handleClickExportCsv}
-    >
-      {te("actions.exportCsv")}
-    </Button>,
-    <Button
-      hasIcon
-      leadingIcon="agora-line-package"
-      leadingIconHover="agora-line-package"
-      title={te("actions.exportJson")}
-      appearance="outline"
-      disabled={!hasData}
-      onClick={handleClickExportJson}
-    >
-      {te("actions.exportJson")}
-    </Button>,
-    ,
-  ];
-  if (selectedView === "chart") {
-    actionButtons.push(<ChartActions />);
-  }
+  const viewAction = useMemo(() => {
+    switch (selectedView) {
+      case "table":
+        return (
+          <Button
+            hasIcon
+            trailingIcon="agora-line-download"
+            trailingIconHover="agora-line-download"
+            title={te("actions.exportCsv")}
+            appearance="link"
+            disabled={!hasData}
+            onClick={handleClickExportCsv}
+          >
+            {te("actions.exportCsv")}
+          </Button>
+        );
+      case "chart":
+        return (
+          <Button
+            hasIcon
+            trailingIcon="agora-line-download"
+            trailingIconHover="agora-line-download"
+            title={te("actions.exportChart")}
+            appearance="link"
+            disabled={!hasData}
+            onClick={exportChartAsPng}
+          >
+            {te("actions.exportChart")}
+          </Button>
+        );
+      case "structure":
+      case "metrics": // TODO: find some specific action?... maybe...
+        return (
+          <Button
+            hasIcon
+            trailingIcon="agora-line-download"
+            trailingIconHover="agora-line-download"
+            title={te("actions.exportJson")}
+            appearance="link"
+            disabled={!hasData}
+            onClick={handleClickExportJson}
+          >
+            {te("actions.exportJson")}
+          </Button>
+        );
+      default:
+        return null;
+    }
+  }, [
+    selectedView,
+    hasData,
+    te,
+    handleClickExportCsv,
+    handleClickExportJson,
+    exportChartAsPng,
+  ]);
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 items-start lg:items-center lg:justify-end w-full lg:w-auto">
-      <FiltersToogle />
+      <div className="grow">
+        <FiltersToogle />
+      </div>
 
-      <div className="w-full lg:w-auto">
-        <ButtonGroup orientation={isMobile ? "vertical" : "horizontal"}>
-          {actionButtons as Array<ReactElement<ButtonProps>>}
-        </ButtonGroup>
+      <div className="w-full lg:w-auto flex flex-col md:flex-row gap-8">
+        <Button
+          hasIcon
+          trailingIcon={
+            isFullscreen ? "agora-line-minimize" : "agora-line-maximize"
+          }
+          trailingIconHover={
+            isFullscreen ? "agora-line-minimize" : "agora-line-maximize"
+          }
+          title={
+            isFullscreen
+              ? te("actions.exitFullscreen")
+              : te("actions.fullscreen")
+          }
+          appearance="link"
+          variant="neutral"
+          disabled={!hasData}
+          onClick={toggleFullscreen}
+        >
+          {isFullscreen
+            ? te("actions.exitFullscreen")
+            : te("actions.fullscreen")}
+        </Button>
+
+        <Divider />
+
+        {viewAction}
       </div>
     </div>
   );
