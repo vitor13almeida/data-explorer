@@ -31,7 +31,7 @@ export default function ChartView() {
   }
 
   return (
-    <div className="flex flex-col gap-24 bg-white fullscreen:p-24 fullscreen:overflow-auto">
+    <div className="flex flex-col gap-32 bg-white fullscreen:p-24 fullscreen:overflow-auto">
       <ChartSelectors />
       <ChartRenderer />
       <ChartPagination />

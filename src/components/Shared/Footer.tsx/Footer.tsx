@@ -44,6 +44,7 @@ const FooterBrands = ({ brands }: FooterBrandsI) => {
       {brands.map((brand) => {
         return (
           <Image
+            key={brand.alt}
             src={brand.icon}
             alt={t(brand.alt)}
             height={48}

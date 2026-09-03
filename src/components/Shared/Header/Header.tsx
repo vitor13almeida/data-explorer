@@ -58,7 +58,7 @@ export default function Header(args: HeaderProps) {
 
   useLayoutEffect(() => {
     const panelsList = document.querySelector(
-      "header.sticky .panels-menu > ul",
+      "header .panels-menu > ul",
     );
     if (!panelsList) return;
 
@@ -103,7 +103,7 @@ export default function Header(args: HeaderProps) {
   // Keep the ecosystem <li> immediately after the language selector
   useLayoutEffect(() => {
     const panelsList = document.querySelector(
-      "header.sticky .panels-menu > ul",
+      "header .panels-menu > ul",
     );
     if (!panelsList) return;
     const ecosystemLi = panelsList.querySelector(".ecosystem-panel-menu");
@@ -124,7 +124,7 @@ export default function Header(args: HeaderProps) {
       ".ecosystem-panel-container",
     ) as HTMLDivElement | null;
     if (!panelDiv) return;
-    const panelsMenu = document.querySelector("header.sticky .panels-menu");
+    const panelsMenu = document.querySelector("header .panels-menu");
     if (panelsMenu) {
       const rect = panelsMenu.getBoundingClientRect();
       panelDiv.style.top = `${rect.bottom}px`;
@@ -134,7 +134,7 @@ export default function Header(args: HeaderProps) {
   }, [ecosystemOpen, ecosystemPanelNode]);
 
   return (
-    <header className="sticky top-0 z-sticky [&_.custom-search-layout]:!m-0 [&_.custom-search-layout]:!mx-auto">
+    <header className="[&_.custom-search-layout]:!m-0 [&_.custom-search-layout]:!mx-auto">
       <HeaderADS {...args} ref={headerRef}>
         <Brand>
           <Logo>

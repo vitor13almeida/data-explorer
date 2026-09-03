@@ -74,8 +74,8 @@
   },
   "pagination": {
     "itemsPerPage": "Items por página",
-    "range": "{{start}}-{{end}} de {{total}}",
-    "pageOf": "{{current}} de {{total}}",
+    "itemsPerPageDropdownAriaLabel": "Escolha o número de itens por página",
+    "itemsPerPageListAriaLabel": "Número de itens por página",
     "prev": "Página anterior",
     "next": "Página seguinte"
   },
