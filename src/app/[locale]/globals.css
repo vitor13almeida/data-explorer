@@ -37,12 +37,6 @@ button.operator-drawer-trigger {
   width: 100% !important;
 }
 
-/* hide label in chart inpuut to not break the layout */
-
-.chart-page-size-selector .agora-input-select .agora-input-select-label {
-  display: none !important;
-}
-
 /* bigger dialog area */
 
 .agora-dialog .z-dialog {
