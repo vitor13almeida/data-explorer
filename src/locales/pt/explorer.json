@@ -133,7 +133,7 @@
   "filters": {
     "selected": "Filtros selecionados",
     "selectOperator": "Escolha o operador para o filtro",
-    "operator": "Operador do filtro",
+    "operator": "Operador",
     "operators": {
       "contains": "Contém",
       "notcontains": "Não contém",

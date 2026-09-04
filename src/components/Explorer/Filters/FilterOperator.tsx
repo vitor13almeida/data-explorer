@@ -3,7 +3,8 @@
 import DropdownOption from "@/components/Shared/Dropdown/DropdownOption";
 import DropdownSection from "@/components/Shared/Dropdown/DropdownSection";
 import InputSelect from "@/components/Shared/Input/InputSelect";
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
+import { useFiltersContext } from "@/hooks/useFiltersContext";
 import { FilterOperatorType } from "@/services/types";
 import { getDataType, getOperatorOptions } from "@/services/utils/data";
 import { DropdownOptionProps } from "@ama-pt/agora-design-system";
@@ -16,7 +17,8 @@ export type FilterOperatorI = {
 
 export default function FilterOperator({ header }: FilterOperatorI) {
   const { t: te } = useTranslation("explorer");
-  const { structure, filtersOperator, setFiltersOperator } = useResourceContext();
+  const { structure } = useDataContext();
+  const { filtersOperator, setFiltersOperator } = useFiltersContext();
 
   const dataType = getDataType(header, structure);
 
@@ -24,7 +26,7 @@ export default function FilterOperator({ header }: FilterOperatorI) {
     const opts = getOperatorOptions(dataType);
     return opts.map((o) => (
       <DropdownOption value={o} key={o} selected={o === filtersOperator[header]}>
-        {te(`filters.operators.${o}`)}
+        {`${te("filters.operator")}: ${te(`filters.operators.${o}`)}`}
       </DropdownOption>
     ));
   }, [dataType, filtersOperator, header]);
@@ -44,6 +46,8 @@ export default function FilterOperator({ header }: FilterOperatorI) {
   return (
     <div className="w-full [&_.agora-input-select-label]:hidden">
       <InputSelect
+        hasIcon
+        icon="agora-line-settings"
         //label={te("filters.operator")}
         onChange={handleChange}
         hideSectionNames

@@ -1,12 +1,12 @@
 "use client";
 
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useFiltersContext } from "@/hooks/useFiltersContext";
 import Filter from "./Filter";
 import FiltersActions from "./FiltersActions";
 import FiltersApplied from "./FiltersApplied";
 
 export default function Filters() {
-  const { headers } = useResourceContext();
+  const { headers } = useFiltersContext();
 
   return (
     <>

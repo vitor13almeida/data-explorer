@@ -1,11 +1,13 @@
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
+import { useFiltersContext } from "@/hooks/useFiltersContext";
 import { useTranslation } from "react-i18next";
 import Pill from "../Shared/Pill/Pill";
 
 export default function DataNumbers() {
   const { t: te } = useTranslation("explorer");
 
-  const { data, total, totalFiltered, nFiltersApplied } = useResourceContext();
+  const { data, total, totalFiltered } = useDataContext();
+  const { nFiltersApplied } = useFiltersContext();
 
   if (data === null) {
     return null;

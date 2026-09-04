@@ -1,7 +1,8 @@
 "use client";
 
 import InputText from "@/components/Shared/Input/InputText";
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
+import { useFiltersContext } from "@/hooks/useFiltersContext";
 import { ChangeEvent, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import FilterOperator from "./FilterOperator";
@@ -63,9 +64,9 @@ export default function Filter({ header }: FilterI) {
     setFilters,
     removeFilter,
     filtersOperator,
-    structure,
     setInvalidFilters,
-  } = useResourceContext();
+  } = useFiltersContext();
+  const { structure } = useDataContext();
 
   const { errors, isValid } = useFilterValidation(
     filters,

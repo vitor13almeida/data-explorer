@@ -134,7 +134,7 @@
   "filters": {
     "selected": "Selected filters",
     "selectOperator": "Choose the operator for the filter",
-    "operator": "Filter operator",
+    "operator": "Operator",
     "operators": {
       "contains": "Contains",
       "notcontains": "Does not contain",

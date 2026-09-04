@@ -1,6 +1,6 @@
 "use client";
 
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
 import { useMemo } from "react";
 import { AlertTriangle } from "lucide-react";
 import { Typograph } from "@/components/Shared/Typograph/Typograph";
@@ -36,7 +36,7 @@ export type AlertI = {
 export function useDataAlerts(
   te: (key: string, options?: Record<string, any>) => string,
 ) {
-  const { structure } = useResourceContext();
+  const { structure } = useDataContext();
 
   return useMemo(() => {
     const { profile, columns, total_lines, nb_duplicates } = structure.profile;

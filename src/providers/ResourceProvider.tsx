@@ -33,7 +33,7 @@ import {
 } from "react";
 import { useTranslation } from "react-i18next";
 
-export type ResourceContextType = {
+export type DataContextType = {
   resourceId: string;
 
   isLoadingData: boolean;
@@ -43,31 +43,39 @@ export type ResourceContextType = {
 
   structure: DatasetProfileResponse;
 
+  total: number;
+  totalFiltered: number;
+};
+
+export type PaginationContextType = {
+  page: number;
+  setPage: Dispatch<number>;
+  pageSize: number;
+  setPageSize: Dispatch<number>;
+
+  sortColumn: string | null;
+  setSortColumn: Dispatch<string | null>;
+  sortDirection: "asc" | "desc" | null;
+  setSortDirection: Dispatch<"asc" | "desc" | null>;
+};
+
+export type ViewContextType = {
+  view: ViewType;
+  setView: Dispatch<ViewType>;
+  setExtraUrlParams: (params: Record<string, string>) => void;
+
+  isFullscreen: boolean;
+  explorerContainerRef: RefObject<HTMLDivElement | null>;
+  toggleFullscreen: () => void;
+};
+
+export type FiltersContextType = {
   headers: string[];
   headersVisibility: Record<string, boolean>;
   setHeadersVisibility: Dispatch<Record<string, boolean>>;
   nHeadersVisible: number;
   appliedHeadersVisibility: Record<string, boolean>;
 
-  total: number;
-  totalFiltered: number;
-
-  page: number;
-  setPage: Dispatch<number>;
-  pageSize: number;
-  setPageSize: Dispatch<number>;
-
-  view: ViewType;
-  setView: Dispatch<ViewType>;
-  setExtraUrlParams: (params: Record<string, string>) => void;
-
-  sortColumn: string | null;
-  setSortColumn: Dispatch<string | null>;
-  sortDirection: "asc" | "desc" | null;
-  setSortDirection: Dispatch<"asc" | "desc" | null>;
-
-  showFilters: boolean;
-  setShowFilters: Dispatch<boolean>;
   filters: Record<string, any>;
   setFilters: Dispatch<Record<string, any>>;
   removeFilter: (filter: string) => void;
@@ -81,13 +89,12 @@ export type ResourceContextType = {
 
   appliedFilters: Record<string, any>;
   nFiltersApplied: number;
-
-  isFullscreen: boolean;
-  explorerContainerRef: RefObject<HTMLDivElement | null>;
-  toggleFullscreen: () => void;
 };
 
-export const ResourceContext = createContext<ResourceContextType | undefined>(undefined);
+export const DataContext = createContext<DataContextType | undefined>(undefined);
+export const PaginationContext = createContext<PaginationContextType | undefined>(undefined);
+export const ViewContext = createContext<ViewContextType | undefined>(undefined);
+export const FiltersContext = createContext<FiltersContextType | undefined>(undefined);
 
 export type ResourceProviderI = {
   locale: string;
@@ -117,7 +124,6 @@ export function ResourceProvider({ locale, resourceId, structure, children }: Re
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
 
-  const [showFilters, setShowFilters] = useState<boolean>(false);
   const [filters, setFilters] = useState<Record<string, any>>({});
   const [filtersOperator, setFiltersOperator] = useState<Record<string, FilterOperatorType>>({});
 
@@ -291,13 +297,10 @@ export function ResourceProvider({ locale, resourceId, structure, children }: Re
     setFilters({});
     appliedFilters.current = {};
 
-    let fo = {};
-    let fv = {};
-    headers.forEach((h) => {
-      const value = getInitialOperator(h, structure);
-      fo = { ...fo, [h]: value };
-      fv = { ...fv, [h]: true };
-    });
+    const fo = Object.fromEntries(
+      headers.map((h) => [h, getInitialOperator(h, structure)])
+    ) as Record<string, FilterOperatorType>;
+    const fv = Object.fromEntries(headers.map((h) => [h, true]));
 
     setFiltersOperator(fo);
     appliedFiltersOperator.current = { ...fo };
@@ -335,14 +338,10 @@ export function ResourceProvider({ locale, resourceId, structure, children }: Re
 
   useEffect(() => {
     let filtersToSet: Record<string, string> = {};
-    let operatorsToSet: Record<string, FilterOperatorType> = {};
-    let showCol: Record<string, boolean> = {};
-
-    headers.forEach((h) => {
-      const value = getInitialOperator(h, structure);
-      operatorsToSet = { ...operatorsToSet, [h]: value };
-      showCol = { ...showCol, [h]: true };
-    });
+    let operatorsToSet: Record<string, FilterOperatorType> = Object.fromEntries(
+      headers.map((h) => [h, getInitialOperator(h, structure)])
+    ) as Record<string, FilterOperatorType>;
+    let showCol: Record<string, boolean> = Object.fromEntries(headers.map((h) => [h, true]));
 
     searchParams
       .entries()
@@ -375,11 +374,7 @@ export function ResourceProvider({ locale, resourceId, structure, children }: Re
             break;
           case "columns": {
             const colsParams = value.split(",");
-            let hv: Record<string, boolean> = {};
-            headers.forEach((h) => {
-              hv = { ...hv, [h]: colsParams.includes(h) };
-            });
-            showCol = { ...hv };
+            showCol = Object.fromEntries(headers.map((h) => [h, colsParams.includes(h)]));
             break;
           }
           default: {
@@ -477,42 +472,53 @@ export function ResourceProvider({ locale, resourceId, structure, children }: Re
     }
   }, [isReady, nHeadersVisible]);
 
-  const value = useMemo(
+  const dataValue = useMemo<DataContextType>(
     () => ({
       resourceId,
-
       isLoadingData,
       loadData,
       errorData,
       data,
-
       structure,
+      total,
+      totalFiltered,
+    }),
+    [resourceId, isLoadingData, loadData, errorData, data, structure, total, totalFiltered]
+  );
 
+  const paginationValue = useMemo<PaginationContextType>(
+    () => ({
+      page,
+      setPage,
+      pageSize,
+      setPageSize,
+      sortColumn,
+      setSortColumn,
+      sortDirection,
+      setSortDirection,
+    }),
+    [page, pageSize, sortColumn, sortDirection]
+  );
+
+  const viewValue = useMemo<ViewContextType>(
+    () => ({
+      view,
+      setView,
+      setExtraUrlParams,
+      isFullscreen,
+      explorerContainerRef,
+      toggleFullscreen,
+    }),
+    [view, setExtraUrlParams, isFullscreen, toggleFullscreen]
+  );
+
+  const filtersValue = useMemo<FiltersContextType>(
+    () => ({
       headers,
       headersVisibility,
       setHeadersVisibility,
       nHeadersVisible,
       appliedHeadersVisibility: appliedHeadersVisibility.current,
-
-      total,
-      totalFiltered,
-
-      page,
-      setPage,
-      pageSize,
-      setPageSize,
-
-      view,
-      setView,
-      setExtraUrlParams,
-
-      sortColumn,
-      setSortColumn,
-      sortDirection,
-      setSortDirection,
-
-      showFilters,
-      setShowFilters,
       filters,
       setFilters,
       removeFilter,
@@ -520,44 +526,32 @@ export function ResourceProvider({ locale, resourceId, structure, children }: Re
       clearFilters,
       filtersOperator,
       setFiltersOperator,
-
       invalidFilters,
       setInvalidFilters,
-
       appliedFilters: appliedFilters.current,
       nFiltersApplied,
-
-      isFullscreen,
-      explorerContainerRef,
-      toggleFullscreen,
     }),
     [
-      resourceId,
-      isLoadingData,
-      loadData,
-      errorData,
-      data,
-      structure,
       headers,
       headersVisibility,
       nHeadersVisible,
-      total,
-      totalFiltered,
-      page,
-      pageSize,
-      view,
-      setExtraUrlParams,
-      sortColumn,
-      sortDirection,
-      showFilters,
       filters,
+      removeFilter,
+      applyFilters,
+      clearFilters,
       filtersOperator,
       invalidFilters,
       nFiltersApplied,
-      isFullscreen,
-      toggleFullscreen,
     ]
   );
 
-  return <ResourceContext.Provider value={value}>{children}</ResourceContext.Provider>;
+  return (
+    <DataContext.Provider value={dataValue}>
+      <PaginationContext.Provider value={paginationValue}>
+        <ViewContext.Provider value={viewValue}>
+          <FiltersContext.Provider value={filtersValue}>{children}</FiltersContext.Provider>
+        </ViewContext.Provider>
+      </PaginationContext.Provider>
+    </DataContext.Provider>
+  );
 }

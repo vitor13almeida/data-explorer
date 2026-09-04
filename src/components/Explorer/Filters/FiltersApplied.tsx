@@ -1,11 +1,11 @@
 import { Typograph } from "@/components/Shared/Typograph/Typograph";
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useFiltersContext } from "@/hooks/useFiltersContext";
 import { Tag } from "@ama-pt/agora-design-system";
 import { useTranslation } from "react-i18next";
 
 export default function FiltersApplied() {
   const { t: te } = useTranslation("explorer");
-  const { nFiltersApplied, appliedFilters, removeFilter } = useResourceContext();
+  const { nFiltersApplied, appliedFilters, removeFilter } = useFiltersContext();
 
   const handleClick = (key: string) => {
     removeFilter(key);

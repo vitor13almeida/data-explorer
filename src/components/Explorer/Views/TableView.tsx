@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Table } from "@/components/Shared/Table";
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
+import { useFiltersContext } from "@/hooks/useFiltersContext";
+import { usePaginationContext } from "@/hooks/usePaginationContext";
 import { INITIAL_PAGE, PAGE_SIZES } from "@/services/consts/explorer";
 import { useTranslation } from "react-i18next";
 import { SortOrder } from "@ama-pt/agora-design-system";
@@ -10,10 +12,9 @@ import TableBody from "../Table/TableBody";
 export default function TableView() {
   const { t: te } = useTranslation("explorer");
 
+  const { data, totalFiltered } = useDataContext();
+  const { appliedHeadersVisibility } = useFiltersContext();
   const {
-    data,
-    appliedHeadersVisibility,
-    totalFiltered,
     page,
     setPage,
     pageSize,
@@ -22,7 +23,7 @@ export default function TableView() {
     setSortColumn,
     sortDirection,
     setSortDirection,
-  } = useResourceContext();
+  } = usePaginationContext();
 
   const cols = Object.keys(appliedHeadersVisibility).filter(
     (h) => appliedHeadersVisibility[h] === true,

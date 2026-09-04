@@ -12,7 +12,8 @@ import {
   useState,
 } from "react";
 import { useSearchParams } from "next/navigation";
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
+import { useViewContext } from "@/hooks/useViewContext";
 import { Chart as ChartJS } from "chart.js";
 import { CHART_TYPES_WITH_R, ChartType } from "@/services/types/charts";
 import {
@@ -52,7 +53,8 @@ export const ChartContext = createContext<ChartContextType | undefined>(
 
 export function ChartProvider({ children }: { children: ReactNode }) {
   const searchParams = useSearchParams();
-  const { data: resourceData, setExtraUrlParams } = useResourceContext();
+  const { data: resourceData } = useDataContext();
+  const { setExtraUrlParams } = useViewContext();
 
   const rows = resourceData?.data ?? [];
 

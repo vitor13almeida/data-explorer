@@ -32,7 +32,7 @@ import {
   Scatter,
 } from "react-chartjs-2";
 import { useChartContext } from "@/hooks/useChartContext";
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
 import { ChartType } from "@/services/types/charts";
 import { getChartColor } from "@/services/utils/charts";
 import { useTranslation } from "react-i18next";
@@ -71,7 +71,7 @@ const CHART_COMPONENTS: Record<
 };
 
 export default function ChartRenderer() {
-  const { data: resourceData } = useResourceContext();
+  const { data: resourceData } = useDataContext();
   const { xAxisKey, yAxisKeys, rAxisKey, chart, chartRef, exportChartAsPng } =
     useChartContext();
 

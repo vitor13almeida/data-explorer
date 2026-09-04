@@ -1,13 +1,13 @@
 "use client";
 
 import Button from "@/components/Shared/Button/Button";
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useFiltersContext } from "@/hooks/useFiltersContext";
 import { useTranslation } from "react-i18next";
 
 export default function FiltersActions() {
   const { t: te } = useTranslation("explorer");
 
-  const { nHeadersVisible, applyFilters, clearFilters, invalidFilters } = useResourceContext();
+  const { nHeadersVisible, applyFilters, clearFilters, invalidFilters } = useFiltersContext();
 
   const handleApplyFilters = () => {
     applyFilters();
