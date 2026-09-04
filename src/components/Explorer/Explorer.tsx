@@ -89,7 +89,7 @@ export default function Explorer() {
         ref={explorerContainerRef}
         className={twJoin(
           "w-full flex flex-col gap-16",
-          isFullscreen ? "bg-white p-32" : "p-0",
+          isFullscreen ? "bg-white p-32 overflow-y-auto h-full" : "p-0",
         )}
       >
         {isFullscreen && (
