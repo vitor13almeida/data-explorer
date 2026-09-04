@@ -149,7 +149,7 @@ const FooterBottom = ({
       <FooterADS variant="primary-900">
         <FinancingSectionContainer
           aria-label={t("partners")}
-          className="relative mx-auto flex justify-between gap-32 py-32 before:absolute before:left-1/2 before:top-0 before:w-screen before:-translate-x-1/2 before:border-t-2 before:border-[#ffffff0d] before:content-[''] after:absolute after:bottom-0 after:left-1/2 after:w-screen after:-translate-x-1/2 after:border-b-2 after:border-[#ffffff0d] after:content-[''] lg:container [&_ul]:flex [&_ul]:flex-1 [&_ul]:gap-32"
+          className="relative mx-auto flex justify-between gap-32 py-32 before:absolute before:left-1/2 before:top-0 before:w-screen before:-translate-x-1/2 before:border-t-2 before:border-[#ffffff0d] before:content-empty after:absolute after:bottom-0 after:left-1/2 after:w-screen after:-translate-x-1/2 after:border-b-2 after:border-[#ffffff0d] after:content-empty lg:container [&_ul]:flex [&_ul]:flex-1 [&_ul]:gap-32"
         >
           {financingSectionContent}
         </FinancingSectionContainer>
