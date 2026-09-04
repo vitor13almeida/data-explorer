@@ -63,11 +63,11 @@ export default function Header(args: HeaderProps) {
     if (!panelsList) return;
 
     let li = panelsList.querySelector(
-      ".ecosystem-panel-menu",
+      ".ecosystem-custom-menu",
     ) as HTMLLIElement | null;
     if (!li) {
       li = document.createElement("li");
-      li.className = "ecosystem-panel-menu";
+      li.className = "ecosystem-custom-menu";
       li.style.display = "flex";
       li.style.alignItems = "stretch";
       const authLi = panelsList.lastElementChild;
@@ -93,7 +93,7 @@ export default function Header(args: HeaderProps) {
     });
 
     return () => {
-      panelsList.querySelector(".ecosystem-panel-menu")?.remove();
+      panelsList.querySelector(".ecosystem-custom-menu")?.remove();
       document.querySelector(".ecosystem-panel-container")?.remove();
       setEcosystemBtnPortalNode(null);
       setEcosystemPanelNode(null);
@@ -106,7 +106,7 @@ export default function Header(args: HeaderProps) {
       "header .panels-menu > ul",
     );
     if (!panelsList) return;
-    const ecosystemLi = panelsList.querySelector(".ecosystem-panel-menu");
+    const ecosystemLi = panelsList.querySelector(".ecosystem-custom-menu");
     const lastChild = panelsList.lastElementChild;
     if (ecosystemLi && lastChild && lastChild !== ecosystemLi) {
       panelsList.append(lastChild, ecosystemLi);

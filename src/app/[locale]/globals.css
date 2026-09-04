@@ -184,13 +184,13 @@ div.general-bar > div.flex {
 }
 
 /* ecosystem panel */
-li.ecosystem-panel-menu {
+li.ecosystem-custom-menu {
   gap: 8px;
 }
 
 @media (max-width: 767px) {
-  header.sticky .panels-menu .search-panel-menu .children-wrapper,
-  header.sticky .panels-menu .unauthenticated-panel-menu .children-wrapper {
+  header .panels-menu .search-panel-menu .children-wrapper,
+  header .panels-menu .unauthenticated-panel-menu .children-wrapper {
     display: none;
   }
 }
@@ -208,12 +208,12 @@ li.ecosystem-panel-menu {
   border-top: 4px solid var(--Neutral-200, #e1e4ea);
 }
 
-li.ecosystem-panel-menu .panel-menu-link-wrapper {
+li.ecosystem-custom-menu .panel-menu-link-wrapper {
   position: relative;
   align-self: stretch;
 }
 
-li.ecosystem-panel-menu
+li.ecosystem-custom-menu
   .panel-menu-link-wrapper:has(a[aria-expanded="true"])::after {
   content: "";
   position: absolute;
@@ -223,6 +223,10 @@ li.ecosystem-panel-menu
   height: 4px;
   width: 100%;
   background-color: var(--color-primary-600);
+}
+
+header .navigation-bar-bg {
+  display: none;
 }
 
 /* ADS card general */
