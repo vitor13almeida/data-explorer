@@ -42,10 +42,18 @@
       "categorical": "Categorical",
       "uniqueValues": "Unique values",
       "alerts": {
-        "missingValues": "{{count}} column(s) with more than {{threshold}}% missing values",
-        "outliers": "{{count}} column(s) with possible outliers",
-        "lowScore": "{{count}} column(s) with type detection confidence below {{threshold}}%",
-        "duplicates": "{{percentage}}% of records are duplicates"
+        "title": {
+          "missingValues": "Missing values",
+          "outliers": "Outliers",
+          "lowScore": "Detection confidence",
+          "duplicates": "Duplicates"
+        },
+        "message": {
+          "missingValues": "{{count}} column(s) with more than {{threshold}}% missing values",
+          "outliers": "{{count}} column(s) with possible outliers",
+          "lowScore": "{{count}} column(s) with type detection confidence below {{threshold}}%",
+          "duplicates": "{{percentage}}% of records are duplicates"
+        }
       }
     },
     "chart": {

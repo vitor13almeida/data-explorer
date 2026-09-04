@@ -42,10 +42,18 @@
       "categorical": "Categórico",
       "uniqueValues": "Valores únicos",
       "alerts": {
-        "missingValues": "{{count}} coluna(s) com mais de {{threshold}}% de valores em falta",
-        "outliers": "{{count}} coluna(s) com possíveis valores atípicos",
-        "lowScore": "{{count}} coluna(s) com confiança na deteção do tipo abaixo de {{threshold}}%",
-        "duplicates": "{{percentage}}% dos registos são duplicados"
+        "title": {
+          "missingValues": "Valores em falta",
+          "outliers": "Valores atípicos",
+          "lowScore": "Confiança na deteção",
+          "duplicates": "Valores duplicados"
+        },
+        "message": {
+          "missingValues": "{{count}} coluna(s) com mais de {{threshold}}% de valores em falta",
+          "outliers": "{{count}} coluna(s) com possíveis valores atípicos",
+          "lowScore": "{{count}} coluna(s) com confiança na deteção do tipo abaixo de {{threshold}}%",
+          "duplicates": "{{percentage}}% dos registos são duplicados"
+        }
       }
     },
     "chart": {
