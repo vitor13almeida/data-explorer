@@ -130,27 +130,14 @@ export default function Filter({ header }: FilterI) {
   };
 
   return (
-    <div className="flex flex-row gap-2">
-      <div className="grow">
-        <div className="flex flex-col gap-8">
-          {getInput()}
-          {structure && (
-            <>
-              <div className="flex flex-row gap-8 items-center text-neutral-700">
-                <FilterOperator header={header} />
-                <span>
-                  {te("filters.operatorType", {
-                    operator: te(
-                      `filters.operators.${filtersOperator[header]}`,
-                    ),
-                  })}
-                </span>
-              </div>
-              <FilterVisibility header={header} />
-            </>
-          )}
-        </div>
-      </div>
+    <div className="flex flex-col gap-32">
+      {getInput()}
+      {structure && (
+        <>
+          <FilterOperator header={header} />
+          <FilterVisibility header={header} />
+        </>
+      )}
     </div>
   );
 }

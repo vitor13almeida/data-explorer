@@ -7,10 +7,7 @@ import {
   PAGE_SIZES,
   VIEW_TYPES,
 } from "@/services/consts/explorer";
-import {
-  CHART_URL_PARAM_KEYS,
-  VIEW_URL_PARAM,
-} from "@/services/consts/urlParams";
+import { CHART_URL_PARAM_KEYS, VIEW_URL_PARAM } from "@/services/consts/urlParams";
 import {
   DatasetProfileResponse,
   FilterOperatorType,
@@ -54,7 +51,6 @@ export type ResourceContextType = {
 
   total: number;
   totalFiltered: number;
-  nFiltersApplied: number;
 
   page: number;
   setPage: Dispatch<number>;
@@ -83,14 +79,15 @@ export type ResourceContextType = {
   invalidFilters: boolean;
   setInvalidFilters: Dispatch<boolean>;
 
+  appliedFilters: Record<string, any>;
+  nFiltersApplied: number;
+
   isFullscreen: boolean;
   explorerContainerRef: RefObject<HTMLDivElement | null>;
   toggleFullscreen: () => void;
 };
 
-export const ResourceContext = createContext<ResourceContextType | undefined>(
-  undefined,
-);
+export const ResourceContext = createContext<ResourceContextType | undefined>(undefined);
 
 export type ResourceProviderI = {
   locale: string;
@@ -99,12 +96,7 @@ export type ResourceProviderI = {
   children: ReactNode;
 };
 
-export function ResourceProvider({
-  locale,
-  resourceId,
-  structure,
-  children,
-}: ResourceProviderI) {
+export function ResourceProvider({ locale, resourceId, structure, children }: ResourceProviderI) {
   const searchParams = useSearchParams();
   const toastContext = useToastContext();
   const { t } = useTranslation("common");
@@ -115,9 +107,7 @@ export function ResourceProvider({
   const [data, setData] = useState<PaginatedDataResponse | null>(null);
   const [errorData, setErrorData] = useState<string | null>(null);
 
-  const [headersVisibility, setHeadersVisibility] = useState<
-    Record<string, boolean>
-  >({});
+  const [headersVisibility, setHeadersVisibility] = useState<Record<string, boolean>>({});
 
   const [page, setPage] = useState<number>(INITIAL_PAGE);
   const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[0]);
@@ -125,15 +115,11 @@ export function ResourceProvider({
   const [view, setView] = useState<ViewType>(VIEW_TYPES[0]);
 
   const [sortColumn, setSortColumn] = useState<string | null>(null);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(
-    null,
-  );
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
 
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [filters, setFilters] = useState<Record<string, any>>({});
-  const [filtersOperator, setFiltersOperator] = useState<
-    Record<string, FilterOperatorType>
-  >({});
+  const [filtersOperator, setFiltersOperator] = useState<Record<string, FilterOperatorType>>({});
 
   const [invalidFilters, setInvalidFilters] = useState<boolean>(false);
 
@@ -153,22 +139,18 @@ export function ResourceProvider({
 
   const headers: string[] = structure?.profile.header ?? [];
   const nHeaders: number = Object.values(headers).length;
-  const nHeadersVisible: number = Object.values(headersVisibility).filter(
-    (v) => v === true,
-  ).length;
+  const nHeadersVisible: number = Object.values(headersVisibility).filter((v) => v === true).length;
 
   const total: number = structure?.profile.total_lines ?? 0;
   const totalFiltered: number = data?.meta.total ?? 0;
   const nFiltersApplied: number = Object.keys(appliedFilters.current).filter(
-    (filter) => !!appliedFilters.current[filter],
+    (filter) => !!appliedFilters.current[filter]
   ).length;
 
   const getColumnsForFilters = useCallback(() => {
     const applied = appliedHeadersVisibility.current;
     const nVisible = Object.values(applied).filter((v) => v === true).length;
-    return nVisible < nHeaders
-      ? Object.keys(applied).filter((h) => applied[h] === true)
-      : [];
+    return nVisible < nHeaders ? Object.keys(applied).filter((h) => applied[h] === true) : [];
   }, [nHeaders]);
 
   const loadData = useCallback(async () => {
@@ -189,7 +171,7 @@ export function ResourceProvider({
           headers,
           appliedFiltersOperator.current ?? {},
           appliedFilters.current ?? {},
-          columnsForFilters,
+          columnsForFilters
         );
         if (response.status === 200 && response.data) {
           setData(response.data || { data: [], links: {}, meta: {} });
@@ -197,7 +179,7 @@ export function ResourceProvider({
           setData(null);
           setErrorData(
             response.errors?.map((error) => error.detail.hint).join(" ") ||
-              te("errors.data.badRequest"),
+              te("errors.data.badRequest")
           );
           toastContext.showToast(
             {
@@ -209,7 +191,7 @@ export function ResourceProvider({
               type: "failure",
               closeLabel: t("close"),
             },
-            5000,
+            5000
           );
         }
       } catch (err) {
@@ -223,7 +205,7 @@ export function ResourceProvider({
             type: "failure",
             closeLabel: t("close"),
           },
-          5000,
+          5000
         );
       }
     });
@@ -252,22 +234,10 @@ export function ResourceProvider({
       appliedFilters.current ?? {},
       columnsForFilters,
       view,
-      extraUrlParams.current,
+      extraUrlParams.current
     );
-    window.history.replaceState(
-      null,
-      "",
-      `${window.location.pathname}?${params}`,
-    );
-  }, [
-    page,
-    pageSize,
-    sortColumn,
-    sortDirection,
-    headers,
-    getColumnsForFilters,
-    view,
-  ]);
+    window.history.replaceState(null, "", `${window.location.pathname}?${params}`);
+  }, [page, pageSize, sortColumn, sortDirection, headers, getColumnsForFilters, view]);
 
   useEffect(() => {
     setUrlParamsRef.current = setUrlParams;
@@ -275,7 +245,7 @@ export function ResourceProvider({
 
   const setExtraUrlParams = useCallback((params: Record<string, string>) => {
     const hasChanges = Object.keys(params).some(
-      (key) => params[key] !== extraUrlParams.current[key],
+      (key) => params[key] !== extraUrlParams.current[key]
     );
     if (!hasChanges) return;
 
@@ -290,8 +260,11 @@ export function ResourceProvider({
     (filter: string) => {
       const { [filter]: _, ...rest } = filters;
       setFilters(rest);
+      appliedFilters.current = { ...rest };
+      void setUrlParams();
+      void loadData();
     },
-    [filters],
+    [filters, setUrlParams, loadData]
   );
 
   const applyFilters = useCallback(() => {
@@ -415,7 +388,7 @@ export function ResourceProvider({
               setSortDirection(value === "desc" ? "desc" : "asc");
             } else {
               const operator = FilterOperatorAll.find((candidate) =>
-                key.endsWith(`__${candidate}`),
+                key.endsWith(`__${candidate}`)
               );
 
               if (operator) {
@@ -456,15 +429,7 @@ export function ResourceProvider({
     if (!resourceId || !isReady) return;
 
     void loadData();
-  }, [
-    resourceId,
-    isReady,
-    page,
-    pageSize,
-    sortColumn,
-    sortDirection,
-    loadData,
-  ]);
+  }, [resourceId, isReady, page, pageSize, sortColumn, sortDirection, loadData]);
 
   useEffect(() => {
     if (!isReady) return;
@@ -506,7 +471,7 @@ export function ResourceProvider({
             type: "warning",
             closeLabel: t("close"),
           },
-          5000,
+          5000
         );
       }
     }
@@ -531,7 +496,6 @@ export function ResourceProvider({
 
       total,
       totalFiltered,
-      nFiltersApplied,
 
       page,
       setPage,
@@ -560,6 +524,9 @@ export function ResourceProvider({
       invalidFilters,
       setInvalidFilters,
 
+      appliedFilters: appliedFilters.current,
+      nFiltersApplied,
+
       isFullscreen,
       explorerContainerRef,
       toggleFullscreen,
@@ -576,7 +543,6 @@ export function ResourceProvider({
       nHeadersVisible,
       total,
       totalFiltered,
-      nFiltersApplied,
       page,
       pageSize,
       view,
@@ -587,14 +553,11 @@ export function ResourceProvider({
       filters,
       filtersOperator,
       invalidFilters,
+      nFiltersApplied,
       isFullscreen,
       toggleFullscreen,
-    ],
+    ]
   );
 
-  return (
-    <ResourceContext.Provider value={value}>
-      {children}
-    </ResourceContext.Provider>
-  );
+  return <ResourceContext.Provider value={value}>{children}</ResourceContext.Provider>;
 }

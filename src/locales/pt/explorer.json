@@ -93,7 +93,7 @@
     "appliedFilters": "Filtros aplicados"
   },
   "actions": {
-    "filter": "Filtrar Resultados",
+    "filter": "Aplicar filtros",
     "clear": "Limpar",
     "exportCsv": "Exportar CSV",
     "exportJson": "Exportar JSON",
@@ -131,6 +131,7 @@
     }
   },
   "filters": {
+    "selected": "Filtros selecionados",
     "selectOperator": "Escolha o operador para o filtro",
     "operator": "Operador do filtro",
     "operators": {
@@ -145,7 +146,6 @@
       "strictly_greater": "Maior",
       "greater": "Maior ou igual"
     },
-    "operatorType": "Operador: {{operator}}",
     "visible": "Visível",
     "invisible": "Invisível"
   }
