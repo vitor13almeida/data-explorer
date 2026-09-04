@@ -11,7 +11,7 @@ import { useChartContext } from "@/hooks/useChartContext";
 import { useCallback, useMemo } from "react";
 
 export function Divider() {
-  return <div className="w-[1px] h-full bg-neutral-700" />;
+  return <div className="w-px h-full bg-neutral-700" />;
 }
 
 export type ExplorerActionsI = {

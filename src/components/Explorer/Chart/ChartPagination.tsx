@@ -106,7 +106,7 @@ export default function ChartPagination() {
           </span>
         </Button>
 
-        <div className="absolute -bottom-8 left-0 w-full min-h-[8px]">
+        <div className="absolute -bottom-8 left-0 w-full min-h-8">
           <Dropdown
             id={dropdownId}
             ref={dropdownRef}
@@ -133,7 +133,7 @@ export default function ChartPagination() {
           onClick={() => setPage(page - 1)}
           aria-label={te("pagination.prev")}
         />
-        <div className="w-[1px] h-full bg-neutral-200" />
+        <div className="w-px h-full bg-neutral-200" />
         <Button
           appearance="link"
           hasIcon

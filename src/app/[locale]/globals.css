@@ -1,14 +1,14 @@
 /* AgoraDS design tokens */
-@import "@ama-pt/agora-design-system/theme.css";
+@import '@ama-pt/agora-design-system/theme.css';
 
 /* Tailwind v4 reset */
-@import "tailwindcss/preflight";
+@import 'tailwindcss/preflight';
 
 /* AgoraDS compiled styles */
-@import "@ama-pt/agora-design-system/index.css";
+@import '@ama-pt/agora-design-system/index.css';
 
 /* Tailwind v4 utilities — last, so portal utilities override DS component rules */
-@import "tailwindcss/utilities";
+@import 'tailwindcss/utilities';
 
 @theme {
   /* Spacing steps outside the Agora scale (0, 8, 16, 24, 32, …). */
@@ -96,7 +96,7 @@
   --color-brand-blue-primary: #0c02cb;
   --color-brand-blue-secondary: #050157;
   --color-gray-medium: #64718b;
-  --font-sans: var(--font-noto-sans, "Noto Sans"), sans-serif;
+  --font-sans: var(--font-noto-sans, 'Noto Sans'), sans-serif;
 }
 
 /* headless accordion */

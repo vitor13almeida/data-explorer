@@ -8,7 +8,7 @@ export type FileCardI = {
 
 export default function FileCard({ icon, label, value }: FileCardI) {
   return (
-    <div className="w-full h-auto [&_.icon-set]:!border-primary-600">
+    <div className="w-full h-auto [&_.icon-set]:border-primary-600!">
       <CardGeneral
         variant="primary-100"
         iconDefault={icon}

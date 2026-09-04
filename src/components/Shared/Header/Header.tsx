@@ -134,7 +134,7 @@ export default function Header(args: HeaderProps) {
   }, [ecosystemOpen, ecosystemPanelNode]);
 
   return (
-    <header className="[&_.custom-search-layout]:!m-0 [&_.custom-search-layout]:!mx-auto">
+    <header className="[&_.custom-search-layout]:m-0! [&_.custom-search-layout]:mx-auto!">
       <HeaderADS {...args} ref={headerRef}>
         <Brand>
           <Logo>
@@ -144,7 +144,13 @@ export default function Header(args: HeaderProps) {
               rel="noreferrer"
               className="w-full h-full"
             >
-              <Image src={LOGO} className="w-full h-full" alt={t("title")} />
+              <Image
+                src={LOGO}
+                width={254}
+                height={32}
+                className="w-full h-full"
+                alt={t("title")}
+              />
             </a>
           </Logo>
 
@@ -173,7 +179,7 @@ export default function Header(args: HeaderProps) {
       {ecosystemBtnPortalNode &&
         createPortal(
           <>
-            <span className="agora-link-wrapper agora-link-wrapper-link-neutral custom-header-link-wrapper panel-menu-link-wrapper inline-flex items-center !px-8">
+            <span className="agora-link-wrapper agora-link-wrapper-link-neutral custom-header-link-wrapper panel-menu-link-wrapper inline-flex items-center px-8!">
               <a
                 className="link-with-icon"
                 href="#"
@@ -231,7 +237,7 @@ export default function Header(args: HeaderProps) {
                                 backgroundColor: item.bgColor ?? undefined,
                               }}
                             >
-                              <div className="relative h-[20px] w-[20px]">
+                              <div className="relative h-20 w-20">
                                 <Image
                                   src={item.icon ?? ""}
                                   alt={item.label}
