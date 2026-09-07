@@ -1,9 +1,9 @@
 {
-  "title": "Data",
-  "description": "Explore all data, in different formats and views",
+  "title": "Data explorer",
+  "description": "Explore the data in different ways, choose the most suitable display mode, and filter the results in detail. You can also export the data in the available formats.",
   "views": {
     "table": {
-      "title": "Data",
+      "title": "Table",
       "itemsPerPageLabel": "Items per page: ",
       "buttonDropdownAriaLabel": "Choose the number of items per page",
       "dropdownListAriaLabel": "Number of items per page",
@@ -14,15 +14,17 @@
     "structure": {
       "title": "Structure",
       "totalItems": "Total records",
-      "resourceId": "Resource ID",
-      "datasetId": "Dataset ID",
-      "fields": "Fields",
       "totalColumns": "Total columns",
       "categoricalColumns": "Categorical columns",
       "uniqueValues": "Unique values",
-      "formatTooltip": "Data format",
-      "typeTooltip": "Data type",
-      "scoreTooltip": "Type detection confidence"
+      "resourceId": "Resource identifier",
+      "datasetId": "Dataset identifier",
+      "fields": {
+        "name": "Field",
+        "python_type": "Type",
+        "format": "Format",
+        "score": "Type Detection Confidence"
+      }
     },
     "metrics": {
       "title": "Metrics",
@@ -40,10 +42,18 @@
       "categorical": "Categorical",
       "uniqueValues": "Unique values",
       "alerts": {
-        "missingValues": "{{count}} column(s) with more than {{threshold}}% missing values",
-        "outliers": "{{count}} column(s) with possible outliers",
-        "lowScore": "{{count}} column(s) with type detection confidence below {{threshold}}%",
-        "duplicates": "{{percentage}}% of records are duplicates"
+        "title": {
+          "missingValues": "Missing values",
+          "outliers": "Outliers",
+          "lowScore": "Detection confidence",
+          "duplicates": "Duplicates"
+        },
+        "message": {
+          "missingValues": "{{count}} column(s) with more than {{threshold}}% missing values",
+          "outliers": "{{count}} column(s) with possible outliers",
+          "lowScore": "{{count}} column(s) with type detection confidence below {{threshold}}%",
+          "duplicates": "{{percentage}}% of records are duplicates"
+        }
       }
     },
     "chart": {
@@ -77,18 +87,18 @@
   },
   "pagination": {
     "itemsPerPage": "Items per page",
-    "range": "{{start}}-{{end}} of {{total}}",
-    "pageOf": "{{current}} of {{total}}",
+    "itemsPerPageDropdownAriaLabel": "Choose the number of items per page",
+    "itemsPerPageListAriaLabel": "Number of items per page",
     "prev": "Previous page",
     "next": "Next page"
   },
   "actions": {
-    "filter": "Filter Results",
+    "filter": "Apply filters",
     "clear": "Clear",
     "exportCsv": "Export CSV",
     "exportJson": "Export JSON",
     "exportChart": "Export chart",
-    "fullscreen": "Fullscreen",
+    "fullscreen": "Enter fullscreen",
     "exitFullscreen": "Exit fullscreen"
   },
   "errors": {
@@ -122,8 +132,9 @@
     }
   },
   "filters": {
+    "selected": "Selected filters",
     "selectOperator": "Choose the operator for the filter",
-    "operator": "Filter operator",
+    "operator": "Operator",
     "operators": {
       "contains": "Contains",
       "notcontains": "Does not contain",
@@ -136,7 +147,6 @@
       "strictly_greater": "Greater than",
       "greater": "Greater than or equal to"
     },
-    "operatorType": "Operator: {{operator}}",
     "visible": "Visible",
     "invisible": "Invisible"
   }

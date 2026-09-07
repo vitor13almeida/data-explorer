@@ -7,10 +7,7 @@ import {
   PAGE_SIZES,
   VIEW_TYPES,
 } from "@/services/consts/explorer";
-import {
-  CHART_URL_PARAM_KEYS,
-  VIEW_URL_PARAM,
-} from "@/services/consts/urlParams";
+import { CHART_URL_PARAM_KEYS, VIEW_URL_PARAM } from "@/services/consts/urlParams";
 import {
   DatasetProfileResponse,
   FilterOperatorType,
@@ -26,6 +23,7 @@ import {
   createContext,
   Dispatch,
   ReactNode,
+  RefObject,
   useCallback,
   useEffect,
   useMemo,
@@ -35,7 +33,7 @@ import {
 } from "react";
 import { useTranslation } from "react-i18next";
 
-export type ResourceContextType = {
+export type DataContextType = {
   resourceId: string;
 
   isLoadingData: boolean;
@@ -45,32 +43,39 @@ export type ResourceContextType = {
 
   structure: DatasetProfileResponse;
 
+  total: number;
+  totalFiltered: number;
+};
+
+export type PaginationContextType = {
+  page: number;
+  setPage: Dispatch<number>;
+  pageSize: number;
+  setPageSize: Dispatch<number>;
+
+  sortColumn: string | null;
+  setSortColumn: Dispatch<string | null>;
+  sortDirection: "asc" | "desc" | null;
+  setSortDirection: Dispatch<"asc" | "desc" | null>;
+};
+
+export type ViewContextType = {
+  view: ViewType;
+  setView: Dispatch<ViewType>;
+  setExtraUrlParams: (params: Record<string, string>) => void;
+
+  isFullscreen: boolean;
+  explorerContainerRef: RefObject<HTMLDivElement | null>;
+  toggleFullscreen: () => void;
+};
+
+export type FiltersContextType = {
   headers: string[];
   headersVisibility: Record<string, boolean>;
   setHeadersVisibility: Dispatch<Record<string, boolean>>;
   nHeadersVisible: number;
   appliedHeadersVisibility: Record<string, boolean>;
 
-  total: number;
-  totalFiltered: number;
-  nFiltersApplied: number;
-
-  page: number;
-  setPage: Dispatch<number>;
-  pageSize: number;
-  setPageSize: Dispatch<number>;
-
-  view: ViewType;
-  setView: Dispatch<ViewType>;
-  setExtraUrlParams: (params: Record<string, string>) => void;
-
-  sortColumn: string | null;
-  setSortColumn: Dispatch<string | null>;
-  sortDirection: "asc" | "desc" | null;
-  setSortDirection: Dispatch<"asc" | "desc" | null>;
-
-  showFilters: boolean;
-  setShowFilters: Dispatch<boolean>;
   filters: Record<string, any>;
   setFilters: Dispatch<Record<string, any>>;
   removeFilter: (filter: string) => void;
@@ -81,11 +86,15 @@ export type ResourceContextType = {
 
   invalidFilters: boolean;
   setInvalidFilters: Dispatch<boolean>;
+
+  appliedFilters: Record<string, any>;
+  nFiltersApplied: number;
 };
 
-export const ResourceContext = createContext<ResourceContextType | undefined>(
-  undefined,
-);
+export const DataContext = createContext<DataContextType | undefined>(undefined);
+export const PaginationContext = createContext<PaginationContextType | undefined>(undefined);
+export const ViewContext = createContext<ViewContextType | undefined>(undefined);
+export const FiltersContext = createContext<FiltersContextType | undefined>(undefined);
 
 export type ResourceProviderI = {
   locale: string;
@@ -94,12 +103,7 @@ export type ResourceProviderI = {
   children: ReactNode;
 };
 
-export function ResourceProvider({
-  locale,
-  resourceId,
-  structure,
-  children,
-}: ResourceProviderI) {
+export function ResourceProvider({ locale, resourceId, structure, children }: ResourceProviderI) {
   const searchParams = useSearchParams();
   const toastContext = useToastContext();
   const { t } = useTranslation("common");
@@ -110,9 +114,7 @@ export function ResourceProvider({
   const [data, setData] = useState<PaginatedDataResponse | null>(null);
   const [errorData, setErrorData] = useState<string | null>(null);
 
-  const [headersVisibility, setHeadersVisibility] = useState<
-    Record<string, boolean>
-  >({});
+  const [headersVisibility, setHeadersVisibility] = useState<Record<string, boolean>>({});
 
   const [page, setPage] = useState<number>(INITIAL_PAGE);
   const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[0]);
@@ -120,17 +122,14 @@ export function ResourceProvider({
   const [view, setView] = useState<ViewType>(VIEW_TYPES[0]);
 
   const [sortColumn, setSortColumn] = useState<string | null>(null);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(
-    null,
-  );
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
 
-  const [showFilters, setShowFilters] = useState<boolean>(false);
   const [filters, setFilters] = useState<Record<string, any>>({});
-  const [filtersOperator, setFiltersOperator] = useState<
-    Record<string, FilterOperatorType>
-  >({});
+  const [filtersOperator, setFiltersOperator] = useState<Record<string, FilterOperatorType>>({});
 
   const [invalidFilters, setInvalidFilters] = useState<boolean>(false);
+
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
   const [isLoadingData, startDataTransition] = useTransition();
 
@@ -142,24 +141,22 @@ export function ResourceProvider({
   const setUrlParamsRef = useRef<() => void>(() => {});
   const isReadyRef = useRef<boolean>(false);
 
+  const explorerContainerRef = useRef<HTMLDivElement | null>(null);
+
   const headers: string[] = structure?.profile.header ?? [];
   const nHeaders: number = Object.values(headers).length;
-  const nHeadersVisible: number = Object.values(headersVisibility).filter(
-    (v) => v === true,
-  ).length;
+  const nHeadersVisible: number = Object.values(headersVisibility).filter((v) => v === true).length;
 
   const total: number = structure?.profile.total_lines ?? 0;
   const totalFiltered: number = data?.meta.total ?? 0;
   const nFiltersApplied: number = Object.keys(appliedFilters.current).filter(
-    (filter) => !!appliedFilters.current[filter],
+    (filter) => !!appliedFilters.current[filter]
   ).length;
 
   const getColumnsForFilters = useCallback(() => {
     const applied = appliedHeadersVisibility.current;
     const nVisible = Object.values(applied).filter((v) => v === true).length;
-    return nVisible < nHeaders
-      ? Object.keys(applied).filter((h) => applied[h] === true)
-      : [];
+    return nVisible < nHeaders ? Object.keys(applied).filter((h) => applied[h] === true) : [];
   }, [nHeaders]);
 
   const loadData = useCallback(async () => {
@@ -180,7 +177,7 @@ export function ResourceProvider({
           headers,
           appliedFiltersOperator.current ?? {},
           appliedFilters.current ?? {},
-          columnsForFilters,
+          columnsForFilters
         );
         if (response.status === 200 && response.data) {
           setData(response.data || { data: [], links: {}, meta: {} });
@@ -188,7 +185,7 @@ export function ResourceProvider({
           setData(null);
           setErrorData(
             response.errors?.map((error) => error.detail.hint).join(" ") ||
-              te("errors.data.badRequest"),
+              te("errors.data.badRequest")
           );
           toastContext.showToast(
             {
@@ -200,7 +197,7 @@ export function ResourceProvider({
               type: "failure",
               closeLabel: t("close"),
             },
-            5000,
+            5000
           );
         }
       } catch (err) {
@@ -214,7 +211,7 @@ export function ResourceProvider({
             type: "failure",
             closeLabel: t("close"),
           },
-          5000,
+          5000
         );
       }
     });
@@ -243,22 +240,10 @@ export function ResourceProvider({
       appliedFilters.current ?? {},
       columnsForFilters,
       view,
-      extraUrlParams.current,
+      extraUrlParams.current
     );
-    window.history.replaceState(
-      null,
-      "",
-      `${window.location.pathname}?${params}`,
-    );
-  }, [
-    page,
-    pageSize,
-    sortColumn,
-    sortDirection,
-    headers,
-    getColumnsForFilters,
-    view,
-  ]);
+    window.history.replaceState(null, "", `${window.location.pathname}?${params}`);
+  }, [page, pageSize, sortColumn, sortDirection, headers, getColumnsForFilters, view]);
 
   useEffect(() => {
     setUrlParamsRef.current = setUrlParams;
@@ -266,7 +251,7 @@ export function ResourceProvider({
 
   const setExtraUrlParams = useCallback((params: Record<string, string>) => {
     const hasChanges = Object.keys(params).some(
-      (key) => params[key] !== extraUrlParams.current[key],
+      (key) => params[key] !== extraUrlParams.current[key]
     );
     if (!hasChanges) return;
 
@@ -281,8 +266,11 @@ export function ResourceProvider({
     (filter: string) => {
       const { [filter]: _, ...rest } = filters;
       setFilters(rest);
+      appliedFilters.current = { ...rest };
+      void setUrlParams();
+      void loadData();
     },
-    [filters],
+    [filters, setUrlParams, loadData]
   );
 
   const applyFilters = useCallback(() => {
@@ -309,13 +297,10 @@ export function ResourceProvider({
     setFilters({});
     appliedFilters.current = {};
 
-    let fo = {};
-    let fv = {};
-    headers.forEach((h) => {
-      const value = getInitialOperator(h, structure);
-      fo = { ...fo, [h]: value };
-      fv = { ...fv, [h]: true };
-    });
+    const fo = Object.fromEntries(
+      headers.map((h) => [h, getInitialOperator(h, structure)])
+    ) as Record<string, FilterOperatorType>;
+    const fv = Object.fromEntries(headers.map((h) => [h, true]));
 
     setFiltersOperator(fo);
     appliedFiltersOperator.current = { ...fo };
@@ -329,16 +314,34 @@ export function ResourceProvider({
     void loadData();
   }, [headers, setUrlParams, loadData, structure]);
 
+  const toggleFullscreen = useCallback(() => {
+    const element = explorerContainerRef.current;
+    if (!element) return;
+
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      element.requestFullscreen();
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
   useEffect(() => {
     let filtersToSet: Record<string, string> = {};
-    let operatorsToSet: Record<string, FilterOperatorType> = {};
-    let showCol: Record<string, boolean> = {};
-
-    headers.forEach((h) => {
-      const value = getInitialOperator(h, structure);
-      operatorsToSet = { ...operatorsToSet, [h]: value };
-      showCol = { ...showCol, [h]: true };
-    });
+    let operatorsToSet: Record<string, FilterOperatorType> = Object.fromEntries(
+      headers.map((h) => [h, getInitialOperator(h, structure)])
+    ) as Record<string, FilterOperatorType>;
+    let showCol: Record<string, boolean> = Object.fromEntries(headers.map((h) => [h, true]));
 
     searchParams
       .entries()
@@ -371,11 +374,7 @@ export function ResourceProvider({
             break;
           case "columns": {
             const colsParams = value.split(",");
-            let hv: Record<string, boolean> = {};
-            headers.forEach((h) => {
-              hv = { ...hv, [h]: colsParams.includes(h) };
-            });
-            showCol = { ...hv };
+            showCol = Object.fromEntries(headers.map((h) => [h, colsParams.includes(h)]));
             break;
           }
           default: {
@@ -383,10 +382,8 @@ export function ResourceProvider({
               setSortColumn(key.replace("__sort", ""));
               setSortDirection(value === "desc" ? "desc" : "asc");
             } else {
-              console.log("for cycle", "\nkey", key, "\nvalue", value);
-
               const operator = FilterOperatorAll.find((candidate) =>
-                key.endsWith(`__${candidate}`),
+                key.endsWith(`__${candidate}`)
               );
 
               if (operator) {
@@ -413,16 +410,6 @@ export function ResourceProvider({
     setHeadersVisibility(showCol);
     appliedHeadersVisibility.current = { ...showCol };
 
-    console.log(
-      "---> TO SET --->",
-      "\nfiltersToSet",
-      filtersToSet,
-      "\noperatorsToSet",
-      operatorsToSet,
-      "\nshowCol",
-      showCol,
-    );
-
     isReadyRef.current = true;
     setIsReady(true);
   }, []);
@@ -437,15 +424,7 @@ export function ResourceProvider({
     if (!resourceId || !isReady) return;
 
     void loadData();
-  }, [
-    resourceId,
-    isReady,
-    page,
-    pageSize,
-    sortColumn,
-    sortDirection,
-    loadData,
-  ]);
+  }, [resourceId, isReady, page, pageSize, sortColumn, sortDirection, loadData]);
 
   useEffect(() => {
     if (!isReady) return;
@@ -487,49 +466,59 @@ export function ResourceProvider({
             type: "warning",
             closeLabel: t("close"),
           },
-          5000,
+          5000
         );
       }
     }
   }, [isReady, nHeadersVisible]);
 
-  const value = useMemo(
+  const dataValue = useMemo<DataContextType>(
     () => ({
       resourceId,
-
       isLoadingData,
       loadData,
       errorData,
       data,
-
       structure,
+      total,
+      totalFiltered,
+    }),
+    [resourceId, isLoadingData, loadData, errorData, data, structure, total, totalFiltered]
+  );
 
+  const paginationValue = useMemo<PaginationContextType>(
+    () => ({
+      page,
+      setPage,
+      pageSize,
+      setPageSize,
+      sortColumn,
+      setSortColumn,
+      sortDirection,
+      setSortDirection,
+    }),
+    [page, pageSize, sortColumn, sortDirection]
+  );
+
+  const viewValue = useMemo<ViewContextType>(
+    () => ({
+      view,
+      setView,
+      setExtraUrlParams,
+      isFullscreen,
+      explorerContainerRef,
+      toggleFullscreen,
+    }),
+    [view, setExtraUrlParams, isFullscreen, toggleFullscreen]
+  );
+
+  const filtersValue = useMemo<FiltersContextType>(
+    () => ({
       headers,
       headersVisibility,
       setHeadersVisibility,
       nHeadersVisible,
       appliedHeadersVisibility: appliedHeadersVisibility.current,
-
-      total,
-      totalFiltered,
-      nFiltersApplied,
-
-      page,
-      setPage,
-      pageSize,
-      setPageSize,
-
-      view,
-      setView,
-      setExtraUrlParams,
-
-      sortColumn,
-      setSortColumn,
-      sortDirection,
-      setSortDirection,
-
-      showFilters,
-      setShowFilters,
       filters,
       setFilters,
       removeFilter,
@@ -537,39 +526,32 @@ export function ResourceProvider({
       clearFilters,
       filtersOperator,
       setFiltersOperator,
-
       invalidFilters,
       setInvalidFilters,
+      appliedFilters: appliedFilters.current,
+      nFiltersApplied,
     }),
     [
-      resourceId,
-      isLoadingData,
-      loadData,
-      errorData,
-      data,
-      structure,
       headers,
       headersVisibility,
       nHeadersVisible,
-      total,
-      totalFiltered,
-      nFiltersApplied,
-      page,
-      pageSize,
-      view,
-      setExtraUrlParams,
-      sortColumn,
-      sortDirection,
-      showFilters,
       filters,
+      removeFilter,
+      applyFilters,
+      clearFilters,
       filtersOperator,
       invalidFilters,
-    ],
+      nFiltersApplied,
+    ]
   );
 
   return (
-    <ResourceContext.Provider value={value}>
-      {children}
-    </ResourceContext.Provider>
+    <DataContext.Provider value={dataValue}>
+      <PaginationContext.Provider value={paginationValue}>
+        <ViewContext.Provider value={viewValue}>
+          <FiltersContext.Provider value={filtersValue}>{children}</FiltersContext.Provider>
+        </ViewContext.Provider>
+      </PaginationContext.Provider>
+    </DataContext.Provider>
   );
 }

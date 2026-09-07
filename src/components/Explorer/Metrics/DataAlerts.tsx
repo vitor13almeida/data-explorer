@@ -1,16 +1,34 @@
 "use client";
 
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
 import { useMemo } from "react";
-import { AlertTriangle } from "react-feather";
+import { AlertTriangle } from "lucide-react";
+import { Typograph } from "@/components/Shared/Typograph/Typograph";
+import { Icon } from "@ama-pt/agora-design-system";
+import { twJoin } from "tailwind-merge";
+import Pill from "@/components/Shared/Pill/Pill";
 
 const MISSING_THRESHOLD = 0.2;
 const SCORE_THRESHOLD = 0.5;
 const OUTLIER_THRESHOLD = 3;
 const DUPLICATES_THRESHOLD = 0.1;
 
+const ALERT_STYLES = {
+  danger: {
+    icon: "agora-solid-alert-triangle",
+    fill: "fill-danger-600",
+    bg: "bg-danger-50",
+  },
+  warning: {
+    icon: "agora-solid-alert-circle",
+    fill: "fill-warning-600",
+    bg: "bg-warning-50",
+  },
+} as const;
+
 export type AlertI = {
   type: "warning" | "danger";
+  title: string;
   message: string;
   columns?: string[];
 };
@@ -18,7 +36,7 @@ export type AlertI = {
 export function useDataAlerts(
   te: (key: string, options?: Record<string, any>) => string,
 ) {
-  const { structure } = useResourceContext();
+  const { structure } = useDataContext();
 
   return useMemo(() => {
     const { profile, columns, total_lines, nb_duplicates } = structure.profile;
@@ -32,7 +50,8 @@ export function useDataAlerts(
     if (missingColumns.length > 0) {
       alerts.push({
         type: "warning",
-        message: te("views.metrics.alerts.missingValues", {
+        title: te("views.metrics.alerts.title.missingValues"),
+        message: te("views.metrics.alerts.message.missingValues", {
           count: missingColumns.length,
           threshold: Math.round(MISSING_THRESHOLD * 100),
         }),
@@ -57,7 +76,8 @@ export function useDataAlerts(
     if (outlierColumns.length > 0) {
       alerts.push({
         type: "warning",
-        message: te("views.metrics.alerts.outliers", {
+        title: te("views.metrics.alerts.title.outliers"),
+        message: te("views.metrics.alerts.message.outliers", {
           count: outlierColumns.length,
         }),
         columns: outlierColumns.map(([name]) => name),
@@ -71,7 +91,8 @@ export function useDataAlerts(
     if (lowScoreColumns.length > 0) {
       alerts.push({
         type: "danger",
-        message: te("views.metrics.alerts.lowScore", {
+        title: te("views.metrics.alerts.title.lowScore"),
+        message: te("views.metrics.alerts.message.lowScore", {
           count: lowScoreColumns.length,
           threshold: Math.round(SCORE_THRESHOLD * 100),
         }),
@@ -85,7 +106,8 @@ export function useDataAlerts(
     if (duplicatesRatio > DUPLICATES_THRESHOLD) {
       alerts.push({
         type: "warning",
-        message: te("views.metrics.alerts.duplicates", {
+        title: te("views.metrics.alerts.title.duplicates"),
+        message: te("views.metrics.alerts.message.duplicates", {
           percentage: Math.round(duplicatesRatio * 100),
         }),
       });
@@ -99,52 +121,43 @@ export function DataAlerts({ alerts }: { alerts: AlertI[] }) {
   if (alerts.length === 0) return null;
 
   return (
-    <div className="flex flex-col gap-12">
-      {alerts.map((alert, idx) => (
-        <div
-          key={idx}
-          className={`flex flex-col gap-8 rounded-lg border p-16 ${
-            alert.type === "danger"
-              ? "border-danger-200 bg-danger-50"
-              : "border-warning-200 bg-warning-50"
-          }`}
-        >
-          <div className="flex items-center gap-8">
-            <AlertTriangle
-              size={16}
-              className={
-                alert.type === "danger"
-                  ? "text-danger-600 shrink-0"
-                  : "text-warning-600 shrink-0"
-              }
-            />
-            <span
-              className={`text-m-medium ${
-                alert.type === "danger" ? "text-danger-700" : "text-warning-700"
-              }`}
-            >
-              {alert.message}
-            </span>
-          </div>
+    <div className="flex flex-col gap-16">
+      {alerts.map((alert, idx) => {
+        const style = ALERT_STYLES[alert.type];
 
-          {alert.columns && alert.columns.length > 0 && (
-            <div className="flex flex-wrap gap-4 pl-24">
-              {alert.columns.map((col) => (
-                <span
-                  key={col}
-                  className={`inline-flex items-center rounded-16 px-8 py-2 text-xs ${
-                    alert.type === "danger"
-                      ? "bg-danger-100 text-danger-700"
-                      : "bg-warning-100 text-warning-700"
-                  }`}
-                >
-                  {col}
-                </span>
-              ))}
+        return (
+          <div
+            key={idx}
+            className={twJoin("flex flex-row items-start gap-8 p-16", style.bg)}
+          >
+            <Icon name={style.icon} size={16} className={style.fill} />
+
+            <div className="flex flex-col gap-8">
+              <Pill
+                variant={alert.type}
+                className={twJoin(
+                  "w-fit px-16",
+                  alert.type ? "text-white" : "text-neutral-900",
+                )}
+              >
+                {alert.title}
+              </Pill>
+
+              <Typograph tag="p" className="text-m-bold text-neutral-900">
+                {alert.message}
+              </Typograph>
+
+              {alert.columns && alert.columns.length > 0 && (
+                <ul className="list-disc list-inside pl-8 space-y-8 text-neutral-900">
+                  {alert.columns.map((col) => (
+                    <li key={col}>{col}</li>
+                  ))}
+                </ul>
+              )}
             </div>
-          )}
-        </div>
-      ))}
+          </div>
+        );
+      })}
     </div>
   );
 }

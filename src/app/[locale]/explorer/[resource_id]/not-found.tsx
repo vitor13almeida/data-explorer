@@ -3,7 +3,7 @@
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Shared/Button/Button";
-import { Search } from "react-feather";
+import { Search } from "lucide-react";
 
 export default function ResourceNotFound() {
   const { t: te } = useTranslation("common");

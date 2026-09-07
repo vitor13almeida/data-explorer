@@ -1,9 +1,9 @@
 {
-  "title": "Dados",
-  "description": "Explore todos os dados, em diferentes formatos e visualizações",
+  "title": "Explorador de dados",
+  "description": "Explore os dados de diferentes formas, escolha o modo de visualização mais adequado e filtre os resultados em detalhe. Pode também exportar os dados nos formatos disponíveis.",
   "views": {
     "table": {
-      "title": "Dados",
+      "title": "Tabela",
       "itemsPerPageLabel": "Itens por página: ",
       "buttonDropdownAriaLabel": "Escolha o número de itens por página",
       "dropdownListAriaLabel": "Número de itens por página",
@@ -13,16 +13,18 @@
     },
     "structure": {
       "title": "Estrutura",
-      "totalItems": "Total de registos",
-      "resourceId": "ID do recurso",
-      "datasetId": "ID do conjunto de dados",
-      "fields": "Campos",
-      "totalColumns": "Total de colunas",
-      "categoricalColumns": "Colunas categóricas",
+      "totalItems": "Número total de registos",
+      "totalColumns": "Número total de campos",
+      "categoricalColumns": "Número de campos categóricos",
       "uniqueValues": "Valores únicos",
-      "formatTooltip": "Formato dos dados",
-      "typeTooltip": "Tipo de dados",
-      "scoreTooltip": "Confiança na deteção do tipo"
+      "resourceId": "Identificador do recurso",
+      "datasetId": "Identificador do conjunto de dados",
+      "fields": {
+        "name": "Campo",
+        "python_type": "Tipologia",
+        "format": "Formato",
+        "score": "Confiança na deteção do tipo"
+      }
     },
     "metrics": {
       "title": "Métricas",
@@ -40,10 +42,18 @@
       "categorical": "Categórico",
       "uniqueValues": "Valores únicos",
       "alerts": {
-        "missingValues": "{{count}} coluna(s) com mais de {{threshold}}% de valores em falta",
-        "outliers": "{{count}} coluna(s) com possíveis valores atípicos",
-        "lowScore": "{{count}} coluna(s) com confiança na deteção do tipo abaixo de {{threshold}}%",
-        "duplicates": "{{percentage}}% dos registos são duplicados"
+        "title": {
+          "missingValues": "Valores em falta",
+          "outliers": "Valores atípicos",
+          "lowScore": "Confiança na deteção",
+          "duplicates": "Valores duplicados"
+        },
+        "message": {
+          "missingValues": "{{count}} coluna(s) com mais de {{threshold}}% de valores em falta",
+          "outliers": "{{count}} coluna(s) com possíveis valores atípicos",
+          "lowScore": "{{count}} coluna(s) com confiança na deteção do tipo abaixo de {{threshold}}%",
+          "duplicates": "{{percentage}}% dos registos são duplicados"
+        }
       }
     },
     "chart": {
@@ -72,8 +82,8 @@
   },
   "pagination": {
     "itemsPerPage": "Items por página",
-    "range": "{{start}}-{{end}} de {{total}}",
-    "pageOf": "{{current}} de {{total}}",
+    "itemsPerPageDropdownAriaLabel": "Escolha o número de itens por página",
+    "itemsPerPageListAriaLabel": "Número de itens por página",
     "prev": "Página anterior",
     "next": "Página seguinte"
   },
@@ -83,12 +93,12 @@
     "appliedFilters": "Filtros aplicados"
   },
   "actions": {
-    "filter": "Filtrar Resultados",
+    "filter": "Aplicar filtros",
     "clear": "Limpar",
     "exportCsv": "Exportar CSV",
     "exportJson": "Exportar JSON",
     "exportChart": "Exportar gráfico",
-    "fullscreen": "Ecrã inteiro",
+    "fullscreen": "Ver em ecrã inteiro",
     "exitFullscreen": "Sair de ecrã inteiro"
   },
   "errors": {
@@ -121,8 +131,9 @@
     }
   },
   "filters": {
+    "selected": "Filtros selecionados",
     "selectOperator": "Escolha o operador para o filtro",
-    "operator": "Operador do filtro",
+    "operator": "Operador",
     "operators": {
       "contains": "Contém",
       "notcontains": "Não contém",
@@ -135,7 +146,6 @@
       "strictly_greater": "Maior",
       "greater": "Maior ou igual"
     },
-    "operatorType": "Operador: {{operator}}",
     "visible": "Visível",
     "invisible": "Invisível"
   }

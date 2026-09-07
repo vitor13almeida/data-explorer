@@ -1,8 +1,8 @@
 "use client";
 
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
 import { ReactNode } from "react";
-import { Loader } from "react-feather";
+import { Loader } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const ICON_SIZE = 64;
@@ -14,7 +14,7 @@ export type LoadingWrapperI = {
 export default function LoadingWrapper({ children }: LoadingWrapperI) {
   const { t } = useTranslation("common");
 
-  const { isLoadingData } = useResourceContext();
+  const { isLoadingData } = useDataContext();
 
   return (
     <div className="relative">

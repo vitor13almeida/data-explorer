@@ -1,14 +1,13 @@
 "use client";
 
-import StatCard, { StatCardI } from "@/components/Shared/Card/StatsCard";
-import { useResourceContext } from "@/hooks/useResourceContext";
-import { Copy, Code, Layers } from "react-feather";
+import { useDataContext } from "@/hooks/useDataContext";
 import { useTranslation } from "react-i18next";
 import { DataAlerts, useDataAlerts } from "../Metrics/DataAlerts";
 import ColumnCard from "../Metrics/ColumnCard";
+import FileCard, { FileCardI } from "@/components/Shared/Card/FileCard";
 
 export default function MetricsView() {
-  const { structure } = useResourceContext();
+  const { structure } = useDataContext();
   const { t: te } = useTranslation("explorer");
 
   const {
@@ -25,19 +24,19 @@ export default function MetricsView() {
 
   const alerts = useDataAlerts(te);
 
-  const summaryItems: StatCardI[] = [
+  const summaryItems: FileCardI[] = [
     {
-      icon: Copy,
+      icon: "agora-line-copy",
       label: te("views.metrics.duplicates"),
       value: nb_duplicates,
     },
     {
-      icon: Code,
+      icon: "agora-line-file",
       label: te("views.metrics.encoding"),
       value: encoding,
     },
     {
-      icon: Layers,
+      icon: "agora-line-layers-menu",
       label: te("views.metrics.separator"),
       value:
         separator === "," ? "vírgula" : separator === "\t" ? "tab" : separator,
@@ -65,16 +64,16 @@ export default function MetricsView() {
   }
 
   return (
-    <div className="flex flex-col gap-24">
+    <div className="flex flex-col gap-32">
       <DataAlerts alerts={alerts} />
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-16">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-32">
         {summaryItems.map((item) => (
-          <StatCard key={item.label} {...item} />
+          <FileCard key={item.label} {...item} />
         ))}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-16">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16 lg:gap-32">
         {columnEntries.map(([name, colProfile]) => (
           <ColumnCard
             key={name}

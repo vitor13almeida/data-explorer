@@ -6,7 +6,7 @@ import {
   FilterOperatorNumber,
   FilterOperatorText,
 } from "@/services/consts/explorer";
-import { ApiLinks, PaginationMeta } from "./common";
+import { ApiLinks, PaginationMeta } from "./shared";
 
 export interface DataRow {
   __id: number;

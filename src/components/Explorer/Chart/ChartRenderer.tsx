@@ -32,12 +32,10 @@ import {
   Scatter,
 } from "react-chartjs-2";
 import { useChartContext } from "@/hooks/useChartContext";
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
 import { ChartType } from "@/services/types/charts";
 import { getChartColor } from "@/services/utils/charts";
-import { twMerge } from "tailwind-merge";
 import { useTranslation } from "react-i18next";
-import Button from "@/components/Shared/Button/Button";
 
 ChartJS.register(
   CategoryScale,
@@ -73,18 +71,9 @@ const CHART_COMPONENTS: Record<
 };
 
 export default function ChartRenderer() {
-  const { data: resourceData } = useResourceContext();
-  const {
-    xAxisKey,
-    yAxisKeys,
-    rAxisKey,
-    chart,
-    chartRef,
-    chartContainerRef,
-    isFullscreen,
-    toggleFullscreen,
-    exportChartAsPng,
-  } = useChartContext();
+  const { data: resourceData } = useDataContext();
+  const { xAxisKey, yAxisKeys, rAxisKey, chart, chartRef, exportChartAsPng } =
+    useChartContext();
 
   const { t: te } = useTranslation("explorer");
 
@@ -147,45 +136,30 @@ export default function ChartRenderer() {
     );
   }
 
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+      },
+    },
+  };
+
   let chartToRender = null;
 
   if (chart === "Bubble") {
-    chartToRender = <Bubble ref={handleRef} data={bubbleData} />;
+    chartToRender = (
+      <Bubble ref={handleRef} data={bubbleData} options={options} />
+    );
   } else {
     const Component = CHART_COMPONENTS[chart];
-    chartToRender = <Component ref={handleRef} data={standardData} />;
+    chartToRender = (
+      <Component ref={handleRef} data={standardData} options={options} />
+    );
   }
 
   return (
-    <div
-      ref={chartContainerRef}
-      className={twMerge(
-        "w-full h-full bg-white flex flex-col gap-16",
-        isFullscreen ? "p-32" : "p-0",
-      )}
-    >
-      {isFullscreen && (
-        <div className="flex flex-row gap-8 justify-end">
-          <Button
-            iconOnly
-            hasIcon
-            leadingIcon="agora-line-bar-chart"
-            leadingIconHover="agora-line-bar-chart"
-            title={te("actions.exportChart")}
-            appearance="outline"
-            onClick={exportChartAsPng}
-          />
-          <Button
-            iconOnly
-            hasIcon
-            leadingIcon="agora-line-minimize"
-            leadingIconHover="agora-line-minimize"
-            title={te("actions.exitFullscreen")}
-            appearance="outline"
-            onClick={toggleFullscreen}
-          />
-        </div>
-      )}
+    <div className={"w-full h-full bg-white flex flex-col gap-16"}>
       {chartToRender}
     </div>
   );

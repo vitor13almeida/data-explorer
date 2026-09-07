@@ -15,16 +15,16 @@ export default function TopsList({ tops }: TopsListI) {
         <div key={idx} className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <span
-              className="text-m-regular text-neutral-700 truncate max-w-[70%]"
+              className="text-s-regular text-neutral-700 truncate max-w-[70%]"
               title={top.value}
             >
               {top.value || "—"}
             </span>
-            <span className="text-m-regular text-neutral-400">{top.count}</span>
+            <span className="text-s-regular text-neutral-700">{top.count}</span>
           </div>
           <div className="h-1 w-full rounded-full bg-neutral-100">
             <div
-              className="h-1 rounded-full bg-primary-400 transition-all duration-300"
+              className="h-1 rounded-full bg-primary-600 transition-all duration-300"
               style={{ width: `${(top.count / maxCount) * 100}%` }}
             />
           </div>
