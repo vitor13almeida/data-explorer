@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
 import { useChartContext } from "@/hooks/useChartContext";
 import ChartSelectors from "../Chart/ChartSelectors";
 import ChartRenderer from "../Chart/ChartRenderer";
@@ -9,7 +9,7 @@ import ChartPagination from "../Chart/ChartPagination";
 
 export default function ChartView() {
   const { t: te } = useTranslation("explorer");
-  const { data } = useResourceContext();
+  const { data } = useDataContext();
   const { hasNumericData } = useChartContext();
 
   const hasData = (data?.data ?? []).length > 0;

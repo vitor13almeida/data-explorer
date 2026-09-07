@@ -9,7 +9,8 @@ import ChartView from "./Views/ChartView";
 import { ViewType } from "@/services/types";
 import { VIEW_TYPES, VIEW_TYPES_ICONS } from "@/services/consts/explorer";
 import ExplorerActions from "./Actions/ExplorerActions";
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
+import { useViewContext } from "@/hooks/useViewContext";
 import ToggleGroup from "../Shared/Toggle/ToggleGroup";
 import Toggle from "../Shared/Toggle/Toggle";
 import { twJoin } from "tailwind-merge";
@@ -49,15 +50,9 @@ export default function Explorer() {
     initializeWithValue: false,
   });
 
-  const {
-    isLoadingData,
-    data,
-    view,
-    setView,
-    explorerContainerRef,
-    isFullscreen,
-    toggleFullscreen,
-  } = useResourceContext();
+  const { isLoadingData, data } = useDataContext();
+  const { view, setView, explorerContainerRef, isFullscreen, toggleFullscreen } =
+    useViewContext();
 
   const hasData = !isLoadingData && !!data && data.data.length > 0;
 

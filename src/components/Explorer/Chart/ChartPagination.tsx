@@ -4,7 +4,8 @@ import DropdownOption from "@/components/Shared/Dropdown/DropdownOption";
 import DropdownSection from "@/components/Shared/Dropdown/DropdownSection";
 import Dropdown from "@/components/Shared/Dropdown/Dropdown";
 import Button from "@/components/Shared/Button/Button";
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
+import { usePaginationContext } from "@/hooks/usePaginationContext";
 import { INITIAL_PAGE, PAGE_SIZES } from "@/services/consts/explorer";
 import {
   DropdownElement,
@@ -20,8 +21,8 @@ function extractValue(event: DropdownOptionProps[]): string {
 export default function ChartPagination() {
   const { t: te } = useTranslation("explorer");
 
-  const { page, setPage, pageSize, setPageSize, totalFiltered } =
-    useResourceContext();
+  const { page, setPage, pageSize, setPageSize } = usePaginationContext();
+  const { totalFiltered } = useDataContext();
 
   const totalPages = Math.max(1, Math.ceil(totalFiltered / pageSize));
   const isFirstPage = page <= INITIAL_PAGE;

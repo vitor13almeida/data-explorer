@@ -93,7 +93,7 @@
     "next": "Next page"
   },
   "actions": {
-    "filter": "Filter Results",
+    "filter": "Apply filters",
     "clear": "Clear",
     "exportCsv": "Export CSV",
     "exportJson": "Export JSON",
@@ -132,8 +132,9 @@
     }
   },
   "filters": {
+    "selected": "Selected filters",
     "selectOperator": "Choose the operator for the filter",
-    "operator": "Filter operator",
+    "operator": "Operator",
     "operators": {
       "contains": "Contains",
       "notcontains": "Does not contain",
@@ -146,7 +147,6 @@
       "strictly_greater": "Greater than",
       "greater": "Greater than or equal to"
     },
-    "operatorType": "Operator: {{operator}}",
     "visible": "Visible",
     "invisible": "Invisible"
   }

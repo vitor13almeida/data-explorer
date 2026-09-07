@@ -3,7 +3,7 @@
 import { ChartProvider } from "@/providers/ChartProvider";
 import { ResourceProvider } from "@/providers/ResourceProvider";
 import { DatasetProfileResponse } from "@/services/types";
-import { PopupProvider, ToastProvider } from "@ama-pt/agora-design-system";
+import { ModalProvider, ToastProvider } from "@ama-pt/agora-design-system";
 import { ReactNode } from "react";
 
 export type ExplorerProvidersI = {
@@ -27,7 +27,7 @@ export default function ExplorerProviders({
         structure={structure}
       >
         <ChartProvider>
-          <PopupProvider>{children}</PopupProvider>
+          <ModalProvider>{children}</ModalProvider>
         </ChartProvider>
       </ResourceProvider>
     </ToastProvider>

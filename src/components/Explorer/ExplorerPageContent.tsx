@@ -1,6 +1,6 @@
 "use client";
 
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
 import { useTranslation } from "react-i18next";
 import Explorer from "./Explorer";
 import { Hero } from "../Shared/Hero";
@@ -11,7 +11,7 @@ const DEBUG_JSONS = false;
 export default function ExplorerPageContent() {
   const path = usePathname();
   const { t: te } = useTranslation("explorer");
-  const { isLoadingData, data, errorData, structure } = useResourceContext();
+  const { isLoadingData, data, errorData, structure } = useDataContext();
 
   return (
     <main className="flex w-full flex-col items-center gap-64 pb-96">

@@ -1,14 +1,14 @@
 /* AgoraDS design tokens */
-@import '@ama-pt/agora-design-system/theme.css';
+@import "@ama-pt/agora-design-system/theme.css";
 
 /* Tailwind v4 reset */
-@import 'tailwindcss/preflight';
+@import "tailwindcss/preflight";
 
 /* AgoraDS compiled styles */
-@import '@ama-pt/agora-design-system/index.css';
+@import "@ama-pt/agora-design-system/index.css";
 
 /* Tailwind v4 utilities — last, so portal utilities override DS component rules */
-@import 'tailwindcss/utilities';
+@import "tailwindcss/utilities";
 
 @theme {
   /* Spacing steps outside the Agora scale (0, 8, 16, 24, 32, …). */
@@ -96,19 +96,13 @@
   --color-brand-blue-primary: #0c02cb;
   --color-brand-blue-secondary: #050157;
   --color-gray-medium: #64718b;
-  --font-sans: var(--font-noto-sans, 'Noto Sans'), sans-serif;
+  --font-sans: var(--font-noto-sans, "Noto Sans"), sans-serif;
 }
 
 /* headless accordion */
 
 .accordion-headless .agora-accordion .accordion-header {
   display: none !important;
-}
-
-button.operator-drawer-trigger {
-  min-width: 36px !important;
-  min-height: 36px !important;
-  padding: 4px !important;
 }
 
 .agora-accordion:not(.mobile) .accordion-body .children-wrapper > div {
@@ -131,48 +125,6 @@ button.operator-drawer-trigger {
   width: 100% !important;
 }
 
-/* bigger dialog area */
-
-.agora-dialog .z-dialog {
-  padding: 0 !important;
-  margin: 128px auto !important;
-  width: calc(100% - 256px) !important;
-  height: calc(100% - 256px) !important;
-}
-
-.agora-popup-dialog,
-.agora-popup-dialog-body {
-  width: 100% !important;
-  height: 100% !important;
-  max-width: 2560px !important;
-  max-height: 2560px !important;
-}
-
-.agora-popup-dialog {
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-.agora-popup-dialog-body {
-  overflow: auto !important;
-}
-
-@media (max-width: 1024px) {
-  .agora-dialog .z-dialog {
-    margin: 64px !important;
-    width: calc(100% - 128px) !important;
-    height: calc(100% - 128px) !important;
-  }
-}
-
-@media (max-width: 425px) {
-  .agora-dialog .z-dialog {
-    margin: 32px !important;
-    width: calc(100% - 64px) !important;
-    height: calc(100% - 64px) !important;
-  }
-}
-
 /* header */
 
 div:has(> div.institutional-phrase-container) {
@@ -183,7 +135,12 @@ div.general-bar > div.flex {
   align-self: center;
 }
 
-/* ecosystem panel */
+header .navigation-bar-bg {
+  display: none;
+}
+
+/* header - ecosystem panel */
+
 li.ecosystem-custom-menu {
   gap: 8px;
 }
@@ -213,8 +170,7 @@ li.ecosystem-custom-menu .panel-menu-link-wrapper {
   align-self: stretch;
 }
 
-li.ecosystem-custom-menu
-  .panel-menu-link-wrapper:has(a[aria-expanded="true"])::after {
+li.ecosystem-custom-menu .panel-menu-link-wrapper:has(a[aria-expanded="true"])::after {
   content: "";
   position: absolute;
   bottom: 0;
@@ -223,10 +179,6 @@ li.ecosystem-custom-menu
   height: 4px;
   width: 100%;
   background-color: var(--color-primary-600);
-}
-
-header .navigation-bar-bg {
-  display: none;
 }
 
 /* ADS card general */

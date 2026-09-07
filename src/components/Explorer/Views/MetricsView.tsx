@@ -1,13 +1,13 @@
 "use client";
 
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
 import { useTranslation } from "react-i18next";
 import { DataAlerts, useDataAlerts } from "../Metrics/DataAlerts";
 import ColumnCard from "../Metrics/ColumnCard";
 import FileCard, { FileCardI } from "@/components/Shared/Card/FileCard";
 
 export default function MetricsView() {
-  const { structure } = useResourceContext();
+  const { structure } = useDataContext();
   const { t: te } = useTranslation("explorer");
 
   const {

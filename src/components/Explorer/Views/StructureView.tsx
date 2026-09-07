@@ -3,7 +3,7 @@
 import FileCard, { FileCardI } from "@/components/Shared/Card/FileCard";
 import StatCard, { StatCardI } from "@/components/Shared/Card/StatsCard";
 import { Table } from "@/components/Shared/Table";
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
 import { fields } from "@/services/consts/structure";
 import { DatasetProfile } from "@/services/types";
 import { useTranslation } from "react-i18next";
@@ -33,7 +33,7 @@ function convertColumns(columns: DatasetProfile["columns"]): ConvertedColumn[] {
 export default function StructureView() {
   const { t: te } = useTranslation("explorer");
 
-  const { resourceId, structure } = useResourceContext();
+  const { resourceId, structure } = useDataContext();
 
   const { profile, dataset_id } = structure;
   const fieldsData = convertColumns(profile.columns);
