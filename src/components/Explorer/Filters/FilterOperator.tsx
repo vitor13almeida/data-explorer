@@ -1,18 +1,14 @@
 "use client";
 
-import Button from "@/components/Shared/Button/Button";
-import Drawer from "@/components/Shared/Drawer/Drawer";
 import DropdownOption from "@/components/Shared/Dropdown/DropdownOption";
 import DropdownSection from "@/components/Shared/Dropdown/DropdownSection";
 import InputSelect from "@/components/Shared/Input/InputSelect";
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
+import { useFiltersContext } from "@/hooks/useFiltersContext";
 import { FilterOperatorType } from "@/services/types";
 import { getDataType, getOperatorOptions } from "@/services/utils/data";
-import {
-  DrawerElement,
-  DropdownOptionProps,
-} from "@ama-pt/agora-design-system";
-import { useMemo, useRef, useState } from "react";
+import { DropdownOptionProps } from "@ama-pt/agora-design-system";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 export type FilterOperatorI = {
@@ -20,38 +16,20 @@ export type FilterOperatorI = {
 };
 
 export default function FilterOperator({ header }: FilterOperatorI) {
-  const { t } = useTranslation("common");
   const { t: te } = useTranslation("explorer");
-  const { structure, filtersOperator, setFiltersOperator } =
-    useResourceContext();
+  const { structure } = useDataContext();
+  const { filtersOperator, setFiltersOperator } = useFiltersContext();
 
   const dataType = getDataType(header, structure);
-
-  const ref = useRef<DrawerElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
 
   const options = useMemo(() => {
     const opts = getOperatorOptions(dataType);
     return opts.map((o) => (
-      <DropdownOption
-        value={o}
-        key={o}
-        selected={o === filtersOperator[header]}
-      >
-        {te(`filters.operators.${o}`)}
+      <DropdownOption value={o} key={o} selected={o === filtersOperator[header]}>
+        {`${te("filters.operator")}: ${te(`filters.operators.${o}`)}`}
       </DropdownOption>
     ));
   }, [dataType, filtersOperator, header]);
-
-  const handleOpenDrawer = () => {
-    setIsOpen(true);
-    ref.current?.open();
-  };
-
-  const handleCloseDrawer = () => {
-    ref.current?.close();
-    setIsOpen(false);
-  };
 
   const handleChange = (options: DropdownOptionProps[]) => {
     const nextSelected = options.map((o) => o.value);
@@ -66,33 +44,17 @@ export default function FilterOperator({ header }: FilterOperatorI) {
   }
 
   return (
-    <div className="relative flex w-fit flex-col">
-      <Button
+    <div className="w-full [&_.agora-input-select-label]:hidden">
+      <InputSelect
         hasIcon
-        iconOnly
-        trailingIcon="agora-line-settings"
-        trailingIconHover="agora-line-settings"
-        appearance="link"
-        aria-label={te("filters.operatorSelect")}
-        onClick={handleOpenDrawer}
-        className="operator-drawer-trigger"
-      />
-      <Drawer ref={ref} position="right">
-        <div className="flex flex-col gap-32 w-full h-full p-16">
-          <h3 className="text-neutral-900 text-l-bold">{header}</h3>
-          {isOpen && (
-            <InputSelect
-              label={te("filters.operator")}
-              onChange={handleChange}
-              hideSectionNames
-              className="w-full h-256"
-            >
-              <DropdownSection name="operador">{options}</DropdownSection>
-            </InputSelect>
-          )}
-          <Button onClick={handleCloseDrawer}>{t("close")}</Button>
-        </div>
-      </Drawer>
+        icon="agora-line-settings"
+        //label={te("filters.operator")}
+        onChange={handleChange}
+        hideSectionNames
+        className="h-256 w-full"
+      >
+        <DropdownSection name="operador">{options}</DropdownSection>
+      </InputSelect>
     </div>
   );
 }

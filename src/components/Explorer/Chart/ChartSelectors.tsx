@@ -9,6 +9,7 @@ import { ChartType } from "@/services/types/charts";
 import { DropdownOptionProps } from "@ama-pt/agora-design-system";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { twJoin } from "tailwind-merge";
 
 function useDropdownOptions(
   items: readonly string[],
@@ -96,8 +97,13 @@ export default function ChartSelectors() {
   };
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-12 gap-16">
-      <div className="col-span-2 lg:col-span-3">
+    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-12 gap-16 md:gap-32">
+      <div
+        className={twJoin(
+          "col-span-2 lg:col-span-3",
+          showR ? "lg:col-span-3" : "lg:col-span-4",
+        )}
+      >
         <InputSelect
           label={te("views.chart.chartType")}
           placeholder={te("views.chart.chartTypePlaceholder")}
@@ -112,7 +118,12 @@ export default function ChartSelectors() {
         </InputSelect>
       </div>
 
-      <div className="col-span-2 lg:col-span-3">
+      <div
+        className={twJoin(
+          "col-span-2 lg:col-span-3",
+          showR ? "lg:col-span-3" : "lg:col-span-4",
+        )}
+      >
         <InputSelect
           label={te("views.chart.xAxis")}
           placeholder={te("views.chart.axisPlaceholder")}
@@ -125,7 +136,12 @@ export default function ChartSelectors() {
         </InputSelect>
       </div>
 
-      <div className="col-span-2 lg:col-span-3">
+      <div
+        className={twJoin(
+          "col-span-2 lg:col-span-3",
+          showR ? "lg:col-span-3" : "lg:col-span-4",
+        )}
+      >
         <InputSelect
           label={te(
             multipleDatasets ? "views.chart.yAxes" : "views.chart.yAxis",

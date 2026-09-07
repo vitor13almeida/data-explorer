@@ -18,7 +18,7 @@ export interface IHeroDescriptionProps {
   classNameParagraph?: string;
 }
 
-const PARAGRAPH = "!text-white text-m-regular";
+const PARAGRAPH = "text-white! text-m-regular";
 
 // `text-m-regular` sits on the wrapper as well as on the paragraphs so that
 // passed-through nodes — a `formatHtmlParagraphs()` result, a call site's own
@@ -26,7 +26,7 @@ const PARAGRAPH = "!text-white text-m-regular";
 // falling back to the browser default. The `[&_a]` selectors stop inline links
 // from re-sizing themselves inside it.
 const WRAPPER =
-  "flex flex-col gap-16 !text-white text-m-regular [&_a]:text-[length:inherit] [&_a]:font-[inherit] max-w-[592px]";
+  "flex flex-col gap-16 text-white! text-m-regular [&_a]:text-[length:inherit] [&_a]:font-[inherit] max-w-[592px]";
 
 export default function HeroDescription({
   description,

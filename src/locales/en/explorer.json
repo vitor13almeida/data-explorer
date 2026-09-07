@@ -42,10 +42,18 @@
       "categorical": "Categorical",
       "uniqueValues": "Unique values",
       "alerts": {
-        "missingValues": "{{count}} column(s) with more than {{threshold}}% missing values",
-        "outliers": "{{count}} column(s) with possible outliers",
-        "lowScore": "{{count}} column(s) with type detection confidence below {{threshold}}%",
-        "duplicates": "{{percentage}}% of records are duplicates"
+        "title": {
+          "missingValues": "Missing values",
+          "outliers": "Outliers",
+          "lowScore": "Detection confidence",
+          "duplicates": "Duplicates"
+        },
+        "message": {
+          "missingValues": "{{count}} column(s) with more than {{threshold}}% missing values",
+          "outliers": "{{count}} column(s) with possible outliers",
+          "lowScore": "{{count}} column(s) with type detection confidence below {{threshold}}%",
+          "duplicates": "{{percentage}}% of records are duplicates"
+        }
       }
     },
     "chart": {
@@ -79,13 +87,13 @@
   },
   "pagination": {
     "itemsPerPage": "Items per page",
-    "range": "{{start}}-{{end}} of {{total}}",
-    "pageOf": "{{current}} of {{total}}",
+    "itemsPerPageDropdownAriaLabel": "Choose the number of items per page",
+    "itemsPerPageListAriaLabel": "Number of items per page",
     "prev": "Previous page",
     "next": "Next page"
   },
   "actions": {
-    "filter": "Filter Results",
+    "filter": "Apply filters",
     "clear": "Clear",
     "exportCsv": "Export CSV",
     "exportJson": "Export JSON",
@@ -124,8 +132,9 @@
     }
   },
   "filters": {
+    "selected": "Selected filters",
     "selectOperator": "Choose the operator for the filter",
-    "operator": "Filter operator",
+    "operator": "Operator",
     "operators": {
       "contains": "Contains",
       "notcontains": "Does not contain",
@@ -138,7 +147,6 @@
       "strictly_greater": "Greater than",
       "greater": "Greater than or equal to"
     },
-    "operatorType": "Operator: {{operator}}",
     "visible": "Visible",
     "invisible": "Invisible"
   }

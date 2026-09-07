@@ -1,6 +1,7 @@
 "use client";
 
-import { useResourceContext } from "@/hooks/useResourceContext";
+import { useDataContext } from "@/hooks/useDataContext";
+import { useViewContext } from "@/hooks/useViewContext";
 import { ViewType } from "@/services/types";
 import { exportToCsv } from "@/utils/exportToCsv";
 import { exportToJson } from "@/utils/exportToJson";
@@ -11,7 +12,7 @@ import { useChartContext } from "@/hooks/useChartContext";
 import { useCallback, useMemo } from "react";
 
 export function Divider() {
-  return <div className="w-[1px] h-full bg-neutral-700" />;
+  return <div className="w-px h-full bg-neutral-700" />;
 }
 
 export type ExplorerActionsI = {
@@ -20,8 +21,8 @@ export type ExplorerActionsI = {
 
 export default function ExplorerActions({ selectedView }: ExplorerActionsI) {
   const { t: te } = useTranslation("explorer");
-  const { isLoadingData, data, isFullscreen, toggleFullscreen } =
-    useResourceContext();
+  const { isLoadingData, data } = useDataContext();
+  const { isFullscreen, toggleFullscreen } = useViewContext();
   const { exportChartAsPng } = useChartContext();
 
   const hasData = !isLoadingData && !!data && data.data.length > 0;

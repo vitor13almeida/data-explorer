@@ -58,16 +58,16 @@ export default function Header(args: HeaderProps) {
 
   useLayoutEffect(() => {
     const panelsList = document.querySelector(
-      "header.sticky .panels-menu > ul",
+      "header .panels-menu > ul",
     );
     if (!panelsList) return;
 
     let li = panelsList.querySelector(
-      ".ecosystem-panel-menu",
+      ".ecosystem-custom-menu",
     ) as HTMLLIElement | null;
     if (!li) {
       li = document.createElement("li");
-      li.className = "ecosystem-panel-menu";
+      li.className = "ecosystem-custom-menu";
       li.style.display = "flex";
       li.style.alignItems = "stretch";
       const authLi = panelsList.lastElementChild;
@@ -93,7 +93,7 @@ export default function Header(args: HeaderProps) {
     });
 
     return () => {
-      panelsList.querySelector(".ecosystem-panel-menu")?.remove();
+      panelsList.querySelector(".ecosystem-custom-menu")?.remove();
       document.querySelector(".ecosystem-panel-container")?.remove();
       setEcosystemBtnPortalNode(null);
       setEcosystemPanelNode(null);
@@ -103,10 +103,10 @@ export default function Header(args: HeaderProps) {
   // Keep the ecosystem <li> immediately after the language selector
   useLayoutEffect(() => {
     const panelsList = document.querySelector(
-      "header.sticky .panels-menu > ul",
+      "header .panels-menu > ul",
     );
     if (!panelsList) return;
-    const ecosystemLi = panelsList.querySelector(".ecosystem-panel-menu");
+    const ecosystemLi = panelsList.querySelector(".ecosystem-custom-menu");
     const lastChild = panelsList.lastElementChild;
     if (ecosystemLi && lastChild && lastChild !== ecosystemLi) {
       panelsList.append(lastChild, ecosystemLi);
@@ -124,7 +124,7 @@ export default function Header(args: HeaderProps) {
       ".ecosystem-panel-container",
     ) as HTMLDivElement | null;
     if (!panelDiv) return;
-    const panelsMenu = document.querySelector("header.sticky .panels-menu");
+    const panelsMenu = document.querySelector("header .panels-menu");
     if (panelsMenu) {
       const rect = panelsMenu.getBoundingClientRect();
       panelDiv.style.top = `${rect.bottom}px`;
@@ -134,7 +134,7 @@ export default function Header(args: HeaderProps) {
   }, [ecosystemOpen, ecosystemPanelNode]);
 
   return (
-    <header className="sticky top-0 z-sticky [&_.custom-search-layout]:!m-0 [&_.custom-search-layout]:!mx-auto">
+    <header className="[&_.custom-search-layout]:m-0! [&_.custom-search-layout]:mx-auto!">
       <HeaderADS {...args} ref={headerRef}>
         <Brand>
           <Logo>
@@ -144,7 +144,13 @@ export default function Header(args: HeaderProps) {
               rel="noreferrer"
               className="w-full h-full"
             >
-              <Image src={LOGO} className="w-full h-full" alt={t("title")} />
+              <Image
+                src={LOGO}
+                width={254}
+                height={32}
+                className="w-full h-full"
+                alt={t("title")}
+              />
             </a>
           </Logo>
 
@@ -173,7 +179,7 @@ export default function Header(args: HeaderProps) {
       {ecosystemBtnPortalNode &&
         createPortal(
           <>
-            <span className="agora-link-wrapper agora-link-wrapper-link-neutral custom-header-link-wrapper panel-menu-link-wrapper inline-flex items-center !px-8">
+            <span className="agora-link-wrapper agora-link-wrapper-link-neutral custom-header-link-wrapper panel-menu-link-wrapper inline-flex items-center px-8!">
               <a
                 className="link-with-icon"
                 href="#"
@@ -231,7 +237,7 @@ export default function Header(args: HeaderProps) {
                                 backgroundColor: item.bgColor ?? undefined,
                               }}
                             >
-                              <div className="relative h-[20px] w-[20px]">
+                              <div className="relative h-20 w-20">
                                 <Image
                                   src={item.icon ?? ""}
                                   alt={item.label}

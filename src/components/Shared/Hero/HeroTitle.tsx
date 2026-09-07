@@ -14,7 +14,7 @@ export default function HeroTitle({ children, className }: IHeroTitleProps) {
     <Typograph
       tag="h1"
       className={twMerge(
-        "flex flex-col items-start leading-tight !text-2xl-bold text-white",
+        "flex flex-col items-start leading-tight text-2xl-bold! text-white",
         className,
       )}
       data-testid="hero-title"

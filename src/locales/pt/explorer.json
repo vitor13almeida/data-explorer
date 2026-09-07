@@ -42,10 +42,18 @@
       "categorical": "Categórico",
       "uniqueValues": "Valores únicos",
       "alerts": {
-        "missingValues": "{{count}} coluna(s) com mais de {{threshold}}% de valores em falta",
-        "outliers": "{{count}} coluna(s) com possíveis valores atípicos",
-        "lowScore": "{{count}} coluna(s) com confiança na deteção do tipo abaixo de {{threshold}}%",
-        "duplicates": "{{percentage}}% dos registos são duplicados"
+        "title": {
+          "missingValues": "Valores em falta",
+          "outliers": "Valores atípicos",
+          "lowScore": "Confiança na deteção",
+          "duplicates": "Valores duplicados"
+        },
+        "message": {
+          "missingValues": "{{count}} coluna(s) com mais de {{threshold}}% de valores em falta",
+          "outliers": "{{count}} coluna(s) com possíveis valores atípicos",
+          "lowScore": "{{count}} coluna(s) com confiança na deteção do tipo abaixo de {{threshold}}%",
+          "duplicates": "{{percentage}}% dos registos são duplicados"
+        }
       }
     },
     "chart": {
@@ -74,8 +82,8 @@
   },
   "pagination": {
     "itemsPerPage": "Items por página",
-    "range": "{{start}}-{{end}} de {{total}}",
-    "pageOf": "{{current}} de {{total}}",
+    "itemsPerPageDropdownAriaLabel": "Escolha o número de itens por página",
+    "itemsPerPageListAriaLabel": "Número de itens por página",
     "prev": "Página anterior",
     "next": "Página seguinte"
   },
@@ -85,7 +93,7 @@
     "appliedFilters": "Filtros aplicados"
   },
   "actions": {
-    "filter": "Filtrar Resultados",
+    "filter": "Aplicar filtros",
     "clear": "Limpar",
     "exportCsv": "Exportar CSV",
     "exportJson": "Exportar JSON",
@@ -123,8 +131,9 @@
     }
   },
   "filters": {
+    "selected": "Filtros selecionados",
     "selectOperator": "Escolha o operador para o filtro",
-    "operator": "Operador do filtro",
+    "operator": "Operador",
     "operators": {
       "contains": "Contém",
       "notcontains": "Não contém",
@@ -137,7 +146,6 @@
       "strictly_greater": "Maior",
       "greater": "Maior ou igual"
     },
-    "operatorType": "Operador: {{operator}}",
     "visible": "Visível",
     "invisible": "Invisível"
   }

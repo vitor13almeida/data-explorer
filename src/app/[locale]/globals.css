@@ -1,20 +1,108 @@
-@import url("@ama-pt/agora-design-system/artifacts/dist/tailwind.css");
-@import url("@ama-pt/agora-design-system/artifacts/dist/style.css");
+/* AgoraDS design tokens */
+@import "@ama-pt/agora-design-system/theme.css";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind v4 reset */
+@import "tailwindcss/preflight";
+
+/* AgoraDS compiled styles */
+@import "@ama-pt/agora-design-system/index.css";
+
+/* Tailwind v4 utilities — last, so portal utilities override DS component rules */
+@import "tailwindcss/utilities";
+
+@theme {
+  /* Spacing steps outside the Agora scale (0, 8, 16, 24, 32, …). */
+  --spacing-2: 2px;
+  --spacing-4: 4px;
+  --spacing-6: 6px;
+  --spacing-12: 12px;
+  --spacing-20: 20px;
+
+  /* Font sizes the portal adds on top of the Agora text tokens. */
+  --text-24: 24px;
+  --text-32: 32px;
+  --text-40: 40px;
+
+  /*
+    Breakpoints the portal adds on top of the Agora scale (xs 360 / md 768 /
+    xl 1280). Restores `theme.screens` from the former `tailwind.config.ts`;
+    without them every `lg:` / `sm:` utility in the app generates nothing.
+  */
+  --breakpoint-sm: 576px;
+  --breakpoint-lg: 1024px;
+
+  /*
+    Line heights, letter spacings and font weights.
+
+    The AgoraDS theme resets `--text-*` and ships only the composite text tokens
+    (`text-m-regular`, …) plus `--leading-5`, `--font-weight-bold` and
+    `--font-weight-medium`. In v3 these namespaces kept the Tailwind defaults —
+    AgoraDS 3 never overrode `lineHeight` / `letterSpacing` / `fontWeight` — so
+    the values below are those defaults verbatim.
+
+    `--leading-6` and `--leading-8` matter beyond dead classes: with no
+    `--leading-*` key, v4 falls back to the `--spacing-*` namespace and
+    `leading-6` resolves to 6px instead of 1.5rem.
+  */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+  --leading-3: 0.75rem;
+  --leading-4: 1rem;
+  --leading-6: 1.5rem;
+  --leading-7: 1.75rem;
+  --leading-8: 2rem;
+  --leading-9: 2.25rem;
+  --leading-10: 2.5rem;
+
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  /*
+    Named `max-w-*` / `min-w-*` sizes read the `--container-*` namespace in v4;
+    in v3 they came from the `maxWidth` defaults, which AgoraDS 3 only extended.
+    The DS keeps its own `@utility container` (1216px), which still wins.
+  */
+  --container-xs: 20rem;
+  --container-sm: 24rem;
+  --container-md: 28rem;
+  --container-lg: 32rem;
+  --container-xl: 36rem;
+  --container-2xl: 42rem;
+  --container-3xl: 48rem;
+  --container-4xl: 56rem;
+  --container-5xl: 64rem;
+  --container-6xl: 72rem;
+  --container-7xl: 80rem;
+
+  /* dados.gov.pt brand colours. */
+  --color-accent-light: #f7f7ff;
+  --color-brand-blue-dark: #021c51;
+  --color-brand-blue-primary: #0c02cb;
+  --color-brand-blue-secondary: #050157;
+  --color-gray-medium: #64718b;
+  --font-sans: var(--font-noto-sans, "Noto Sans"), sans-serif;
+}
 
 /* headless accordion */
 
 .accordion-headless .agora-accordion .accordion-header {
   display: none !important;
-}
-
-button.operator-drawer-trigger {
-  min-width: 36px !important;
-  min-height: 36px !important;
-  padding: 4px !important;
 }
 
 .agora-accordion:not(.mobile) .accordion-body .children-wrapper > div {
@@ -37,54 +125,6 @@ button.operator-drawer-trigger {
   width: 100% !important;
 }
 
-/* hide label in chart inpuut to not break the layout */
-
-.chart-page-size-selector .agora-input-select .agora-input-select-label {
-  display: none !important;
-}
-
-/* bigger dialog area */
-
-.agora-dialog .z-dialog {
-  padding: 0 !important;
-  margin: 128px auto !important;
-  width: calc(100% - 256px) !important;
-  height: calc(100% - 256px) !important;
-}
-
-.agora-popup-dialog,
-.agora-popup-dialog-body {
-  width: 100% !important;
-  height: 100% !important;
-  max-width: 2560px !important;
-  max-height: 2560px !important;
-}
-
-.agora-popup-dialog {
-  display: flex !important;
-  flex-direction: column !important;
-}
-
-.agora-popup-dialog-body {
-  overflow: auto !important;
-}
-
-@media (max-width: 1024px) {
-  .agora-dialog .z-dialog {
-    margin: 64px !important;
-    width: calc(100% - 128px) !important;
-    height: calc(100% - 128px) !important;
-  }
-}
-
-@media (max-width: 425px) {
-  .agora-dialog .z-dialog {
-    margin: 32px !important;
-    width: calc(100% - 64px) !important;
-    height: calc(100% - 64px) !important;
-  }
-}
-
 /* header */
 
 div:has(> div.institutional-phrase-container) {
@@ -95,14 +135,19 @@ div.general-bar > div.flex {
   align-self: center;
 }
 
-/* ecosystem panel */
-li.ecosystem-panel-menu {
+header .navigation-bar-bg {
+  display: none;
+}
+
+/* header - ecosystem panel */
+
+li.ecosystem-custom-menu {
   gap: 8px;
 }
 
 @media (max-width: 767px) {
-  header.sticky .panels-menu .search-panel-menu .children-wrapper,
-  header.sticky .panels-menu .unauthenticated-panel-menu .children-wrapper {
+  header .panels-menu .search-panel-menu .children-wrapper,
+  header .panels-menu .unauthenticated-panel-menu .children-wrapper {
     display: none;
   }
 }
@@ -120,13 +165,12 @@ li.ecosystem-panel-menu {
   border-top: 4px solid var(--Neutral-200, #e1e4ea);
 }
 
-li.ecosystem-panel-menu .panel-menu-link-wrapper {
+li.ecosystem-custom-menu .panel-menu-link-wrapper {
   position: relative;
   align-self: stretch;
 }
 
-li.ecosystem-panel-menu
-  .panel-menu-link-wrapper:has(a[aria-expanded="true"])::after {
+li.ecosystem-custom-menu .panel-menu-link-wrapper:has(a[aria-expanded="true"])::after {
   content: "";
   position: absolute;
   bottom: 0;
